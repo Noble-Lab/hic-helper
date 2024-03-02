@@ -37,9 +37,12 @@ def cool2array(cooler_path,normalize=False,tondarray=False):
         select_index2 = pixels['bin2_id'].isin(cur_bin_ids)
         cur_pixels = pixels[(select_index1)&(select_index2)]
         #merge join first based on bin_id1 
-        cur_pixels['bin_id'] = cur_pixels['bin1_id']
+        #cur_pixels['bin_id'] = cur_pixels['bin1_id']
+        #fix a warning from pandas
+        cur_pixels = cur_pixels.assign(bin_id = cur_pixels['bin1_id'])
         cur_pixels = cur_pixels.merge(cur_bins,on='bin_id',how='left',suffixes=('','1')) #chrom1, start1, end1
-        cur_pixels['bin_id'] = cur_pixels['bin2_id']
+        #cur_pixels['bin_id'] = cur_pixels['bin2_id']
+        cur_pixels = cur_pixels.assign(bin_id = cur_pixels['bin2_id'])
         cur_pixels = cur_pixels.merge(cur_bins,on='bin_id',how='left',suffixes=('','2'))
         #get the matrix
         current_table = cur_pixels
@@ -60,6 +63,7 @@ def cool2array(cooler_path,normalize=False,tondarray=False):
         if tondarray:
             final_mat = final_mat.toarray()
         return_dict[chromsome]=final_mat
+        print("finish converting chromosome:",chromsome)
     return return_dict
 
 
