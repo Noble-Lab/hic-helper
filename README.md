@@ -23,8 +23,8 @@ Usage
 ```
 python3 cool2array.py [input.cool] [output.pkl] [mode]
 ```
-This is the intra-chromosome cool2array scripts, can be easily extended to full cool2array. <br>
-The output array is saved in a pickle file as dict: [chrom]:[array] format. <br>
+This is the full cool2array script, converting both intra, inter chromosome regions to array format. <br>
+The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] format. <br>
 Two modes are supported: 
 ```
 0: scipy coo_array format output; 
