@@ -5,16 +5,13 @@ import pickle
 def write_pkl(data, path):
     with open(path, 'wb') as f:
         pickle.dump(data, f)
-def cool2array_intra(cooler_path,normalize=False,tondarray=False):
+def cool2array(cooler_path,normalize=False,tondarray=False):
     """
-    # *** This is only for the intra-chromosome processing!!!!  only work for fixed bin size!!!!***
-    # *** This is only for the intra-chromosome processing!!!!  only work for fixed bin size!!!!***
-    #you can easily modify it for all chromosome processing
     cooler_path: the path to the cooler file
     normalize: if True, the matrix will be normalized by the norm matrix saved in the cooler file
     tondarray: if True, the return a numpy array dict
     return a numpy/scipy.sparse array dict
-    [chromosome]:sparce matrix
+    [chromosome1_chromsome2]:sparce matrix
     """
     c = cooler.Cooler(cooler_path)
     binsize= c.info['bin-size']
@@ -76,16 +73,16 @@ def cool2array_intra(cooler_path,normalize=False,tondarray=False):
             final_mat = coo_matrix((count, (row,column)), shape = (cur_array_length1,cur_array_length2),dtype=np.float32)
             if tondarray:
                 final_mat = final_mat.toarray()
-            return_dict[chromsome]=final_mat
-            print("finish converting chromosome:",chromsome)
+            return_dict[chromsome+"_"+chromsome2]=final_mat
+            print("finish converting chromosome:",chromsome, "-",chromsome2)
     return return_dict
 
 
-def cool2array(cooler_path,normalize=False,tondarray=False):
+def cool2array_intra(cooler_path,normalize=False,tondarray=False):
     """
     # *** This is only for the intra-chromosome processing!!!!  only work for fixed bin size!!!!***
     # *** This is only for the intra-chromosome processing!!!!  only work for fixed bin size!!!!***
-    #you can easily modify it for all chromosome processing
+    # you can refer to cool2array for the all chromosome processing
     cooler_path: the path to the cooler file
     normalize: if True, the matrix will be normalized by the norm matrix saved in the cooler file
     tondarray: if True, the return a numpy array dict
