@@ -41,7 +41,8 @@ def read_chrom_array(chr1, chr2, normalization, hic_file, resolution):
     return mat_coo
 
 
-def hic2array(input_hic,output_pkl=None,resolution=25000):
+def hic2array(input_hic,output_pkl=None,
+              resolution=25000,normalization="NONE",tondarray=False):
     """
     input_hic: str, input hic file path
     output_pkl: str, output pickle file path
@@ -57,7 +58,11 @@ def hic2array(input_hic,output_pkl=None,resolution=25000):
             continue
         chrom_list.append(chrom)
         chrom_dict[chrom.name]=chrom.length
-    normalization="NONE"
+    resolution_list = hic.getResolutions()
+    if resolution not in resolution_list:
+        print("Resolution not found in the hic file, please choose from the following list:")
+        print(resolution_list)
+        exit()
     output_dict={}
     for i in range(len(chrom_list)):
         for j in range(i,len(chrom_list)):
@@ -66,6 +71,8 @@ def hic2array(input_hic,output_pkl=None,resolution=25000):
             chrom2 = chrom_list[j]
             chrom2_name = chrom_list[j].name
             read_array=read_chrom_array(chrom1,chrom2, normalization, input_hic, resolution)
+            if tondarray:
+                read_array = read_array.toarray()
             output_dict[chrom1_name+"_"+chrom2_name]=read_array
     if output_pkl is not None:
         output_dir = os.path.dirname(os.path.realpath(output_pkl))
@@ -73,3 +80,56 @@ def hic2array(input_hic,output_pkl=None,resolution=25000):
         write_pkl(output_dict,output_pkl)
 
     return output_dict
+"""
+
+Usage
+```
+python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]
+```
+
+This is the full cool2array script, converting both intra, inter chromosome regions to array format. <br>
+The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] format. <br>
+[resolution] is used to specify the resolution that stored in the output array. <br>
+[normalization_type] supports the following type: <br>
+```
+0: NONE normalization applied, save the raw data to array.
+1: VC normalization; 
+2: VC_SQRT normalization; 
+3: KR normalization; 
+4: SCALE normalization.
+```
+Two modes are supported for different format saving: 
+```
+0: scipy coo_array format output; 
+1: numpy array format output.
+```
+
+"""
+if __name__ == '__main__':
+    import os 
+    import sys
+    if len(sys.argv) != 6:
+        print('Usage: python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]')
+        print("This is the full hic2array script. ")
+        print("normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
+        print("mode: 0 for sparse matrix, 1 for dense matrix.")
+        sys.exit(1)
+    resolution = int(sys.argv[3])
+    normalization_type = int(sys.argv[4])
+    mode = int(sys.argv[5])
+    normalization_dict={0:"NONE",1:"VC",2:"VC_SQRT",3:"KR",4:"SCALE"}
+    if normalization_type not in normalization_dict:
+        print('normalization type should be 0,1,2,3,4')
+        print("normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
+        sys.exit(1)
+    normalization_type = normalization_dict[normalization_type]
+    if mode not in [0,1]:
+        print('mode should be 0,1')
+        print("mode: 0 for sparse matrix, 1 for dense matrix.")
+        sys.exit(1)
+    input_hic_path = os.path.abspath(sys.argv[1])
+    output_pkl_path = os.path.abspath(sys.argv[2])
+    output_dir = os.path.dirname(output_pkl_path)
+    os.makedirs(output_dir,exist_ok=True)
+    hic2array(input_hic_path,output_pkl_path,resolution,normalization_type,mode)
+    
