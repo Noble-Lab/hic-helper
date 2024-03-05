@@ -54,7 +54,7 @@ def hic2array(input_hic,output_pkl=None,
     chrom_dict={}
     for chrom in hic.getChromosomes():
         print(chrom.name, chrom.length)
-        if "All" in chrom.name or "all" in chrom.name:
+        if "all" in chrom.name.lower():
             continue
         chrom_list.append(chrom)
         chrom_dict[chrom.name]=chrom.length
