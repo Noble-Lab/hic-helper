@@ -3,7 +3,8 @@ import sys
 import pickle
 import numpy as np
 
-def array2hic(juicer_tools,input_array_pickle,output_hic,resolution,refer_genome_name):
+def array2hic(juicer_tools,input_array_pickle,
+              output_hic,resolution,refer_genome_name,mode=0):
     """
     The array2hic function converts a numpy array to hic file.
     
@@ -23,7 +24,11 @@ def array2hic(juicer_tools,input_array_pickle,output_hic,resolution,refer_genome
     raw_path = output_hic.replace('.hic','.raw')
     with open(raw_path, 'w') as wfile:
         for key in data:
-            chrom1, chrom2 = key.split('_')
+            if mode == 0:
+                chrom1, chrom2 = key.split('_')
+            else:
+                chrom1 = key
+                chrom2 = key
             matrix = data[key]
             matrix_row = matrix.row
             matrix_col = matrix.col
@@ -41,24 +46,29 @@ def array2hic(juicer_tools,input_array_pickle,output_hic,resolution,refer_genome
 """
 Usage
 ```
-python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name]
+python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name] [mode]
 ```
-The input pickle should be in a pickle file as dict: [chrom1_chrom2]:[array] format. Here array should be scipy sparce array. <br>
+The input pickle should be in a pickle file as dict: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
+For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.<br>
 [output.hic] is the name of the output hic file. <br>
 [resolution] is used to specify the resolution that stored in the output array. <br>
 [refer_genome_name] is used to specify the reference genome name. For example, "hg38","hg19","mm10" are valid inputs. <br>
-
+[mode]: 0: all chromosome mode; 1: intra-chromosome mode. <br>
 """
 
 if __name__ == '__main__':
     
     #get current script directory 
 
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 6:
         print('Usage: python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name]')
         print("This is the full array2hic script. ")
+        print("input.pkl: the path to the pickle file containing the array [String].")
+        print("input.pkl format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.")
+        print("output.hic: the name of the output hic file [String].")
         print("resolution: resolution of the input array [Integer].")
         print("refer_genome_name: the name of the reference genome [String]. Example: hg38, hg19, mm10.")
+        print("mode: 0: all chromosome mode; 1: intra-chromosome mode.")
         sys.exit(1)
     script_dir = os.path.dirname(os.path.realpath(__file__))
     juicer_tools = os.path.join(script_dir, 'juicer_tools.jar')
@@ -66,6 +76,7 @@ if __name__ == '__main__':
     output_hic = os.path.abspath(sys.argv[2])
     resolution = int(sys.argv[3])
     refer_genome_name = str(sys.argv[4])
-    array2hic(juicer_tools,input_array_pickle,output_hic,resolution,refer_genome_name)
+    mode = int(sys.argv[5])
+    array2hic(juicer_tools,input_array_pickle,output_hic,resolution,refer_genome_name,mode)
 
 
