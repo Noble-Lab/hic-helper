@@ -57,3 +57,17 @@ Two modes are supported for different format saving:
 0: scipy coo_array format output; 
 1: numpy array format output.
 ```
+
+#### 3. array2hic.py
+[array2hic.py](pre_processing/array2hic.py) <br>
+
+Usage
+```
+python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name] [mode]
+```
+The input pickle should be in a pickle file as dict: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
+For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.<br>
+[output.hic] is the name of the output hic file. <br>
+[resolution] is used to specify the resolution that stored in the output array. <br>
+[refer_genome_name] is used to specify the reference genome name. For example, "hg38","hg19","mm10" are valid inputs. <br>
+[mode]: 0: all chromosome mode; 1: intra-chromosome mode. <br>
