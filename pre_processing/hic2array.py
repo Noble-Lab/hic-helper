@@ -42,7 +42,8 @@ def read_chrom_array(chr1, chr2, normalization, hic_file, resolution):
 
 
 def hic2array(input_hic,output_pkl=None,
-              resolution=25000,normalization="NONE",tondarray=False):
+              resolution=25000,normalization="NONE",
+              tondarray=0):
     """
     input_hic: str, input hic file path
     output_pkl: str, output pickle file path
@@ -66,12 +67,15 @@ def hic2array(input_hic,output_pkl=None,
     output_dict={}
     for i in range(len(chrom_list)):
         for j in range(i,len(chrom_list)):
+            if i!=j and tondarray in [2,3]:
+                #skip inter-chromosome region
+                continue
             chrom1 = chrom_list[i]
             chrom1_name = chrom_list[i].name
             chrom2 = chrom_list[j]
             chrom2_name = chrom_list[j].name
             read_array=read_chrom_array(chrom1,chrom2, normalization, input_hic, resolution)
-            if tondarray:
+            if tondarray in [1,3]:
                 read_array = read_array.toarray()
             output_dict[chrom1_name+"_"+chrom2_name]=read_array
     if output_pkl is not None:
@@ -101,7 +105,9 @@ The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] form
 Two modes are supported for different format saving: 
 ```
 0: scipy coo_array format output; 
-1: numpy array format output.
+1: numpy array format output;
+2: scipy csr_array format output (only include intra-chromsome region).
+3: numpy array format output (only include intra-chromsome region).
 ```
 
 """
@@ -112,7 +118,7 @@ if __name__ == '__main__':
         print('Usage: python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]')
         print("This is the full hic2array script. ")
         print("normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
-        print("mode: 0 for sparse matrix, 1 for dense matrix.")
+        print("mode: 0 for sparse matrix, 1 for dense matrix, 2 for sparce matrix (only cis-contact); 3 for dense matrix (only cis-contact).")
         sys.exit(1)
     resolution = int(sys.argv[3])
     normalization_type = int(sys.argv[4])
@@ -123,9 +129,9 @@ if __name__ == '__main__':
         print("normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
         sys.exit(1)
     normalization_type = normalization_dict[normalization_type]
-    if mode not in [0,1]:
-        print('mode should be 0,1')
-        print("mode: 0 for sparse matrix, 1 for dense matrix.")
+    if mode not in [0,1,2,3]:
+        print('mode should be in choice of 0/1/2/3')
+        print("mode: 0 for sparse matrix, 1 for dense matrix, 2 for sparce matrix (only cis-contact); 3 for dense matrix (only cis-contact).")
         sys.exit(1)
     input_hic_path = os.path.abspath(sys.argv[1])
     output_pkl_path = os.path.abspath(sys.argv[2])
