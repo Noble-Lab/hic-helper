@@ -61,7 +61,7 @@ if __name__ == '__main__':
     #get current script directory 
 
     if len(sys.argv) != 6:
-        print('Usage: python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name]')
+        print('Usage: python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name] [mode]')
         print("This is the full array2hic script. ")
         print("input.pkl: the path to the pickle file containing the array [String].")
         print("input.pkl format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.")
