@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.sparse import coo_matrix
 import numpy as np
 from PIL import Image
+from numpy import triu
 def convert_rgb(data,max_value):
     """
     The convert_rgb function takes in a 2D array and converts it to a 3D RGB array.
@@ -17,6 +18,7 @@ def convert_rgb(data,max_value):
     #data_rgb = data_rgb - imagenet_mean #put normalize to transform
     #data_rgb = data_rgb / imagenet_std
     data_rgb = data_rgb.transpose(1,2,0)
+    data_rgb = (data_rgb*255).astype(np.uint8)
     return data_rgb
 
 def array2png(input_array_pickle,output_png,chrom1,start_index1,
@@ -65,10 +67,11 @@ def array2png(input_array_pickle,output_png,chrom1,start_index1,
     #gen coo_matrix with the selected data
     output_data = coo_matrix((matrix_data, (matrix_row, matrix_col)), shape=(end_index1-start_index1, end_index2-start_index2))
     output_data = output_data.toarray()
+    output_data = output_data + triu(output_data,1).T
     output_data = convert_rgb(output_data,max_value)
-    image=np.array(output_data,dtype=np.uint8)
+    #image=np.array(output_data,dtype=np.uint8)
     
-    img = Image.fromarray(image, 'RGB')
+    img = Image.fromarray(output_data, 'RGB')
     img.save(output_png)
     print('The image has been saved to', output_png + '.')
     return output_png
