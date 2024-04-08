@@ -65,8 +65,8 @@ import os
      */
 """
 def hiccups_loop(juicer_tools,hicFile,output_loop,resolution):
-    output_dir = os.path.dirname(output_loop)
-    os.makedirs(output_dir,exist_ok=True)
+    #output_dir = os.path.dirname(output_loop)
+    os.makedirs(output_loop,exist_ok=True)
     if resolution not in [5000,10000,25000]:
         raise ValueError('The resolution is not supported. The supported resolutions are 5000,10000,25000')
     if resolution == 5000:
@@ -76,14 +76,25 @@ def hiccups_loop(juicer_tools,hicFile,output_loop,resolution):
     elif resolution == 25000:
         specific_param = "-p 1 -w 3 -d 50000"
     os.system(f'java -jar {juicer_tools} hiccups -r {resolution} -f 0.1 {specific_param} -k KR {hicFile} {output_loop}')
+    final_path=os.path.join(output_loop,'merged_loops.bedpe')
+    print(f'The final loop file is saved at {final_path}')
     return
 # Path: post_processing/hiccups_loop.py
-
+"""
+```
+python3 hiccups_loop.py [hicFile] [output_dir] [resolution]
+```
+[hicFile]: the path to the input hic file [String]. <br>
+[output_dir]: the directory to the output loops [String]. <br>
+[resolution]: the resolution of the input hic file [Integer]. <br>
+Currently only support 5000,10000,25000 resolutions. <br>
+The output loop bedpe file will be saved in [output_dir]/merged_loops.bedpe. <br>
+"""
 if __name__ == '__main__':
     if len(sys.argv) !=4:
-        print('Usage: python3 hiccups_loop.py [hicFile] [outputloop_file] [resolution]')
+        print('Usage: python3 hiccups_loop.py [hicFile] [output_dir] [resolution]')
         print("hicFile: the path to the input hic file [String].")
-        print("outputloop_file: the path to the output loops [String].")
+        print("output_dir: the directory to the output loops [String].")
         print("resolution: the resolution of the input hic file [Integer].")
         sys.exit(1)
     script_dir = os.path.dirname(os.path.realpath(__file__))

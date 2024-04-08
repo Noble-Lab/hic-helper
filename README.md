@@ -65,12 +65,12 @@ Usage
 ```
 python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name] [mode]
 ```
-The input pickle should be in a pickle file as dict: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
+The input pickle should be in a pickle file as dict: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array/numpy array. <br>
 For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.<br>
 [output.hic] is the name of the output hic file. <br>
 [resolution] is used to specify the resolution that stored in the output array. <br>
 [refer_genome_name] is used to specify the reference genome name. For example, "hg38","hg19","mm10" are valid inputs. <br>
-[mode]: 0: all chromosome mode; 1: intra-chromosome mode. <br>
+[mode]: 0: all chromosome mode (scipy sparce array); 1: intra-chromosome mode(scipy sparce array); 2: all chromosome mode (numpy array); 3: intra-chromosome mode(numpy array). <br>
 
 
 #### 4. array2png.py
@@ -95,3 +95,15 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [max_value] is the maximum threshold of the input array for figures. <br>
 [mode] is 0 for all chromosome mode and 1 for intra-chromosome mode. <br>
 All index input should be absolute index counted by base. <br>
+
+#### 5.hiccups_loop.py
+[hiccups_loop.py](post_processing/hiccups_loop.py) <br>
+
+```
+python3 hiccups_loop.py [hicFile] [output_dir] [resolution]
+```
+[hicFile]: the path to the input hic file [String]. <br>
+[output_dir]: the directory to the output loops [String]. <br>
+[resolution]: the resolution of the input hic file [Integer]. <br>
+Currently only support 5000,10000,25000 resolutions. <br>
+The output loop bedpe file will be saved in [output_dir]/merged_loops.bedpe. <br>

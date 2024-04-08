@@ -3,6 +3,19 @@ import sys
 import pickle
 import numpy as np
 
+def array2sparse(array):
+    """
+    The array2sparse function converts a numpy array to a scipy sparce array.
+    
+    :param array: Specify the numpy array
+    :return: A scipy sparce array
+    :doc-author: Trelent
+    """
+    from scipy.sparse import coo_matrix
+    row, col = np.where(array)
+    data = array[row, col]
+    return coo_matrix((data, (row, col)), shape=array.shape)
+
 def array2hic(juicer_tools,input_array_pickle,
               output_hic,resolution,refer_genome_name,mode=0):
     """
@@ -30,6 +43,8 @@ def array2hic(juicer_tools,input_array_pickle,
                 chrom1 = key
                 chrom2 = key
             matrix = data[key]
+            if mode>=2:
+                matrix = array2sparse(matrix)
             matrix_row = matrix.row
             matrix_col = matrix.col
             matrix_data = matrix.data
@@ -53,7 +68,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [output.hic] is the name of the output hic file. <br>
 [resolution] is used to specify the resolution that stored in the output array. <br>
 [refer_genome_name] is used to specify the reference genome name. For example, "hg38","hg19","mm10" are valid inputs. <br>
-[mode]: 0: all chromosome mode; 1: intra-chromosome mode. <br>
+[mode]:  0: all chromosome mode (scipy sparce array); 1: intra-chromosome mode(scipy sparce array); 2: all chromosome mode (numpy array); 3: intra-chromosome mode(numpy array). <br>
 """
 
 if __name__ == '__main__':
@@ -68,7 +83,7 @@ if __name__ == '__main__':
         print("output.hic: the name of the output hic file [String].")
         print("resolution: resolution of the input array [Integer].")
         print("refer_genome_name: the name of the reference genome [String]. Example: hg38, hg19, mm10.")
-        print("mode: 0: all chromosome mode; 1: intra-chromosome mode.")
+        print("mode: 0: all chromosome mode (scipy sparce array); 1: intra-chromosome mode(scipy sparce array); 2: all chromosome mode (numpy array); 3: intra-chromosome mode(numpy array).")
         sys.exit(1)
     script_dir = os.path.dirname(os.path.realpath(__file__))
     juicer_tools = os.path.join(script_dir, 'juicer_tools.jar')
