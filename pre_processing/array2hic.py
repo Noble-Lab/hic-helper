@@ -37,7 +37,7 @@ def array2hic(juicer_tools,input_array_pickle,
     raw_path = output_hic.replace('.hic','.raw')
     with open(raw_path, 'w') as wfile:
         for key in data:
-            if mode == 0:
+            if mode == 0 or mode == 2:
                 chrom1, chrom2 = key.split('_')
             else:
                 chrom1 = key
