@@ -98,7 +98,7 @@ All index input should be absolute index counted by base. <br>
 
 #### 5.hiccups_loop.py
 [hiccups_loop.py](post_processing/hiccups_loop.py) <br>
-
+Use HiCCUPs to detect loop from Hi-C input
 ```
 python3 hiccups_loop.py [hicFile] [output_dir] [resolution]
 ```
@@ -107,3 +107,13 @@ python3 hiccups_loop.py [hicFile] [output_dir] [resolution]
 [resolution]: the resolution of the input hic file [Integer]. <br>
 Currently only support 5000,10000,25000 resolutions. <br>
 The output loop bedpe file will be saved in [output_dir]/merged_loops.bedpe. <br>
+
+#### 6. loop_f1.py
+[loop_f1.py](analysis/loop_f1.py)
+Compute F1 metrics of predicted loop and ground truth loop.
+```
+python3 loop_f1.py [true.bed] [pred.bed] [resolution]
+```
+[true.bed]: the true peaks, in bed format <br>
+[pred.bed]: the predicted peaks, in bed format <br>
+[resolution]: the resolution of the Hi-C data <br>
