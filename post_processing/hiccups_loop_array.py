@@ -136,13 +136,13 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
                singleton_qvalue,lambda_step,
                FDR=0.1, thresholds=[0.02,1.5,1.75,2], bounding_size=400,gap_filter_range=5):
     compact_ids = identify_ignore_regions(full_matrix)
-    
+    print("compact %d/%d"%(len(compact_ids),len(full_matrix))) 
     kernels = [donut_kernel(donut_size,peak_size), lowerleft_kernel(donut_size,peak_size),
                horizontal_kernel(donut_size,peak_size), vertical_kernel(donut_size,peak_size)]
     kernel_names = ['donut', 'lowerleft', 'horizontal', 'vertical']
     matrix_shape = full_matrix.shape
     matrix_height = matrix_shape[0]
-    window_size = min(2*bounding_size, matrix_shape)
+    window_size = min(2*bounding_size, matrix_height)
     expect_vector = get_oe_matrix(full_matrix, bounding = window_size, oe=False)
 
     expect = np.zeros((window_size, window_size))
@@ -162,10 +162,9 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
     first_patch_qvalues = np.copy(upper_triangle)
 
     pbar = range(0, matrix_height, window_size//2)
-    for i in pbar:
-        s = i
-        print(f'Currently find {len(enriched_pixels)} enriched pixels')
-        start = min(i, matrix_height-window_size)
+    for kk,s in enumerate(pbar):
+        print(f'{kk}/{len(pbar)} Currently find {len(enriched_pixels)} enriched pixels')
+        start = min(s, matrix_height-window_size)
         matrix = full_matrix[start:start+window_size, start:start+window_size]
 
         observed = matrix#norm should be done before
@@ -216,7 +215,7 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
 
         for p, v in pixel_scores.items():
             if v[0]>=9 and abs(p[0]-p[1]) <= bounding_size:
-                enriched_pixels.append((observed[p[0], p[1]], (p[0]+s, p[1]+s), v[1]))
+                enriched_pixels.append((observed[p[0], p[1]], (p[0]+start, p[1]+start), v[1]))
     
     gaps = set(range(matrix_height)) - set(compact_ids)
     near_gap = [False for _ in range(matrix_height)]
@@ -252,7 +251,7 @@ def hiccups_loop(input_pkl,output_loop,resolution):
     if resolution not in [5000,10000,25000]:
         raise ValueError('The resolution is not supported. The supported resolutions are 5000,10000,25000')
     with open(output_loop, 'w') as wfile:
-        wfile.write(wfile.write(f'chrom1\tstart1\tend1\tchrom2\tstart2\tend2\tname\tscore\tstrand1\tstrand2\tcolor\n'))
+        wfile.write(f'chrom1\tstart1\tend1\tchrom2\tstart2\tend2\tname\tscore\tstrand1\tstrand2\tcolor\n')
     
     if resolution == 5000:
         peak_size = 4
@@ -286,11 +285,12 @@ def hiccups_loop(input_pkl,output_loop,resolution):
         #if it is sparcse matrix, convert to dense matrix
         if type(matrix) == scipy.sparse.coo_matrix:
             matrix = matrix.toarray()
+        print(f"start identifying peaks from {chrom1}",matrix.shape)
         peaks_final =find_peaks(matrix, donut_size,peak_size,clustering_boundary, 
                singleton_qvalue,lambda_step,
                FDR=0.1, thresholds=[0.02,1.5,1.75,2], bounding_size=400,gap_filter_range=5)
         annotate_peaks(output_loop,peaks_final,resolution,chr=chrom1)
-    
+        print(f"for chrom {chrom1}, collected {len(peaks_final)} peaks!")    
 
 # Path: post_processing/hiccups_loo_array.py
 """
@@ -315,4 +315,4 @@ if __name__ == '__main__':
     input_pkl = os.path.abspath(sys.argv[1])
     output_bed = os.path.abspath(sys.argv[2])
     resolution = int(sys.argv[3])
-
+    hiccups_loop(input_pkl,output_bed,resolution)
