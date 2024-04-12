@@ -49,7 +49,8 @@ def calculate_loop_f1(true_dict, pred_dict, resolution,max_scope=5):
     loop_f1 = {}
     for chrom in true_dict:
         if chrom not in pred_dict:
-            loop_f1[chrom] = 0
+            #loop_f1[chrom] = 0
+            print("Chromosome ",chrom," not in prediction")
             continue
         true_loc = np.array(true_dict[chrom])
         pred_loc = np.array(pred_dict[chrom])
