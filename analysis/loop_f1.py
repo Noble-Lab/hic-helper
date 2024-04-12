@@ -80,6 +80,10 @@ if __name__ == '__main__':
     resolution = int(sys.argv[3])
     true_dict = extract_loc(true_bed)
     pred_dict = extract_loc(pred_bed)
+    count_true_loop = sum([len(true_dict[chrom]) for chrom in true_dict])
+    count_pred_loop = sum([len(pred_dict[chrom]) for chrom in pred_dict])
+    print("Number of true loops: ", count_true_loop)
+    print("Number of predicted loops: ", count_pred_loop)
     loop_f1=calculate_loop_f1(true_dict, pred_dict, resolution)
     print("Chromosome-wise F1: ",loop_f1)
     #average across different chromosomes
