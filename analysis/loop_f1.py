@@ -69,7 +69,7 @@ python3 loop_f1.py [true.bed] [pred.bed] [resolution]
 
 """
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print("Usage: python3 loop_f1.py true.bed pred.bed resolution")
         print("ture.bed: the true peaks, in bed format")
         print("pred.bed: the predicted peaks, in bed format")
