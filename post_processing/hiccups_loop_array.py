@@ -141,8 +141,11 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
                horizontal_kernel(donut_size,peak_size), vertical_kernel(donut_size,peak_size)]
     kernel_names = ['donut', 'lowerleft', 'horizontal', 'vertical']
     matrix_shape = full_matrix.shape
-    matrix_height = matrix_shape[0]
-    window_size = min(2*bounding_size, matrix_height)
+    l = matrix_shape[0]
+    B = min(bounding_size, l)
+    window_size = min(2*B, l)
+    upper_triangle = np.triu(np.ones((window_size, window_size)), 0)
+
     expect_vector = get_oe_matrix(full_matrix, bounding = window_size, oe=False)
 
     expect = np.zeros((window_size, window_size))
@@ -157,20 +160,20 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
 
     enriched_pixels = []
 
-    upper_triangle = np.triu(np.ones((window_size, window_size)), 0)
-
     first_patch_qvalues = np.copy(upper_triangle)
+    pbar = range(0, l, B)
+    for s0 in pbar:
+        pbar.set_description(f'Currently find {len(enriched_pixels)} enriched pixels')
 
-    pbar = range(0, matrix_height, window_size//2)
-    for kk,s in enumerate(pbar):
-        print(f'{kk}/{len(pbar)} Currently find {len(enriched_pixels)} enriched pixels')
-        start = min(s, matrix_height-window_size)
-        matrix = full_matrix[start:start+window_size, start:start+window_size]
+        s = min(s0, l-window_size)
+        matrix = full_matrix[s:s+window_size, s:s+window_size]
+        
+        observed = matrix 
 
-        observed = matrix#norm should be done before
         observed = (np.rint(observed)).astype(int)
 
         log_lambda_step = np.log(lambda_step)
+
         pixel_scores = {}
 
         # print(observed)
@@ -203,7 +206,7 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
                     pvalue, i, j = bin[rank-1]
                     qvalue = min(qvalue, pvalue /(rank / size))
 
-                    if i==0:
+                    if s==0:
                         first_patch_qvalues[i,j] = min(first_patch_qvalues[i,j], 1-qvalue if qvalue <= FDR else 0)
 
                     if qvalue <= FDR and observed[i][j]/Ek[i][j] > thresholds[kid]:
@@ -215,15 +218,15 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
 
         for p, v in pixel_scores.items():
             if v[0]>=9 and abs(p[0]-p[1]) <= bounding_size:
-                enriched_pixels.append((observed[p[0], p[1]], (p[0]+start, p[1]+start), v[1]))
-    
-    gaps = set(range(matrix_height)) - set(compact_ids)
-    near_gap = [False for _ in range(matrix_height)]
+                enriched_pixels.append((observed[p[0], p[1]], (p[0]+s, p[1]+s), v[1]))
+
+    gaps = set(range(l)) - set(compact_ids)
+    near_gap = [False for _ in range(l)]
     for gap in gaps:
         for i in range(gap_filter_range):
             if gap-i >= 0:
                 near_gap[gap-i] = True
-            if gap+i < matrix_height:
+            if gap+i < l:
                 near_gap[gap+i] = True
 
     filtered_enriched_pixels = []
@@ -231,9 +234,9 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
         if not near_gap[pixels[1][0]] and not near_gap[pixels[1][1]]:
             filtered_enriched_pixels.append(pixels)
 
-    peaks_final = loop_clustering(filtered_enriched_pixels,clustering_boundary,singleton_qvalue)
-    return peaks_final
+    peaks_final = loop_clustering(filtered_enriched_pixels,clustering_boundary, singleton_qvalue)
 
+    return peaks_final
 
 def annotate_peaks(annotate_path,peaks,resolution,chr="chr1"):
     with open(annotate_path, 'a+') as wfile:
