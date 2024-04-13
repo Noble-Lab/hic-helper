@@ -162,8 +162,8 @@ def find_peaks(full_matrix, donut_size,peak_size,clustering_boundary,
 
     first_patch_qvalues = np.copy(upper_triangle)
     pbar = range(0, l, B)
-    for s0 in pbar:
-        pbar.set_description(f'Currently find {len(enriched_pixels)} enriched pixels')
+    for kk,s0 in enumerate(pbar):
+        print(f'{kk}/{len(pbar)} Currently find {len(enriched_pixels)} enriched pixels')
 
         s = min(s0, l-window_size)
         matrix = full_matrix[s:s+window_size, s:s+window_size]
