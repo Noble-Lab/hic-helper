@@ -132,7 +132,7 @@ def identify_ignore_regions(matrix):
 
 
 
-def find_peaks(full_matrix, full_norm, donut_size,peak_size,clustering_boundary, 
+def find_peaks(full_matrix,  donut_size,peak_size,clustering_boundary, 
                singleton_qvalue,lambda_step,
                FDR=0.1, thresholds=[0.02,1.5,1.75,2], bounding_size=400,gap_filter_range=5):
     compact_ids = identify_ignore_regions(full_matrix)
@@ -168,12 +168,12 @@ def find_peaks(full_matrix, full_norm, donut_size,peak_size,clustering_boundary,
         s = min(s0, l-window_size)
         matrix = full_matrix[s:s+window_size, s:s+window_size]
         
-        norm   = full_norm  [s:s+window_size]
+        #norm   = full_norm  [s:s+window_size]
 
         #matrix = matrix * multiple
-        norm_mat = np.outer(norm, norm)
+        #norm_mat = np.outer(norm, norm)
 
-        observed = matrix * norm_mat
+        observed = matrix #* norm_mat
 
         observed = (np.rint(observed)).astype(int)
 
@@ -188,7 +188,7 @@ def find_peaks(full_matrix, full_norm, donut_size,peak_size,clustering_boundary,
             esum = esums[kid]
 
             Ek = np.nan_to_num(msum/esum*expect)
-            Ek = Ek * norm_mat
+            Ek = Ek #* norm_mat
 
             #lambda-chunk FDR
 
@@ -278,32 +278,34 @@ def hiccups_loop(input_pkl,output_loop,resolution):
     singleton_qvalue = 0.02
     lambda_step = 2**(1/3)
     #load array
-    # with open(input_pkl, 'rb') as f:
-    #     data = pickle.load(f)
-    # for key in data:
-    #     if "_" in key:
-    #         chrom1, chrom2 = key.split('_')
-    #     else:
-    #         chrom1 = key
-    #         chrom2 = key
-    #     if chrom1 != chrom2:
-    #         print_info(f'Skip {chrom1} {chrom2}, loop only detect in the same chromosome')
-    #         continue
-    #     matrix = data[key]
-    #     #if it is sparcse matrix, convert to dense matrix
-    #     if type(matrix) == scipy.sparse.coo_matrix:
-    #         matrix = matrix.toarray()
-    #     print(f"start identifying peaks from {chrom1}",matrix.shape)
-    data= np.load(input_pkl)
-    matrix = data['hic']
-    norm = data['norm']
-    peaks_final =find_peaks(matrix,norm, donut_size,peak_size,clustering_boundary, 
-               singleton_qvalue,lambda_step,
-               FDR=0.1, thresholds=[0.02,1.5,1.75,2], bounding_size=400,gap_filter_range=5)
-    #annotate_peaks(output_loop,peaks_final,resolution,chr=chrom1)
-    annotate_peaks(output_loop,peaks_final,resolution,chr="chr1")
-    print(f"for chrom, collected {len(peaks_final)} peaks!")    
-        #print(f"for chrom {chrom1}, collected {len(peaks_final)} peaks!")    
+    with open(input_pkl, 'rb') as f:
+        data = pickle.load(f)
+    for key in data:
+        if "_" in key:
+            chrom1, chrom2 = key.split('_')
+        else:
+            chrom1 = key
+            chrom2 = key
+        if chrom1 != chrom2:
+            print_info(f'Skip {chrom1} {chrom2}, loop only detect in the same chromosome')
+            continue
+        matrix = data[key]
+        #if it is sparcse matrix, convert to dense matrix
+        if type(matrix) == scipy.sparse.coo_matrix:
+            matrix = matrix.toarray()
+        print(f"start identifying peaks from {chrom1}",matrix.shape)
+    # data= np.load(input_pkl)
+    # matrix = data['hic']
+    # norm = data['norm']
+    #    annotate_peaks(output_loop,peaks_final,resolution,chr="chr1")
+    #print(f"for chrom, collected {len(peaks_final)} peaks!")    
+        peaks_final =find_peaks(matrix,donut_size,peak_size,clustering_boundary, 
+                singleton_qvalue,lambda_step,
+                FDR=0.1, thresholds=[0.02,1.5,1.75,2], bounding_size=400,gap_filter_range=5)
+        annotate_peaks(output_loop,peaks_final,resolution,chr=chrom1)
+        
+        
+        print(f"for chrom {chrom1}, collected {len(peaks_final)} peaks!")    
 
 # Path: post_processing/hiccups_loo_array.py
 """
