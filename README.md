@@ -117,3 +117,14 @@ python3 loop_f1.py [true.bed] [pred.bed] [resolution]
 [true.bed]: the true peaks, in bed format <br>
 [pred.bed]: the predicted peaks, in bed format <br>
 [resolution]: the resolution of the Hi-C data <br>
+
+#### 7. fastq2bam.py
+[fastq2bam.py](pre_processing/fastq2bam.py)
+
+```
+python3 fastq2bam.py [fastq_file1] [fastq_file2] [bwa_index_file] [output_dir]
+```
+[fastq_file1]: the first fastq file. <br>
+[fastq_file2]: the second fastq file. <br>
+[bwa_index_file]: the bwa index file. Example file: 4DNFIZQZ39L9.bwaIndex.tgz for human genome build GRCh38 <br>
+[output_dir]: the output directory. The output file will be named as 4DN.sorted.bam under this direcotry. <br>
