@@ -51,7 +51,7 @@ if __name__ == '__main__':
     os.chdir(output_dir)
 
     script_path = os.path.dirname(os.path.realpath(__file__))
-    bwa_mem_script_path = os.path.join(script_path,'run_bwa_mem-seq.sh')
+    bwa_mem_script_path = os.path.join(script_path,'run-bwa-mem-seq.sh')
     """
     run-bwa-mem-seq.sh <fastq1> <fastq2> <ref.fa> <output_prefix> <nThreads>
     # fastq1, fastq2 : input fastq files, either gzipped or not
