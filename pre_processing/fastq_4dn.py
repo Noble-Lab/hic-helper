@@ -19,7 +19,8 @@ if __name__ == '__main__':
     import os 
     import sys
     if len(sys.argv) != 9:
-        print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]')
+        print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] \
+              [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]')
         print('fastq_file1: the first fastq file')
         print('fastq_file2: the second fastq file')
         print('refer.fa: the reference genome file. You can download the reference genome file from https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.40/ for human.')
@@ -28,6 +29,8 @@ if __name__ == '__main__':
         print('mode: the mode of the conversion. 0: convert to cool file; 1：convert to hic file')
         print('number_cpu: the number of cpu to use')
         print('max_memory: the max memory to use (GB)')
+        print("resume_flag: 0: do not resume; 1: resume from the previously generated files. default should be 0.")
+        print('Recommended running with 8 cores and 64GB memory.')
         sys.exit(1)
     
     
@@ -40,6 +43,7 @@ if __name__ == '__main__':
     run_mode = int(sys.argv[6])
     number_cpu = int(sys.argv[7])
     max_memory = int(float(sys.argv[8]))
+    resume_flag = int(sys.argv[9])
 
     os.makedirs(output_dir,exist_ok=True)
     #run on the same directory as the output dir, there are many temp files may be generated
@@ -56,10 +60,14 @@ if __name__ == '__main__':
     # nThreads : number of threads 
     """
     # 1. fastq to bam
-    os.system('bash %s %s %s %s %s %s %d' % (bwa_mem_script_path,fastq_file1,fastq_file2,
+    gen_file = os.path.join(output_dir,'%s.bam'%prefix)
+    if resume_flag == 1 and os.path.exists(gen_file) and os.path.getsize(gen_file) > 1000:
+        print('Resume from the previously generated bam files')
+    else:
+        os.system('bash %s %s %s %s %s %s %d' % (bwa_mem_script_path,fastq_file1,fastq_file2,
                                           refer_genome_file,output_dir,prefix,number_cpu))
     
-    gen_file = os.path.join(output_dir,'%s.bam'%prefix)
+    
 
     if not os.path.exists(gen_file):
         print('Error: fastq to bam conversion failed')
@@ -74,11 +82,15 @@ if __name__ == '__main__':
     """
     pairsam_parse_sort_script_path = os.path.join(script_path,'run-pairsam-parse-sort.sh')
     # 2. bam to pairsam
-    os.system('bash %s %s %s %s %s %d %s %dg ' % (pairsam_parse_sort_script_path,gen_file,chrom_size_file,  
+    sam_pairsam_file = os.path.join(output_dir,'%s.sam.pairs.gz'%prefix)
+    if resume_flag == 1 and os.path.exists(sam_pairsam_file) and os.path.getsize(sam_pairsam_file) > 1000:
+        print('Resume from the previously generated pairsam files')
+    else:
+        os.system('bash %s %s %s %s %s %d %s %dg ' % (pairsam_parse_sort_script_path,gen_file,chrom_size_file,  
                                             output_dir,prefix,number_cpu,'lz4c',max_memory))
     #lz4c is the compress program, you can change it to gzip or other compress program
     
-    sam_pairsam_file = os.path.join(output_dir,'%s.sam.pairs.gz'%prefix)
+    
     if not os.path.exists(sam_pairsam_file):
         print('Error: bam to pairsam conversion failed')
         sys.exit(1)
@@ -102,8 +114,12 @@ if __name__ == '__main__':
     """
     #3. mark duplicate reads in pairsam file
     pairsam_markdup_script_path = os.path.join(script_path,'run-pairsam-markasdup.sh')
-    os.system('bash %s %s %s' % (pairsam_markdup_script_path,sam_pairsam_file,os.path.join(output_dir,'%s'%prefix)))
     pairsam_markdup_file_path = os.path.join(output_dir,'%s.marked.sam.pairs.gz'%prefix)
+    if resume_flag == 1 and os.path.exists(pairsam_markdup_file_path) and os.path.getsize(pairsam_markdup_file_path) > 1000:
+        print('Resume from the previously generated markdup pairsam files')
+    else:
+        os.system('bash %s %s %s' % (pairsam_markdup_script_path,sam_pairsam_file,os.path.join(output_dir,'%s'%prefix)))
+    
     if not os.path.exists(pairsam_markdup_file_path):
         print('Error: mark duplicate reads in pairsam file failed')
         sys.exit(1)
@@ -117,9 +133,13 @@ if __name__ == '__main__':
     """
     cur_prefix = os.path.join(output_dir,'%s'%prefix)
     pairsam_filter_script_path = os.path.join(script_path,'run-pairsam-filter.sh')
-    os.system('bash %s %s %s %s' % (pairsam_filter_script_path,pairsam_markdup_file_path,
-                                    cur_prefix,chrom_size_file))
     dedup_pairsam_file_path = os.path.join(output_dir,'%s.dedup.pairs.gz'%prefix)#.dedup.pairs.gz
+    if resume_flag == 1 and os.path.exists(dedup_pairsam_file_path) and os.path.getsize(dedup_pairsam_file_path) > 1000:
+        print('Resume from the previously generated dedup pairsam files')
+    else:
+        os.system('bash %s %s %s %s' % (pairsam_filter_script_path,pairsam_markdup_file_path,
+                                    cur_prefix,chrom_size_file))
+    
     if not os.path.exists(dedup_pairsam_file_path):
         print('Error: pairsum file filtering and converting to pairs format failed')
         sys.exit(1)
@@ -141,9 +161,13 @@ if __name__ == '__main__':
     # pairs1, pairs2, ... : input pairs files
     """
     pairs_merge_script_path = os.path.join(script_path,'run-merge-pairs.sh')
-    os.system('bash %s %s %s' % (pairs_merge_script_path,cur_prefix,dedup_pairsam_file_path))
-
     merged_pairs_file_path = os.path.join(output_dir,'%s.pairs.gz'%prefix)
+    if resume_flag == 1 and os.path.exists(merged_pairs_file_path) and os.path.getsize(merged_pairs_file_path) > 1000:
+        print('Resume from the previously generated merged pairs files')
+    else:
+        os.system('bash %s %s %s' % (pairs_merge_script_path,cur_prefix,dedup_pairsam_file_path))
+
+    
     if not os.path.exists(merged_pairs_file_path):
         print('Error: merge pairs failed')
         sys.exit(1)
@@ -162,9 +186,13 @@ if __name__ == '__main__':
         # max_split : max_split argument for cooler (e.g. 2 which is default for cooler) 
         """
         cooler_script_path = os.path.join(script_path,'run-cooler.sh')
-        os.system('bash %s %s %s %d %d %s %d' % (cooler_script_path,merged_pairs_file_path,chrom_size_file,
-                                                1000,number_cpu,cur_prefix,2))
         cool_file_path = os.path.join(output_dir,'%s.cool'%prefix)
+        if resume_flag == 1 and os.path.exists(cool_file_path) and os.path.getsize(cool_file_path) > 1000:
+            print('Resume from the previously generated cool files')
+        else:
+            os.system('bash %s %s %s %d %d %s %d' % (cooler_script_path,merged_pairs_file_path,chrom_size_file,
+                                                1000,number_cpu,cur_prefix,2))
+        
         if not os.path.exists(cool_file_path):
             print('Error: convert pairs to cool file failed')
             sys.exit(1)
@@ -184,9 +212,12 @@ if __name__ == '__main__':
         command_line="%s \
         -i %s -p %d  -o %s -c 10000000 \
         -u 1000,2000,5000,10000,25000,50000,100000,250000,500000,1000000,2500000,5000000,10000000"%(cool2multirescool_script_path,cool_file_path,number_cpu,cur_prefix)
-
-        os.system(command_line)
         multi_res_cool_file_path = os.path.join(output_dir,'%s.multires.cool'%prefix)
+        if resume_flag == 1 and os.path.exists(multi_res_cool_file_path) and os.path.getsize(multi_res_cool_file_path) > 1000:
+            print('Resume from the previously generated multi-res cool files')
+        else:
+            os.system(command_line)
+        
         if not os.path.exists(multi_res_cool_file_path):
             print('Error: convert to multi-resolution cool file failed')
             sys.exit(1)
@@ -201,7 +232,6 @@ if __name__ == '__main__':
         print("If you want to add norm files from hic to cooler, please run the following command:")
         print("run-add-hicnormvector-to-mcool.sh <input_hic> %s %s"%(multi_res_cool_file_path,output_dir))
         print("You can run mode 1 to get the .hic file.")
-        print("Enjoy!")
     elif run_mode==1:
         print("convert to hic file")
         ## 6.2 convert to hic file
@@ -214,8 +244,12 @@ if __name__ == '__main__':
         """
         #if you know restriction file, you can input here, if not do not need to change this command
         command_line="run-addfrag2pairs.sh  -i %s -o %s "%(merged_pairs_file_path,cur_prefix)
-        os.system(command_line)
         refined_pairs_file_path = os.path.join(output_dir,'%s.ff.pairs.gz'%prefix)
+        if resume_flag == 1 and os.path.exists(refined_pairs_file_path) and os.path.getsize(refined_pairs_file_path) > 1000:
+            print('Resume from the previously generated refined pairs files')
+        else:
+            os.system(command_line)
+        
         if not os.path.exists(refined_pairs_file_path):
             print('Error: add juicer fragment file to the pairs file failed')
             sys.exit(1)
@@ -241,13 +275,18 @@ if __name__ == '__main__':
         500000,1000000,2500000,5000000,10000000"%(juicebox_pre_script_path,juicer_tool_jar_path,
                                                 refined_pairs_file_path,chrom_size_file,cur_prefix,
                                               max_memory)
-        os.system(command_line)
         hic_file_path = os.path.join(output_dir,'%s.hic'%prefix)
+        if resume_flag == 1 and os.path.exists(hic_file_path) and os.path.getsize(hic_file_path) > 1000:
+            print('Resume from the previously generated hic files')
+        else:
+            os.system(command_line)
+        
         if not os.path.exists(hic_file_path):
             print('Error: convert pairs to hic file failed')
             sys.exit(1)
         print("Please get the hic file in %s"%hic_file_path)
-        print("Enjoy!")
+   
     else:
         print('Error: invalid mode, please input 0 or 1 for [mode]')
         sys.exit(1)
+    print("fastq 4DN pipeline finished! Enjoy!")
