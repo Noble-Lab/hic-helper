@@ -19,6 +19,7 @@ dependencies:
   - gzip
   - pairtools
   - cooler
+  - bwa
   - pip:
       - numpy
       - cooler
