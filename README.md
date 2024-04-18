@@ -122,9 +122,26 @@ python3 loop_f1.py [true.bed] [pred.bed] [resolution]
 [fastq2bam.py](pre_processing/fastq2bam.py)
 
 ```
-python3 fastq2bam.py [fastq_file1] [fastq_file2] [bwa_index_file] [output_dir]
+python3 fastq2bam.py [fastq_file1] [fastq_file2] [refer.fa] [output_dir]
 ```
 [fastq_file1]: the first fastq file. <br>
 [fastq_file2]: the second fastq file. <br>
-[bwa_index_file]: the bwa index file. Example file: 4DNFIZQZ39L9.bwaIndex.tgz for human genome build GRCh38 <br>
+[refer.fa]: the reference genome file. You can download the reference genome file from https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.40/ for human.<br>
+You can also run set_up.sh to download the reference genome files for human and mouse. <br>
 [output_dir]: the output directory. The output file will be named as 4DN.sorted.bam under this direcotry. <br>
+
+#### 8. fastq_4dn.py
+This script is used to convert fastq files to cool or hic files following 4DN's pipeline.
+```
+python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]
+```
+[fastq_file1]: the first fastq file. <br>
+[fastq_file2]: the second fastq file. <br>
+[refer.fa]: the reference genome file. You can download the reference genome file from https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.40/ for human. <br>
+You can also run set_up.sh to download the reference genome files for human and mouse. <br>
+[chrom_size_file]: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38 <br>
+[output_dir]: the output directory. The output file will be named as 4DN.cool under this direcotry. <br>
+[mode]: the mode of the conversion. 0: convert to cool file; 1：convert to hic file <br>
+[number_cpu]: the number of cpu to use <br>
+[max_memory]: the max memory to use (GB) <br>
+Recommended running with 8 cores and 64GB memory. <br>

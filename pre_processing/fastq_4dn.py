@@ -1,13 +1,28 @@
-
+"""
+This script is used to convert fastq files to cool or hic files following 4DN's pipeline.
+```
+python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]
+```
+[fastq_file1]: the first fastq file. <br>
+[fastq_file2]: the second fastq file. <br>
+[refer.fa]: the reference genome file. You can download the reference genome file from https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.40/ for human. <br>
+You can also run set_up.sh to download the reference genome files for human and mouse. <br>
+[chrom_size_file]: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38 <br>
+[output_dir]: the output directory. The output file will be named as 4DN.cool under this direcotry. <br>
+[mode]: the mode of the conversion. 0: convert to cool file; 1：convert to hic file <br>
+[number_cpu]: the number of cpu to use <br>
+[max_memory]: the max memory to use (GB) <br>
+Recommended running with 8 cores and 64GB memory. <br>
+"""
 
 if __name__ == '__main__':
     import os 
     import sys
     if len(sys.argv) != 9:
-        print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [bwa_index_file] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]')
+        print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]')
         print('fastq_file1: the first fastq file')
         print('fastq_file2: the second fastq file')
-        print('bwa_index_file: the bwa index file. Example file: 4DNFIZQZ39L9.bwaIndex.tgz for human genome build GRCh38')
+        print('refer.fa: the reference genome file. You can download the reference genome file from https://www.ncbi.nlm.nih.gov/datasets/genome/GCF_000001405.40/ for human.')
         print('chrom_size_file: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38')
         print('output_dir: the output directory. The output file will be named as 4DN.cool under this direcotry.')
         print('mode: the mode of the conversion. 0: convert to cool file; 1：convert to hic file')
@@ -19,7 +34,7 @@ if __name__ == '__main__':
     prefix='4DN'
     fastq_file1 = os.path.abspath(sys.argv[1])
     fastq_file2 = os.path.abspath(sys.argv[2])
-    bwa_index_file = os.path.abspath(sys.argv[3])
+    refer_genome_file = os.path.abspath(sys.argv[3])
     chrom_size_file = os.path.abspath(sys.argv[4])
     output_dir = os.path.abspath(sys.argv[5])
     run_mode = int(sys.argv[6])
@@ -31,18 +46,18 @@ if __name__ == '__main__':
     os.chdir(output_dir)
 
     script_path = os.path.dirname(os.path.realpath(__file__))
-    bwa_mem_script_path = os.path.join(script_path,'run_bwa_mem.sh')
+    bwa_mem_script_path = os.path.join(script_path,'run_bwa_mem-seq.sh')
     """
-    run-bwa-mem.sh <fastq1> <fastq2> <bwaIndex> <output_prefix> <nThreads>
+    run-bwa-mem-seq.sh <fastq1> <fastq2> <ref.fa> <output_prefix> <nThreads>
     # fastq1, fastq2 : input fastq files, either gzipped or not
-    # bwaIndex : tarball for bwa index, .tgz.
+    # refer_genome_file : reference genome file, e.g. hg38.fa
     # outdir : output directory
     # output_prefix : prefix of the output bam file.
     # nThreads : number of threads 
     """
     # 1. fastq to bam
     os.system('bash %s %s %s %s %s %s %d' % (bwa_mem_script_path,fastq_file1,fastq_file2,
-                                          bwa_index_file,output_dir,prefix,number_cpu))
+                                          refer_genome_file,output_dir,prefix,number_cpu))
     
     gen_file = os.path.join(output_dir,'%s.bam'%prefix)
 
@@ -59,8 +74,8 @@ if __name__ == '__main__':
     """
     pairsam_parse_sort_script_path = os.path.join(script_path,'run-pairsam-parse-sort.sh')
     # 2. bam to pairsam
-    os.system('bash %s %s %s %s %s %d %s' % (pairsam_parse_sort_script_path,gen_file,chrom_size_file,  
-                                            output_dir,prefix,number_cpu,'lz4c'))
+    os.system('bash %s %s %s %s %s %d %s %dg ' % (pairsam_parse_sort_script_path,gen_file,chrom_size_file,  
+                                            output_dir,prefix,number_cpu,'lz4c',max_memory))
     #lz4c is the compress program, you can change it to gzip or other compress program
     
     sam_pairsam_file = os.path.join(output_dir,'%s.sam.pairs.gz'%prefix)

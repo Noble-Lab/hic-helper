@@ -2,7 +2,7 @@
 
 fastq1=$1
 fastq2=$2
-index_file=$3
+refseq_path=$3
 outdir=$4
 prefix=$5
 nThreads=$6
@@ -12,9 +12,7 @@ then
   cd $outdir
 fi
 
-# unzip index
-tar -xzf $index_file
-index=`ls -1 *.bwt | head -1 | sed 's/\.bwt//g'`
+bwa index $refseq_path
 
 # unzip fastq files
 if [[ $fastq1 =~ \.gz$ ]]
@@ -41,4 +39,4 @@ fi
 #       -5         for split alignment, take the alignment with the smallest coordinate as primary
 #       -M        mark shorter split hits as secondary
 # run bwa
-bwa mem -t $nThreads -SP5M $index $fastq1 $fastq2 | samtools view -Shb - > $prefix.bam
+bwa mem -t $nThreads -SP5M $refseq_path $fastq1 $fastq2 | samtools view -Shb - > $prefix.bam

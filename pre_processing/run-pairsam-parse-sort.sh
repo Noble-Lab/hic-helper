@@ -28,6 +28,7 @@ OUTDIR=$3
 OUTPREFIX=$4
 THREADS=${5:-8}
 COMPRESS_PROGRAM=${6:=lz4c}
+maxmem=${7} # max memory for sorting
 SORTED_PAIRS_PATH=${OUTDIR}/${OUTPREFIX}.sam.pairs.gz
 
 if [[ ${OUTDIR} != "." ]]; then
@@ -45,7 +46,7 @@ samtools view -h "${BAM}" | {
 } | {
     # Block-sort pairs together with SAM entries
     pairtools sort --nproc ${THREADS} \
-    --memory 48G \
+    --memory ${maxmem} \
     --compress-program ${COMPRESS_PROGRAM} \
     --tmpdir ${OUTDIR} \
     --output ${SORTED_PAIRS_PATH}

@@ -1,8 +1,9 @@
 #!/bin/bash
 shopt -s extglob
 mapqfilter=0
+juicer_tool_path=''
 min_res=5000
-maxmem=64g
+maxmem='64g'
 higlass=0  # if 1, higlass-compatible aggregation
 custom_res=''  # custom resolutions, separated by commas
 normonly=0  # if 1, normalization only

@@ -24,9 +24,9 @@ done
 
 
 if [ ! -z $restriction_file ]; then
-    scriptdir=/usr/local/bin
+    
     # use fragment_4dnpairs.pl in pairix/util instead of juicer/CPU/common
-    gunzip -c $input_pairs | $scriptdir/pairix/util/fragment_4dnpairs.pl -a - $output_prefix.ff.pairs $restriction_file
+    gunzip -c $input_pairs | fragment_4dnpairs.pl -a - $output_prefix.ff.pairs $restriction_file
     bgzip -f $output_prefix.ff.pairs
     pairix -f $output_prefix.ff.pairs.gz
 else
