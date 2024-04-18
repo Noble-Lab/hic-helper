@@ -3,17 +3,19 @@
 if __name__ == '__main__':
     import os 
     import sys
-    if len(sys.argv) != 7:
-        print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [bwa_index_file] [chrom_size_file] [output_dir] [mode]')
+    if len(sys.argv) != 9:
+        print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [bwa_index_file] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]')
         print('fastq_file1: the first fastq file')
         print('fastq_file2: the second fastq file')
         print('bwa_index_file: the bwa index file. Example file: 4DNFIZQZ39L9.bwaIndex.tgz for human genome build GRCh38')
         print('chrom_size_file: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38')
         print('output_dir: the output directory. The output file will be named as 4DN.cool under this direcotry.')
         print('mode: the mode of the conversion. 0: convert to cool file; 1：convert to hic file')
+        print('number_cpu: the number of cpu to use')
+        print('max_memory: the max memory to use (GB)')
         sys.exit(1)
     
-    number_cpu = 8
+    
     prefix='4DN'
     fastq_file1 = os.path.abspath(sys.argv[1])
     fastq_file2 = os.path.abspath(sys.argv[2])
@@ -21,6 +23,8 @@ if __name__ == '__main__':
     chrom_size_file = os.path.abspath(sys.argv[4])
     output_dir = os.path.abspath(sys.argv[5])
     run_mode = int(sys.argv[6])
+    number_cpu = int(sys.argv[7])
+    max_memory = int(float(sys.argv[8]))
 
     os.makedirs(output_dir,exist_ok=True)
     #run on the same directory as the output dir, there are many temp files may be generated
@@ -57,6 +61,7 @@ if __name__ == '__main__':
     # 2. bam to pairsam
     os.system('bash %s %s %s %s %s %d %s' % (pairsam_parse_sort_script_path,gen_file,chrom_size_file,  
                                             output_dir,prefix,number_cpu,'lz4c'))
+    #lz4c is the compress program, you can change it to gzip or other compress program
     
     sam_pairsam_file = os.path.join(output_dir,'%s.sam.pairs.gz'%prefix)
     if not os.path.exists(sam_pairsam_file):
@@ -185,8 +190,49 @@ if __name__ == '__main__':
     elif run_mode==1:
         print("convert to hic file")
         ## 6.2 convert to hic file
-        
-
+        ### adds juicer fragment file to the pairs file
+        """
+        run-addfrag2pairs.sh <input_pairs> <restriction_site_file> <output_prefix>
+        # input_pairs : a gzipped pairs file (.pairs.gz) with its pairix index (.px2)
+        # restriction_site_file : a text file containing positions of restriction enzyme sites, separated by space, one chromosome per line (Juicer style).
+        # output prefix: prefix of the output pairs file
+        """
+        #if you know restriction file, you can input here, if not do not need to change this command
+        command_line="run-addfrag2pairs.sh  -i %s -o %s "%(merged_pairs_file_path,cur_prefix)
+        os.system(command_line)
+        refined_pairs_file_path = os.path.join(output_dir,'%s.ff.pairs.gz'%prefix)
+        if not os.path.exists(refined_pairs_file_path):
+            print('Error: add juicer fragment file to the pairs file failed')
+            sys.exit(1)
+        ### convert pairs to hic file
+        """
+        run-juicebox-pre.sh -i <input_pairs> -c <chromsize_file> [-o <output_prefix>] [-r <min_res>] [-g] [-u custom_res] [-m <maxmem>] [-q mapqfilter] [-B]
+        # -i input_pairs : a gzipped pairs file (.pairs.gz) with its pairix index (.px2), preferably containing frag information.
+        # -c chromsize_file : a chromsize file
+        # -o output prefix: prefix of the output hic file
+        # -r min_res : minimum resolution for whole-genome normalization (e.g. 5000)
+        # -g : higlass-compatible : if this flag is used, zoom levels are set in a Hi-Glass compatible way, if not, default juicebox zoom levels.
+        # -u custom_res : custom resolutions separated by commas (e.g. 100000,200000,500000). The minimun of this set must match min_res (-r).
+        # -m maxmem : java max mem (e.g. 14g)
+        # -q mapqfilter : mapq filter (e.g. 30, default 0)
+        # -n : normalization only : if this flag is used, binning is skipped.
+        # -B : no balancing/normalization
+        """
+        juicer_tool_jar_path = os.path.join(script_path,'juicer_tools.jar')
+        juicebox_pre_script_path = os.path.join(script_path,'run-juicebox-pre.sh')
+        #-q threshold can be 30 for some settings, please update this if you need
+        command_line ="%s -s %s -i %s -c %s -o %s -r 1000 -m %dg \
+            -q 0 -u 1000,2000,5000,10000,25000,50000,100000,250000,\
+        500000,1000000,2500000,5000000,10000000"%(juicebox_pre_script_path,juicer_tool_jar_path,
+                                                refined_pairs_file_path,chrom_size_file,cur_prefix,
+                                              max_memory)
+        os.system(command_line)
+        hic_file_path = os.path.join(output_dir,'%s.hic'%prefix)
+        if not os.path.exists(hic_file_path):
+            print('Error: convert pairs to hic file failed')
+            sys.exit(1)
+        print("Please get the hic file in %s"%hic_file_path)
+        print("Enjoy!")
     else:
         print('Error: invalid mode, please input 0 or 1 for [mode]')
         sys.exit(1)
