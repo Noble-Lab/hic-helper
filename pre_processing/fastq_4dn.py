@@ -1,7 +1,7 @@
 """
 This script is used to convert fastq files to cool or hic files following 4DN's pipeline.
 ```
-python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory]
+python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]
 ```
 [fastq_file1]: the first fastq file. <br>
 [fastq_file2]: the second fastq file. <br>
@@ -12,6 +12,7 @@ You can also run set_up.sh to download the reference genome files for human and 
 [mode]: the mode of the conversion. 0: convert to cool file; 1：convert to hic file <br>
 [number_cpu]: the number of cpu to use <br>
 [max_memory]: the max memory to use (GB) <br>
+[resume_flag]: 0: do not resume; 1: resume from the previously generated files. default should be 0. <br>
 Recommended running with 8 cores and 64GB memory. <br>
 """
 
