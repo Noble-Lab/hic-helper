@@ -1,9 +1,10 @@
-name: hicmae
+name: hic_helper
 channels:
   - pytorch
   - nvidia
   - conda-forge
   - anaconda
+  - bioconda
   - defaults
 dependencies:
   - pip=21.1.3
@@ -12,10 +13,18 @@ dependencies:
   - bedtools==2.27.1
   - pybigwig>=0.3.10
   - pysam==0.15.3
+  - cooltools
+  - samtools
+  - pbgzip
+  - gzip
+  - pairtools
+  - cooler
   - pip:
       - numpy
       - cooler
       - scipy
+      - hic2cool==0.5.1
+      
       
 
 
