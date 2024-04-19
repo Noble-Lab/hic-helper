@@ -26,7 +26,7 @@ printHelpAndExit() {
     exit "$1"
 }
 
-while getopts "i:c:q:r:m:go:nu:B:s" opt; do
+while getopts "i:s:c:q:r:m:go:nu:B" opt; do
     case $opt in
         i) input_pairs=$OPTARG;;
         s) juicer_tool_path=$OPTARG;;
@@ -44,7 +44,17 @@ while getopts "i:c:q:r:m:go:nu:B:s" opt; do
         esac
 done
 
-
+echo "input_pairs: $input_pairs"
+echo "juicer_tool_path: $juicer_tool_path"
+echo "chromsizefile: $chromsizefile"
+echo "mapqfilter: $mapqfilter"
+echo "min_res: $min_res"
+echo "maxmem: $maxmem"
+echo "higlass: $higlass"
+echo "custom_res: $custom_res"
+echo "normonly: $normonly"
+echo "balance: $balance"
+echo "output_prefix: $output_prefix"
 
 # error when both higlass and custom_res are set
 if [[ $higlass == '1' && ! -z $custom_res ]]
