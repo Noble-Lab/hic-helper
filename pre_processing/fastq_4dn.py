@@ -14,6 +14,19 @@ You can also run set_up.sh to download the reference genome files for human and 
 [max_memory]: the max memory to use (GB) <br>
 [resume_flag]: 0: do not resume; 1: resume from the previously generated files. default should be 0. <br>
 Recommended running with 8 cores and 64GB memory. <br>
+##### Example Command:
+After you run set_up.sh to download the reference genome files, you can run the following command to convert example fastq files to hic/cool files.<br>
+1. Convert fastq files to cool files: <br>
+```
+python3 fastq_4dn.py ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R1.h10000.fastq.gz ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R2.h10000.fastq.gz ../reference_data/hg19.fa ../reference_data/hg19.chrom.sizes output_test 0 32 128 0
+```
+The output file will be named as 4DN.cool under the "output_test" direcotry. <br>
+
+2. Convert fastq files to hic files: <br>
+```
+python3 fastq_4dn.py ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R1.h10000.fastq.gz ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R2.h10000.fastq.gz ../reference_data/hg19.fa ../reference_data/hg19.chrom.sizes output_test 1 32 128 0
+```
+The output file will be named as 4DN.hic under the "output_test" direcotry. <br>
 """
 
 if __name__ == '__main__':
