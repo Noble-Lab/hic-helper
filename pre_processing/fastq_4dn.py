@@ -19,7 +19,7 @@ Recommended running with 8 cores and 64GB memory. <br>
 if __name__ == '__main__':
     import os 
     import sys
-    if len(sys.argv) != 9:
+    if len(sys.argv) != 10:
         print('Usage: python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] \
               [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]')
         print('fastq_file1: the first fastq file')
