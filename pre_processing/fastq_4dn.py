@@ -210,7 +210,7 @@ if __name__ == '__main__':
         # -B : no balancing/normalization
         """
         cool2multirescool_script_path = os.path.join(script_path,'run-cool2multirescool.sh')
-        command_line="%s \
+        command_line="bash %s \
         -i %s -p %d  -o %s -c 10000000 \
         -u 1000,2000,5000,10000,25000,50000,100000,250000,500000,1000000,2500000,5000000,10000000"%(cool2multirescool_script_path,cool_file_path,number_cpu,cur_prefix)
         multi_res_cool_file_path = os.path.join(output_dir,'%s.multires.cool'%prefix)
@@ -245,7 +245,7 @@ if __name__ == '__main__':
         """
         #if you know restriction file, you can input here, if not do not need to change this command
         addfrag2pairs_script_path = os.path.join(script_path,'run-addfrag2pairs.sh')
-        command_line="%s  -i %s -o %s "%(addfrag2pairs_script_path,merged_pairs_file_path,cur_prefix)
+        command_line="bash %s  -i %s -o %s "%(addfrag2pairs_script_path,merged_pairs_file_path,cur_prefix)
         refined_pairs_file_path = os.path.join(output_dir,'%s.ff.pairs.gz'%prefix)
         if resume_flag == 1 and os.path.exists(refined_pairs_file_path) and os.path.getsize(refined_pairs_file_path) > 1000:
             print('Resume from the previously generated refined pairs files')
@@ -272,7 +272,7 @@ if __name__ == '__main__':
         juicer_tool_jar_path = os.path.join(script_path,'juicer_tools.jar')
         juicebox_pre_script_path = os.path.join(script_path,'run-juicebox-pre.sh')
         #-q threshold can be 30 for some settings, please update this if you need
-        command_line ="%s -s %s -i %s -c %s -o %s -r 1000 -m %dg \
+        command_line ="bash %s -s %s -i %s -c %s -o %s -r 1000 -m %dg \
             -q 0 -u 1000,2000,5000,10000,25000,50000,100000,250000,\
         500000,1000000,2500000,5000000,10000000"%(juicebox_pre_script_path,juicer_tool_jar_path,
                                                 refined_pairs_file_path,chrom_size_file,cur_prefix,
