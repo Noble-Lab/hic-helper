@@ -26,7 +26,7 @@ printHelpAndExit() {
     exit "$1"
 }
 
-while getopts "i:c:q:r:m:go:nu:B" opt; do
+while getopts "i:c:q:r:m:go:nu:B:s" opt; do
     case $opt in
         i) input_pairs=$OPTARG;;
         s) juicer_tool_path=$OPTARG;;
