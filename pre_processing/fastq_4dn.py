@@ -270,11 +270,14 @@ if __name__ == '__main__':
         # -B : no balancing/normalization
         """
         juicer_tool_jar_path = os.path.join(script_path,'juicer_tools.jar')
+        code_dir = os.path.dirname(juicer_tool_jar_path)
+        root_path = os.getcwd()
+        os.chdir(code_dir)
         juicebox_pre_script_path = os.path.join(script_path,'run-juicebox-pre.sh')
         #-q threshold can be 30 for some settings, please update this if you need
-        command_line ="bash %s -s %s -i %s -c %s -o %s -r 1000 -m %dg \
+        command_line ="bash %s -s juicer_tools.jar -i %s -c %s -o %s -r 1000 -m %dg \
             -q 0 -u 1000,2000,5000,10000,25000,50000,100000,250000,\
-        500000,1000000,2500000,5000000,10000000"%(juicebox_pre_script_path,juicer_tool_jar_path,
+        500000,1000000,2500000,5000000,10000000"%(juicebox_pre_script_path,
                                                 refined_pairs_file_path,chrom_size_file,cur_prefix,
                                               max_memory)
         hic_file_path = os.path.join(output_dir,'%s.hic'%prefix)
@@ -282,7 +285,8 @@ if __name__ == '__main__':
             print('Resume from the previously generated hic files')
         else:
             os.system(command_line)
-        
+
+        os.chdir(root_path)
         if not os.path.exists(hic_file_path):
             print('Error: convert pairs to hic file failed')
             sys.exit(1)
