@@ -244,7 +244,8 @@ if __name__ == '__main__':
         # output prefix: prefix of the output pairs file
         """
         #if you know restriction file, you can input here, if not do not need to change this command
-        command_line="run-addfrag2pairs.sh  -i %s -o %s "%(merged_pairs_file_path,cur_prefix)
+        addfrag2pairs_script_path = os.path.join(script_path,'run-addfrag2pairs.sh')
+        command_line="%s  -i %s -o %s "%(addfrag2pairs_script_path,merged_pairs_file_path,cur_prefix)
         refined_pairs_file_path = os.path.join(output_dir,'%s.ff.pairs.gz'%prefix)
         if resume_flag == 1 and os.path.exists(refined_pairs_file_path) and os.path.getsize(refined_pairs_file_path) > 1000:
             print('Resume from the previously generated refined pairs files')
