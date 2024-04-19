@@ -16,6 +16,18 @@ Contact: William Stafford Noble (wnoble@uw.edu) and Sheng Wang (swang@cs.washing
 
 For technical problems or questions, please reach to Xiao Wang (wang3702@uw.edu) and Anupama Jha (anupamaj@uw.edu).
 
+## Installation
+Configure software dependency
+```
+conda env create -f environment.yml
+```
+
+Configure data dependency (optional)
+
+```
+bash set_up.sh
+```
+
 ## HiC Data Format Conversion
 #### 1. cool2array.py
 [cool2array.py](pre_processing/cool2array.py) <br> 
