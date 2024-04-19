@@ -95,12 +95,12 @@ then
     if [[ $higlass == '1' ]]
     then
         reslist=$(python3 -c "from cooler.contrib import higlass; higlass.print_zoom_resolutions('$chromsizefile', $min_res)")
-        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -r $reslist -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
+	java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -r $reslist -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
     elif [[ ! -z $custom_res ]]
     then
-        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path -n  -r $custom_res -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
+        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n  -r $custom_res -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
     else
-        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path -n -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
+        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
     fi
 fi
 
