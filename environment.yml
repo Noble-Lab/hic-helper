@@ -18,7 +18,6 @@ dependencies:
   - pbgzip
   - gzip
   - pairtools
-  - cooler
   - bwa
   - openjdk
   - pip:

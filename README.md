@@ -143,6 +143,7 @@ You can also run set_up.sh to download the reference genome files for human and 
 [output_dir]: the output directory. The output file will be named as 4DN.sorted.bam under this direcotry. <br>
 
 #### 8. fastq_4dn.py
+[fastq_4dn.py](pre_processing/fastq_4dn.py)
 This script is used to convert fastq files to cool or hic files following 4DN's pipeline.
 ```
 python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]
@@ -172,3 +173,18 @@ The output file will be named as 4DN.cool under the "output_test" direcotry. <br
 python3 fastq_4dn.py ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R1.h10000.fastq.gz ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R2.h10000.fastq.gz ../reference_data/hg19.fa ../reference_data/hg19.chrom.sizes output_test 1 32 128 0
 ```
 The output file will be named as 4DN.hic under the "output_test" direcotry. <br>
+
+#### 9 bam_4dn.py
+[bam_4dn.py](pre_processing/bam_4dn.py)
+This script is used to convert bam file to cool or hic files following 4DN's pipeline.
+```
+python3 bam_4dn.py [input.bam] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]
+```
+[input.bam]: the input bam file. <br>
+[chrom_size_file]: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38 <br>
+[output_dir]: the output directory. The output file will be named as 4DN.cool under this direcotry. <br>
+[mode]: the mode of the conversion. 0: convert to cool file; 1：convert to hic file <br>
+[number_cpu]: the number of cpu to use <br>
+[max_memory]: the max memory to use (GB) <br>
+[resume_flag]: 0: do not resume; 1: resume from the previously generated files. default should be 0. <br>
+Recommended running with 8 cores and 64GB memory. <br>
