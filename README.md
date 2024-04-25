@@ -31,7 +31,7 @@ bash set_up.sh
 ## HiC Data Format Conversion
 #### 1. cool2array.py
 [cool2array.py](pre_processing/cool2array.py) <br> 
-Usage
+This script is to convert .cool format to dict of arrays format.
 ```
 python3 cool2array.py [input.cool] [output.pkl] [mode]
 ```
@@ -48,7 +48,7 @@ For different resolution, please simply input cool path as [xx.cool::resolutions
 
 #### 2. hic2array.py
 [hic2array.py](pre_processing/hic2array.py) <br>
-Usage
+This script is to convert .hic format to dict of arrays format.
 ```
 python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]
 ```
@@ -72,8 +72,7 @@ Two modes are supported for different format saving:
 
 #### 3. array2hic.py
 [array2hic.py](pre_processing/array2hic.py) <br>
-
-Usage
+This script is used to convert dict of arrays format to .hic format.
 ```
 python3 array2hic.py [input.pkl] [output.hic] [resolution] [refer_genome_name] [mode]
 ```
@@ -87,8 +86,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 
 #### 4. array2png.py
 [array2png.py](visualization/array2png.py) <br>
-
-Usage
+This script is used to visualize Hi-C images from  format.
 ```
 python3 array2png.py [input.pkl] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
 ```
@@ -121,7 +119,7 @@ Currently only support 5000,10000,25000 resolutions. <br>
 The output loop bedpe file will be saved in [output_dir]/merged_loops.bedpe. <br>
 
 #### 6. loop_f1.py
-[loop_f1.py](analysis/loop_f1.py)
+[loop_f1.py](analysis/loop_f1.py) <br>
 Compute F1 metrics of predicted loop and ground truth loop.
 ```
 python3 loop_f1.py [true.bed] [pred.bed] [resolution]
@@ -131,8 +129,8 @@ python3 loop_f1.py [true.bed] [pred.bed] [resolution]
 [resolution]: the resolution of the Hi-C data <br>
 
 #### 7. fastq2bam.py
-[fastq2bam.py](pre_processing/fastq2bam.py)
-
+[fastq2bam.py](pre_processing/fastq2bam.py) <br>
+This script is used to convert fastq file to bam file.
 ```
 python3 fastq2bam.py [fastq_file1] [fastq_file2] [refer.fa] [output_dir]
 ```
@@ -143,7 +141,7 @@ You can also run set_up.sh to download the reference genome files for human and 
 [output_dir]: the output directory. The output file will be named as 4DN.sorted.bam under this direcotry. <br>
 
 #### 8. fastq_4dn.py
-[fastq_4dn.py](pre_processing/fastq_4dn.py)
+[fastq_4dn.py](pre_processing/fastq_4dn.py) 
 This script is used to convert fastq files to cool or hic files following 4DN's pipeline.
 ```
 python3 fastq_4dn.py [fastq_file1] [fastq_file2] [refer.fa] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]
@@ -174,13 +172,28 @@ python3 fastq_4dn.py ../reference_data/sample_data/GM12878_SRR1658581_1pc_1_R1.h
 ```
 The output file will be named as 4DN.hic under the "output_test" direcotry. <br>
 
-#### 9 bam_4dn.py
-[bam_4dn.py](pre_processing/bam_4dn.py)
+#### 9. bam_4dn.py
+[bam_4dn.py](pre_processing/bam_4dn.py) <br>
 This script is used to convert bam file to cool or hic files following 4DN's pipeline.
 ```
 python3 bam_4dn.py [input.bam] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]
 ```
 [input.bam]: the input bam file. <br>
+[chrom_size_file]: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38 <br>
+[output_dir]: the output directory. The output file will be named as 4DN.cool under this direcotry. <br>
+[mode]: the mode of the conversion. 0: convert to cool file; 1：convert to hic file <br>
+[number_cpu]: the number of cpu to use <br>
+[max_memory]: the max memory to use (GB) <br>
+[resume_flag]: 0: do not resume; 1: resume from the previously generated files. default should be 0. <br>
+Recommended running with 8 cores and 64GB memory. <br>
+
+#### 10. pairs_4dn.py
+[pairs_4dn.py](pre_processing/pairs_4dn.py) <br>
+This script is used to convert pairs file to cool or hic files following 4DN's pipeline.
+```
+python3 pairs_4dn.py [input.pairs.gz] [chrom_size_file] [output_dir] [mode] [number_cpu] [max_memory] [resume_flag]
+```
+[input.pairs]: the input pairs.gz file <br>.
 [chrom_size_file]: the chromosome size file. Example file: hg38.chrom.sizes for human genome build GRCh38 <br>
 [output_dir]: the output directory. The output file will be named as 4DN.cool under this direcotry. <br>
 [mode]: the mode of the conversion. 0: convert to cool file; 1：convert to hic file <br>

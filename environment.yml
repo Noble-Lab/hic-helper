@@ -25,6 +25,7 @@ dependencies:
       - cooler
       - scipy
       - hic2cool
+      - hic-straw
       
       
 
