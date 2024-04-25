@@ -9,6 +9,7 @@ custom_res=''  # custom resolutions, separated by commas
 normonly=0  # if 1, normalization only
 balance=1  # if 0, no normalization
 output_prefix=out
+number_cpu = 8 # number of CPUs to use
 
 printHelpAndExit() {
     echo "Usage: ${0##*/} [-s juicer_tool_path] [-q mapqfilter] [-m maxmem] [-r min_res] [-g] [-o out_prefix] -i input_pairs -c chromsize_file"
@@ -23,10 +24,12 @@ printHelpAndExit() {
     echo "-u : custom resolutions (separated by comman)"
     echo "-n : normalization only"
     echo "-B : no balancing/normalization"
+    echo "-C : number of CPUs to use"
+    echo "-h : print this help message"
     exit "$1"
 }
 
-while getopts "i:s:c:q:r:m:go:nu:B" opt; do
+while getopts "i:s:c:q:r:m:go:nu:B:C" opt; do
     case $opt in
         i) input_pairs=$OPTARG;;
         s) juicer_tool_path=$OPTARG;;
@@ -38,6 +41,7 @@ while getopts "i:s:c:q:r:m:go:nu:B" opt; do
         u) custom_res=$OPTARG;;
         n) normonly=1 ;;
         B) balance=0 ;;
+        C) number_cpu=$OPTARG ;;
         o) output_prefix=$OPTARG;;
         h) printHelpAndExit 0;;
         [?]) printHelpAndExit 1;;
@@ -95,12 +99,12 @@ then
     if [[ $higlass == '1' ]]
     then
         reslist=$(python3 -c "from cooler.contrib import higlass; higlass.print_zoom_resolutions('$chromsizefile', $min_res)")
-	java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -r $reslist -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
+	java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -j $number_cpu -r $reslist -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
     elif [[ ! -z $custom_res ]]
     then
-        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n  -r $custom_res -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
+        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -j $number_cpu -r $custom_res -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
     else
-        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
+        java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path pre -n -j $number_cpu -q $mapqfilter $input_pairs $output_prefix.hic $chromsizefile 
     fi
 fi
 
@@ -108,5 +112,5 @@ fi
 # normalization
 if [[ $balance == '1' ]]
 then
-  java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path addNorm -w $min_res -d -F $output_prefix.hic
+  java -Xmx$maxmem -Xms$maxmem -jar $juicer_tool_path addNorm -j $number_cpu -w $min_res -d -F $output_prefix.hic
 fi

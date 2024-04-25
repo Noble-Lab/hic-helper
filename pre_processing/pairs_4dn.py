@@ -170,9 +170,9 @@ if __name__ == '__main__':
         #-q threshold can be 30 for some settings, please update this if you need
         command_line ="bash %s -s juicer_tools.jar -i %s -c %s -o %s -r 1000 -m %dg \
             -q 0 -u 1000,2000,5000,10000,25000,50000,100000,250000,\
-        500000,1000000,2500000,5000000,10000000"%(juicebox_pre_script_path,
+        500000,1000000,2500000,5000000,10000000 -C %d"%(juicebox_pre_script_path,
                                                 refined_pairs_file_path,chrom_size_file,cur_prefix,
-                                              max_memory)
+                                              max_memory,number_cpu)
         hic_file_path = os.path.join(output_dir,'%s.hic'%prefix)
         if resume_flag == 1 and os.path.exists(hic_file_path) and os.path.getsize(hic_file_path) > 1000:
             print('Resume from the previously generated hic files')
