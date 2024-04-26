@@ -90,3 +90,5 @@ conda config --add channels bioconda
 conda install -y pbgzip
 conda install -y coreutils
 pip3 install numpy Cython click pairtools==0.2.2
+
+conda install -c bioconda fastqc 

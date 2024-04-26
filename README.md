@@ -201,3 +201,13 @@ python3 pairs_4dn.py [input.pairs.gz] [chrom_size_file] [output_dir] [mode] [num
 [max_memory]: the max memory to use (GB) <br>
 [resume_flag]: 0: do not resume; 1: resume from the previously generated files. default should be 0. <br>
 Recommended running with 8 cores and 64GB memory. <br>
+
+#### 11. run-fastqc.sh
+[run-fastqc.sh](pre-processing/run-fastqc.sh)
+This script is used for fastq file's quality analysis.
+```
+./run-fastqc.sh [input_fastq] [num_threads] [output_dir]
+```
+[input_fastq]: an input fastq file, either gzipped or not.
+[num_threads]: number of threads to use.
+[output_dir] : output directory, will be created automatically if not exists.

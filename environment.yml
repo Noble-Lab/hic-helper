@@ -20,6 +20,7 @@ dependencies:
   - pairtools
   - bwa
   - openjdk
+  - fastqc
   - pip:
       - numpy
       - cooler
