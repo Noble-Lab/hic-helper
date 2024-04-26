@@ -8,8 +8,9 @@ higlass=0  # if 1, higlass-compatible aggregation
 custom_res=''  # custom resolutions, separated by commas
 normonly=0  # if 1, normalization only
 balance=1  # if 0, no normalization
-output_prefix=out
-number_cpu = 8 # number of CPUs to use
+number_cpu=8 # number of CPUs to use
+output_prefix='out'
+
 
 printHelpAndExit() {
     echo "Usage: ${0##*/} [-s juicer_tool_path] [-q mapqfilter] [-m maxmem] [-r min_res] [-g] [-o out_prefix] -i input_pairs -c chromsize_file"
@@ -59,6 +60,7 @@ echo "custom_res: $custom_res"
 echo "normonly: $normonly"
 echo "balance: $balance"
 echo "output_prefix: $output_prefix"
+echo "number_cpu: $number_cpu"
 
 # error when both higlass and custom_res are set
 if [[ $higlass == '1' && ! -z $custom_res ]]
