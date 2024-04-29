@@ -28,6 +28,8 @@ def read_chrom_array(chr1, chr2, normalization, hic_file, resolution):
         col.append((int)(ret.binY // resolution))
         val.append(ret.counts)
     print('\tsum(val): {:3e}'.format(sum(val)))
+    if sum(val) == 0:
+        return None
     if chr1_name==chr2_name:
         max_shape =max(max(row),max(col))+1
         mat_coo = coo_matrix((val, (row, col)), shape = (max_shape,max_shape),dtype=np.float32)
@@ -75,6 +77,9 @@ def hic2array(input_hic,output_pkl=None,
             chrom2 = chrom_list[j]
             chrom2_name = chrom_list[j].name
             read_array=read_chrom_array(chrom1,chrom2, normalization, input_hic, resolution)
+            if read_array is None:
+                print("No data found for",chrom1_name,chrom2_name)
+                continue
             if tondarray in [1,3]:
                 read_array = read_array.toarray()
             output_dict[chrom1_name+"_"+chrom2_name]=read_array
