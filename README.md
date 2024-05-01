@@ -203,11 +203,22 @@ python3 pairs_4dn.py [input.pairs.gz] [chrom_size_file] [output_dir] [mode] [num
 Recommended running with 8 cores and 64GB memory. <br>
 
 #### 11. run-fastqc.sh
-[run-fastqc.sh](pre-processing/run-fastqc.sh)
+[run-fastqc.sh](pre_processing/run-fastqc.sh)
 This script is used for fastq file's quality analysis.
 ```
 ./run-fastqc.sh [input_fastq] [num_threads] [output_dir]
 ```
-[input_fastq]: an input fastq file, either gzipped or not.
-[num_threads]: number of threads to use.
-[output_dir] : output directory, will be created automatically if not exists.
+[input_fastq]: an input fastq file, either gzipped or not.<br>
+[num_threads]: number of threads to use.<br>
+[output_dir] : output directory, will be created automatically if not exists.<br>
+
+#### 12. pairs_qc.py
+[pairs_qc.py](pre_processing/pairs_qc.py)
+This script is used to perform quality control on the pairs file.
+```
+python3 pairs_qc.py [input.pairs.gz] [chrom_size_file] [output_dir] [enzyme]
+```
+- input.pairs.gz: input pairs file. <br>
+- chrom_size_file: chrom size file. <br>
+- output_dir: output directory. <br>
+- enzyme: enzyme used for Hi-C experiment, either 4 or 6. <br>

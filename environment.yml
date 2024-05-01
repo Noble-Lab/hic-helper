@@ -21,6 +21,8 @@ dependencies:
   - bwa
   - openjdk
   - fastqc
+  - r-essentials
+  - r-base
   - pip:
       - numpy
       - cooler
