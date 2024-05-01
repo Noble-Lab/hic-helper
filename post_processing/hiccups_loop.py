@@ -77,7 +77,7 @@ def hiccups_loop(juicer_tools,hicFile,output_loop,resolution):
         specific_param = "-p 2 -w 5 -d 20000"
     elif resolution == 25000:
         specific_param = "-p 1 -w 3 -d 50000"
-    os.system(f'java -Xmx64g -jar {juicer_tools} hiccups -j 8 -r {resolution} -f 0.1 {specific_param} -k KR {hicFile} {output_loop}')
+    os.system(f'java -Xmx64g -jar {juicer_tools} hiccups -r {resolution} -f 0.1 {specific_param} -k KR {hicFile} {output_loop}')
     final_path=os.path.join(output_loop,'merged_loops.bedpe')
     print(f'The final loop file is saved at {final_path}')
     return

@@ -54,7 +54,7 @@ def array2hic(juicer_tools,input_array_pickle,
     code_path = os.path.dirname(juicer_tools)
     root_path = os.getcwd()
     os.chdir(code_path)
-    os.system(f'java -Xmx64g -jar juicer_tools.jar pre -j 8 -d -r {resolution} {raw_path} {output_hic}  {refer_genome_name}')
+    os.system(f'java -Xmx64g -Xmx64g -jar juicer_tools.jar pre -j 8 -d -r {resolution} {raw_path} {output_hic}  {refer_genome_name}')
     os.remove(raw_path)
 
     os.chdir(root_path)
