@@ -13,7 +13,7 @@ python3 pairs_qc.py [input.pairs.gz] [chrom_size_file] [output_dir] [enzyme]
 if __name__ == '__main__':
     import sys
     import os
-    if len(sys.argv) !=4:
+    if len(sys.argv) !=5:
         print('Usage: python3 pairs_qc.py [input.pairs.gz] [chrom_size_file] [output_dir] [enzyme]')
         print("[input.pairs.gz]: input pairs file.")
         print("[chrom_size_file]: chrom size file.")
