@@ -29,7 +29,7 @@ if __name__ == '__main__':
     output_dir = os.path.abspath(output_dir)
     os.makedirs(output_dir, exist_ok=True)
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    script_dir = script_dir.replace('post_processing','bin')
+    script_dir = script_dir.replace('pre_processing','bin')
     script_dir = os.path.join(script_dir, "pairsqc")
     script_path = os.path.join(script_dir, 'pairsqc.py')
     output_prefix = os.path.join(output_dir,"4DN_QC")
