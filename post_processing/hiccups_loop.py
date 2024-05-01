@@ -5,6 +5,8 @@ import os
 # java -jar juicer_tools.jar hiccups
 # Usage:   juicer_tools hiccups [-m matrixSize] [-k normalization (NONE/VC/VC_SQRT/KR)] [-c chromosome(s)] [-r resolution(s)] [-f fdr] [-p peak width] [-i window] [-t thresholds] [-d centroid distances] [--ignore-sparsity]<hicFile> <outputDirectory> [specified_loop_list]
 
+#assume at least run on a machine with 8 CPUs+64G memory
+
 """
 
  * -r resolution
@@ -75,7 +77,7 @@ def hiccups_loop(juicer_tools,hicFile,output_loop,resolution):
         specific_param = "-p 2 -w 5 -d 20000"
     elif resolution == 25000:
         specific_param = "-p 1 -w 3 -d 50000"
-    os.system(f'java -jar {juicer_tools} hiccups -r {resolution} -f 0.1 {specific_param} -k KR {hicFile} {output_loop}')
+    os.system(f'java -Xmx64g -j 8 -jar {juicer_tools} hiccups -r {resolution} -f 0.1 {specific_param} -k KR {hicFile} {output_loop}')
     final_path=os.path.join(output_loop,'merged_loops.bedpe')
     print(f'The final loop file is saved at {final_path}')
     return
