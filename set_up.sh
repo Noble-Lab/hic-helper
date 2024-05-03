@@ -32,13 +32,25 @@ git clone https://github.com/4dn-dcic/docker-4dn-hic
 mv docker-4dn-hic/sample_data .
 cd ..
 
-mkdir bin
+
 cd bin
 wget https://github.com/4dn-dcic/pairsqc/archive/0.2.3.tar.gz
 tar -xzf 0.2.3.tar.gz
 rm 0.2.3.tar.gz
 ln -s pairsqc-0.2.3 pairsqc
 cd ..
+
+cd bin
+git clone https://github.com/s-andrews/BamQC.git
+cp build_bamqc.xml BamQC/build.xml
+cd BamQC
+ant
+cd bin
+chmod 755 bamqc
+cd ../..
+ln -s BamQC/bin/bamqc bamqc
+cd ..
+
 
 
 

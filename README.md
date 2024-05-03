@@ -214,7 +214,8 @@ This script is used for fastq file's quality analysis.
 
 #### 12. pairs_qc.py
 [pairs_qc.py](pre_processing/pairs_qc.py)
-This script is used to perform quality control on the pairs file.
+This script is used to perform quality control on the pairs file.<br>
+**You must sussessfully run ./set_up.sh before you can use this script.** <br>
 ```
 python3 pairs_qc.py [input.pairs.gz] [chrom_size_file] [output_dir] [enzyme]
 ```
@@ -222,3 +223,13 @@ python3 pairs_qc.py [input.pairs.gz] [chrom_size_file] [output_dir] [enzyme]
 - chrom_size_file: chrom size file. <br>
 - output_dir: output directory. <br>
 - enzyme: enzyme used for Hi-C experiment, either 4 or 6. <br>
+
+#### 13. bamqc
+[bamqc](bin/bamqc)
+This script is used to perform quality control on the bam files.<br>
+**You must sussessfully run ./set_up.sh before you can use this script.** <br>
+```
+./bin/bamqc --outdir=[output_dir] --noextract -t 8 [bam_file/bam_file_dir]
+```
+[output_dir] : output directory, you should create it before running this. <br>
+[bam_file/bam_file_dir]: the file or directory that includes bam files. <br>
