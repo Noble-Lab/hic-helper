@@ -13,14 +13,14 @@ def extract_loc(pred_detect_path):
             line = line.strip().split()
             chrom1 = line[0]
             try:
-                start1 = int(line[1])
-                end1 = int(line[2])
+                start1 = int(float(line[1]))
+                end1 = int(float(line[2]))
             except:
                 continue
             chrom2 = line[3]
             try:
-                start2 = int(line[4])
-                end2 = int(line[5])
+                start2 = int(float(line[4]))
+                end2 = int(float(line[5]))
             except:
                 continue
             overall_dict[chrom1].append([start1, start2])
