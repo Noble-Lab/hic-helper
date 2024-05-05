@@ -23,6 +23,8 @@ def extract_loc(pred_detect_path):
                 end2 = int(float(line[5]))
             except:
                 continue
+            if "chr" not in chrom1:
+                chrom1 = "chr"+chrom1
             overall_dict[chrom1].append([start1, start2])
             
     return overall_dict
