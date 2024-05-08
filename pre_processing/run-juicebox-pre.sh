@@ -30,11 +30,12 @@ printHelpAndExit() {
     exit "$1"
 }
 
-while getopts "i:s:c:q:r:m:go:nu:B:C" opt; do
+while getopts "i:s:c:q:r:m:go:nu:CB" opt; do
     case $opt in
         i) input_pairs=$OPTARG;;
         s) juicer_tool_path=$OPTARG;;
         c) chromsizefile=$OPTARG;;
+        C) number_cpu=$OPTARG;;
         q) mapqfilter=$OPTARG;;
         r) min_res=$OPTARG;;
         m) maxmem=$OPTARG;;
@@ -42,7 +43,6 @@ while getopts "i:s:c:q:r:m:go:nu:B:C" opt; do
         u) custom_res=$OPTARG;;
         n) normonly=1 ;;
         B) balance=0 ;;
-        C) number_cpu=$OPTARG;;
         o) output_prefix=$OPTARG;;
         h) printHelpAndExit 0;;
         [?]) printHelpAndExit 1;;
