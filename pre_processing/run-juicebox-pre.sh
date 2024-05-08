@@ -42,7 +42,7 @@ while getopts "i:s:c:q:r:m:go:nu:B:C" opt; do
         u) custom_res=$OPTARG;;
         n) normonly=1 ;;
         B) balance=0 ;;
-        C) number_cpu=$OPTARG ;;
+        C) number_cpu=$OPTARG;;
         o) output_prefix=$OPTARG;;
         h) printHelpAndExit 0;;
         [?]) printHelpAndExit 1;;
