@@ -25,17 +25,17 @@ printHelpAndExit() {
     echo "-u : custom resolutions (separated by comman)"
     echo "-n : normalization only"
     echo "-B : no balancing/normalization"
-    echo "-C : number of CPUs to use"
+    echo "-t : number of CPUs to use"
     echo "-h : print this help message"
     exit "$1"
 }
 
-while getopts "i:s:c:q:r:m:go:nu:CB" opt; do
+while getopts "i:s:c:q:r:m:go:nu:t:B" opt; do
     case $opt in
         i) input_pairs=$OPTARG;;
         s) juicer_tool_path=$OPTARG;;
         c) chromsizefile=$OPTARG;;
-        C) number_cpu=$OPTARG;;
+        t) number_cpu=$OPTARG;;
         q) mapqfilter=$OPTARG;;
         r) min_res=$OPTARG;;
         m) maxmem=$OPTARG;;
