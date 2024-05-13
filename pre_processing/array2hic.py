@@ -49,6 +49,10 @@ def array2hic(juicer_tools,input_array_pickle,
             matrix_row = matrix.row
             matrix_col = matrix.col
             matrix_data = matrix.data
+            if "chr" not in chrom1:
+                chrom1 = "chr"+chrom1
+            if "chr" not in chrom2:
+                chrom2 = "chr"+chrom2
             for i in range(len(matrix_row)):
                 wfile.write(f'{0} {chrom1} {int(matrix_row[i]*resolution+1)} {0} {0} {chrom2} {matrix_col[i]*resolution+1} {1} {matrix_data[i]:.2f}\n')
     code_path = os.path.dirname(juicer_tools)
