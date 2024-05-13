@@ -233,3 +233,18 @@ This script is used to perform quality control on the bam files.<br>
 ```
 [output_dir] : output directory, you should create it before running this. <br>
 [bam_file/bam_file_dir]: the file or directory that includes bam files. <br>
+
+
+#### 14. array2cool
+[array2cool.py](pre_processing/array2cool.py)
+This script is used to convert dict of arrays format to .cool format.<br>
+Usage
+```
+python3 array2cool.py [input.pkl] [output.cool] [resolution] [refer_genome_name] [mode]
+```
+The input pickle should be in a pickle file as dict: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
+For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.<br>
+[output.cool] is the name of the output cool file. <br>
+[resolution] is used to specify the resolution that stored in the output array. <br>
+[refer_genome_name] is used to specify the reference genome name. For example, "hg38","hg19","mm10" are valid inputs. <br>
+[mode]:  0: all chromosome mode (scipy sparce array); 1: intra-chromosome mode(scipy sparce array); 2: all chromosome mode (numpy array); 3: intra-chromosome mode(numpy array). <br>
