@@ -104,7 +104,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 """
 if __name__ == '__main__':
     
-    if len(sys.argv)==6:
+    if len(sys.argv)!=6:
         print('Usage: python3 array2cool.py [input.pkl] [output.cool] [resolution] [refer_genome_name] [mode]')
         print("This is the full array2cool script. ")
         print("input.pkl: the path to the pickle file containing the array [String].")
