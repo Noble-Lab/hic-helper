@@ -57,6 +57,7 @@ def array2cool(input_array_pickle,output_cool,resolution,refer_genome_name,mode)
         chromsizes['length'].append(chrom_size_total)
         chromosize_add_dict[chrom1]=accumulate_index
         accumulate_index += cur_array.shape[0]
+    print("collecting bin dict size",chromsizes)
     chrom_dict=pd.DataFrame.from_dict(chromsizes).set_index("name")['length']
     bins = cooler.binnify(chrom_dict, resolution)
     #then convert data array to index raw column, count array
@@ -75,6 +76,7 @@ def array2cool(input_array_pickle,output_cool,resolution,refer_genome_name,mode)
             chrom1 = "chr"+chrom1
         if "chr" not in chrom2:
             chrom2 = "chr"+chrom2
+        print("processing",chrom1,chrom2,"...")
         matrix = data[key]
         if mode>=2:
             matrix = array2sparse(matrix)
@@ -88,6 +90,7 @@ def array2cool(input_array_pickle,output_cool,resolution,refer_genome_name,mode)
         data_dict["bin2_id"]+=list(matrix_col)
         data_dict['count'] +=list(matrix_data)
         accumulate_index += matrix.shape[0]
+    print("creating cool file...")
     #cooler.create_cooler(hic_path, bins,data_dict, dtypes={"count":"int"}, assembly="hg38")
     cooler.create_cooler(output_cool, bins=pd.DataFrame.from_dict(bins), pixels=pd.DataFrame.from_dict(data_dict), dtypes={'count': float})
 """
