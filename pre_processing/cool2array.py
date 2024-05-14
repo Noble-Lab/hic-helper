@@ -71,10 +71,14 @@ def cool2array(cooler_path,normalize=False,tondarray=False):
                 count = weight_row*weight_col* count
             #coo_matrix will automatically accumulate for same row/col with different count
             final_mat = coo_matrix((count, (row,column)), shape = (cur_array_length1,cur_array_length2),dtype=np.float32)
+            count_all_read = final_mat.sum()
+            if count_all_read == 0:
+                print("Warning: no read in chromosome:",chromsome, "-",chromsome2,". Skip this chromosome pair to save to pickle.")
+                continue
             if tondarray:
                 final_mat = final_mat.toarray()
             return_dict[chromsome+"_"+chromsome2]=final_mat
-            print("finish converting chromosome:",chromsome, "-",chromsome2)
+            print("finish converting chromosome:",chromsome, "-",chromsome2," with count ", count_all_read)
     return return_dict
 
 
