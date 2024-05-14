@@ -92,7 +92,7 @@ def array2cool(input_array_pickle,output_cool,resolution,refer_genome_name,mode)
         accumulate_index += matrix.shape[0]
     print("creating cool file...")
     #cooler.create_cooler(hic_path, bins,data_dict, dtypes={"count":"int"}, assembly="hg38")
-    cooler.create_cooler(output_cool, bins=pd.DataFrame.from_dict(bins), pixels=pd.DataFrame.from_dict(data_dict), dtypes={'count': float})
+    cooler.create_cooler(output_cool, bins=pd.DataFrame.from_dict(bins), pixels=pd.DataFrame.from_dict(data_dict), dtypes={'count': float},assembly=refer_genome_name)
 """
 Usage
 ```
