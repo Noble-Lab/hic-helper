@@ -99,9 +99,11 @@ def calculate_chrom_stat(alignments,min_mapq=0):
             next_reference_id: the reference id of the mate/next read.
             """
             add_dict(count_singletons,"mate2other_chrom")
+            final_alignments.append(aln)
             #count_singletons += 1
         elif aln.is_reverse == aln.mate_is_reverse:
             add_dict(count_singletons,"mate_same_strand")
+            final_alignments.append(aln)
         elif (
             # mapped to reverse strand but leftmost
             (aln.is_reverse and aln.template_length > 0)
@@ -111,6 +113,7 @@ def calculate_chrom_stat(alignments,min_mapq=0):
             #reads_faceaway - Number of reads where the read and its mate are mapped facing away from each other.
             #count_singletons += 1
             add_dict(count_singletons,"reads_faceaway")
+            final_alignments.append(aln)
         else:
             final_alignments.append(aln)
     print("possible singleton categories: ",count_singletons)
@@ -168,7 +171,6 @@ def calculate_chrom_stat(alignments,min_mapq=0):
             The CIGAR string of each read is processed to identify insertions (INS) and deletions (DEL).
             Indels are stored in the indels dictionary within the variants dictionary.
             """
-
         else:
             final_alignments.append(aln)
     count_proper = len(final_alignments)
@@ -233,8 +235,8 @@ def calculate_stat(sorted_bam_file,output_dir):
                     continue
                 chrom_stats[key] = stats[key]/stats["all"]*100
             chrom_stats["all"] = 100
-            f.write("%s\t%d\t%d\t%d\t%d \
-                    \t%d\t%d\t%d\t%d\n" % (chrom,chrom_stats["proper"],
+            f.write( "%s\t%.4f\t%.4f\t%.4f\t%.4f \
+                    \t%.4f\t%.4f\t%.4f\t%d\n" % (chrom,chrom_stats["proper"],
                                             chrom_stats["unmapped"],
                                             chrom_stats["low quality (mapq)"],
                                             chrom_stats["duplicate"],
