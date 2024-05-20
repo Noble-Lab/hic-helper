@@ -250,6 +250,9 @@ if __name__ == '__main__':
     #     print("Reference fasta file does not exist")
     #     sys.exit(1)
     input_bam = os.path.join(output_dir,"input.bam")
+    if os.path.exists(input_bam):
+        print("Warning: input bam file already exists, will overwrite it.")
+        os.remove(input_bam)
     os.symlink(input_file, input_bam)
     number_cpu = int(sys.argv[3])
     #sort first 
@@ -268,6 +271,9 @@ if __name__ == '__main__':
             print("Index file does not exist, please run with mode 0.")
             sys.exit(1)
         #link file to output_dir
+        if os.path.exists(os.path.join(output_dir,"input.bam.bai")):
+            print("Warning: input bam index file already exists, will overwrite it.")
+            os.remove(os.path.join(output_dir,"input.bam.bai"))
         os.symlink(input_file+".bai",os.path.join(output_dir,"input.bam.bai"))
 
     #start to do quality check
