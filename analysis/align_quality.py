@@ -17,6 +17,7 @@ def cigar_pass_checking(current_cigar):
     7: '=',  # sequence match
     8: 'X'   # sequence mismatch
     """
+    #soft clipping:  Number of reads where there is some softclipping at some point in the read's alignment
     if current_cigar is None:
         return -1
     elif len(current_cigar) == 0:
@@ -119,11 +120,11 @@ def calculate_chrom_stat(alignments,min_mapq=0):
         # 7: '=',  # sequence match
         # 8: 'X'   # sequence mismatch
         # """
-        elif aln.is_qcfail or aln.is_read2:
-            if "qcfail/read2" not in count_other:
-                count_other["qcfail/read2"] = 1
+        elif aln.is_qcfail:
+            if "qcfail" not in count_other:
+                count_other["qcfail"] = 1
             else:
-                count_other["qcfail/read2"] += 1
+                count_other["qcfail"] += 1
         elif not aln.is_paired:
             if 'unpaired' not in count_other:
                 count_other['unpaired'] = 1
@@ -199,7 +200,7 @@ def calculate_stat(sorted_bam_file,output_dir):
                                             stats["unmapped"],
                                             stats["low quality (mapq)"],
                                             stats["duplicate"],
-                                            stats["map multiple times"],
+                                            stats["Multimapped"],
                                             stats["singleton"],
                                             stats["other"],
                                             stats["all"]))
