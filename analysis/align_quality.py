@@ -149,7 +149,7 @@ def calculate_chrom_stat(alignments,min_mapq=0):
         else:
             final_alignments.append(aln)
     count_proper = len(final_alignments)
-    print("Detailed removed in others: ",count_other_total)
+    print("Detailed removed in others: ",count_other)
     print("Chrom total number of sequences with proper cigar and md tag: %d" % count_proper)
     alignments = final_alignments
     count_other_total = sum([count_other[key] for key in count_other])
@@ -157,7 +157,7 @@ def calculate_chrom_stat(alignments,min_mapq=0):
             "unmapped":count_unmapped_remove,
             "low quality (mapq)":count_mapq_remove,
             "duplicate":count_dup_remove,
-            "map multiple times":count_secondary_remove,
+            "Multimapped":count_secondary_remove,
             "singleton":count_singletons,
             "other":count_other_total,
             "all":count_all,}
@@ -185,7 +185,7 @@ def calculate_stat(sorted_bam_file,output_dir):
     output_record = os.path.join(output_dir,"chromosome_stats.tsv")
     final_stats = defaultdict(list)
     with open(output_record,"w") as f:
-        f.write("chromosome\tproper\tunmapped\tlow quality (mapq)\tduplicate\tmap multiple times\tsingleton\tother\tall\n")
+        f.write("chromosome\tproper\tunmapped\tlow quality (mapq)\tduplicate\tMultimapped\tsingleton\tother\tall\n")
     for k,chrom in enumerate(all_chroms):
         print("Processing %s" % chrom)
         chrom_length = all_chroms_length[k]
