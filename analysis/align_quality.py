@@ -78,6 +78,7 @@ def calculate_chrom_stat(alignments,min_mapq=0):
     #count singletons
     count_singletons = 0
     final_alignments =[]
+    count_singletons ={}
     for aln in alignments:
         """
         It maps to a unique position in the genome.
@@ -89,7 +90,7 @@ def calculate_chrom_stat(alignments,min_mapq=0):
         High Mapping Quality: The alignment must have a high mapping quality score, indicating confidence in the alignment. This is often represented by the MAPQ score in BAM files.
         No Secondary Alignments: Reads with secondary alignments (alternative mappings to other locations) are generally not considered unique alignments.
         """
-        count_singletons ={}
+        
         if aln.mate_is_unmapped:
             add_dict(count_singletons,"mate_unmapped")
         elif aln.reference_id != aln.next_reference_id:
