@@ -137,6 +137,7 @@ if __name__ == '__main__':
     if not os.path.exists(pairsam_markdup_file_path):
         print('Error: mark duplicate reads in pairsam file failed')
         sys.exit(1)
+    #quality control can be done:pairtools stats -o 4DN.pairbasedsam.stat.tsv --no-yaml  --nproc-in 32 --nproc-out 32 4DN.marked.sam.pairs.gz
 
     # 4. pairsum file filtering and converting to pairs format
     """

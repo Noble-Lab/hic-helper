@@ -45,7 +45,10 @@ if __name__ == '__main__':
     sorted_bam_file = os.path.join(output_dir,'%s.sorted.bam'%prefix)
     tmp_bam_file = os.path.join(output_dir,'%s.tmp.bam'%prefix)
     os.system("samtools sort -o %s -T %s %s" % (sorted_bam_file,tmp_bam_file,gen_file))
+    #can add --threads 32 to use 32 threads to accelerate the process
     os.system("samtools index %s" % sorted_bam_file)
+    #samtools index --threads 32 [input.bam]
+    #accelerate command
     os.remove(tmp_bam_file)
     print('The converted bam file: %s. Enjoy!' % sorted_bam_file)
     
