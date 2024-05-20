@@ -43,6 +43,12 @@ def md_flag_checking(aln):
         return 1
     else:
         return 0
+def add_dict(dict,key):
+    if key in dict:
+        dict[key] += 1
+    else:
+        dict[key] = 1
+    return dict
 def calculate_chrom_stat(alignments,min_mapq=0):
     alignments = [a for a in alignments]
     count_all = len(alignments)
@@ -73,28 +79,43 @@ def calculate_chrom_stat(alignments,min_mapq=0):
     count_singletons = 0
     final_alignments =[]
     for aln in alignments:
+        """
+        It maps to a unique position in the genome.
+        Its mate read does not map to the expected location or does not map at all.
+        It does not form a valid Hi-C pair with any other read.
+
+        Criteria for Unique Alignment
+        Single Mapping Location: A read must map to one and only one location in the reference genome.
+        High Mapping Quality: The alignment must have a high mapping quality score, indicating confidence in the alignment. This is often represented by the MAPQ score in BAM files.
+        No Secondary Alignments: Reads with secondary alignments (alternative mappings to other locations) are generally not considered unique alignments.
+        """
+        count_singletons ={}
         if aln.mate_is_unmapped:
-            count_singletons += 1
+            add_dict(count_singletons,"mate_unmapped")
         elif aln.reference_id != aln.next_reference_id:
             """
             reference_id: the reference sequence number as defined in the header
             next_reference_id: the reference id of the mate/next read.
             """
-            count_singletons += 1
+            add_dict(count_singletons,"mate2other_chrom")
+            #count_singletons += 1
         elif aln.is_reverse == aln.mate_is_reverse:
-            count_singletons += 1
+            add_dict(count_singletons,"mate_same_strand")
         elif (
             # mapped to reverse strand but leftmost
             (aln.is_reverse and aln.template_length > 0)
             # mapped to fwd strand but rightmost
             or (not aln.is_reverse and aln.template_length < 0)
         ):
-            count_singletons += 1
+            #reads_faceaway - Number of reads where the read and its mate are mapped facing away from each other.
+            #count_singletons += 1
+            add_dict(count_singletons,"reads_faceaway")
         else:
             final_alignments.append(aln)
-    
+    print("possible singleton categories: ",count_singletons)
     count_remain = len(final_alignments)
     print("Chrom total number of sequences with mate correctly mapped: %d" % count_remain)
+    count_singletons = count_primary - count_remain
     alignments = final_alignments
     count_other = {}
     final_alignments = []
@@ -204,6 +225,22 @@ def calculate_stat(sorted_bam_file,output_dir):
                                             stats["singleton"],
                                             stats["other"],
                                             stats["all"]))
+            #calculate the percentage in the chromsome report
+            chrom_stats= {}
+            for key in stats:
+                if key == "all":
+                    continue
+                chrom_stats[key] = stats[key]/stats["all"]*100
+            chrom_stats["all"] = 100
+            f.write("%s\t%d\t%d\t%d\t%d \
+                    \t%d\t%d\t%d\t%d\n" % (chrom,chrom_stats["proper"],
+                                            chrom_stats["unmapped"],
+                                            chrom_stats["low quality (mapq)"],
+                                            chrom_stats["duplicate"],
+                                            chrom_stats["Multimapped"],
+                                            chrom_stats["singleton"],
+                                            chrom_stats["other"],
+                                            chrom_stats["all"]))
     #calculate total stats, with percentage level
     total_stats = defaultdict(int)
     for key in final_stats:
@@ -223,7 +260,7 @@ def calculate_stat(sorted_bam_file,output_dir):
         for key in total_stats:
             if key == "all":
                 continue
-            wfile.write("%s: %d (%.2f%%)\n" % (key,percent_stats[key],total_stats[key]))
+            wfile.write("%s: %d (%.6f%%)\n" % (key,total_stats[key],percent_stats[key]))
     return final_record
 
 
