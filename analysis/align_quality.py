@@ -18,14 +18,14 @@ def cigar_pass_checking(current_cigar):
     8: 'X'   # sequence mismatch
     """
     if current_cigar is None:
-        return False
+        return -1
     elif len(current_cigar) == 0:
-        return False
+        return -1
     fail_flag_list = [1,2,3,4,5,6,8]
     for current_cigar_op in current_cigar:
         if current_cigar_op[0] in fail_flag_list:
-            return False
-    return True
+            return current_cigar_op[0]
+    return 0
 def md_flag_checking(aln):
     """
     MD tag is a string that describes the differences between the read sequence and the reference sequence.
@@ -36,12 +36,12 @@ def md_flag_checking(aln):
     except KeyError:
         md_tag = None
     if md_tag is None:
-        return False
+        return -1
     if md_tag.isnumeric():
         #only no snp change can be numeric
-        return True
+        return 1
     else:
-        return False
+        return 0
 def calculate_chrom_stat(alignments,min_mapq=0):
     alignments = [a for a in alignments]
     count_all = len(alignments)
@@ -74,15 +74,19 @@ def calculate_chrom_stat(alignments,min_mapq=0):
     for aln in alignments:
         if aln.mate_is_unmapped:
             count_singletons += 1
-        elif aln.tid != aln.rnext:
+        elif aln.reference_id != aln.next_reference_id:
+            """
+            reference_id: the reference sequence number as defined in the header
+            next_reference_id: the reference id of the mate/next read.
+            """
             count_singletons += 1
         elif aln.is_reverse == aln.mate_is_reverse:
             count_singletons += 1
         elif (
             # mapped to reverse strand but leftmost
-            (aln.is_reverse and aln.tlen > 0)
+            (aln.is_reverse and aln.template_length > 0)
             # mapped to fwd strand but rightmost
-            or (not aln.is_reverse and aln.tlen < 0)
+            or (not aln.is_reverse and aln.template_length < 0)
         ):
             count_singletons += 1
         else:
@@ -91,11 +95,16 @@ def calculate_chrom_stat(alignments,min_mapq=0):
     count_remain = len(final_alignments)
     print("Chrom total number of sequences with mate correctly mapped: %d" % count_remain)
     alignments = final_alignments
-    count_other = 0
+    count_other = {}
     final_alignments = []
     for aln in alignments:
-        if not cigar_pass_checking(aln.cigar):
-            count_other += 1
+        cigar_flag = cigar_pass_checking(aln.cigar)
+        md_flag = md_flag_checking(aln)
+        if cigar_flag!=0:
+            if 'cigar_%d'%cigar_flag not in count_other:
+                count_other['cigar_%d'%cigar_flag] = 1
+            else:
+                count_other['cigar_%d'%cigar_flag] += 1
             #1,2,3,4,5,6,8 flags are not allowed
         # """
         # cigar operation meaning
@@ -111,12 +120,21 @@ def calculate_chrom_stat(alignments,min_mapq=0):
         # 8: 'X'   # sequence mismatch
         # """
         elif aln.is_qcfail or aln.is_read2:
-            count_other += 1
+            if "qcfail/read2" not in count_other:
+                count_other["qcfail/read2"] = 1
+            else:
+                count_other["qcfail/read2"] += 1
         elif not aln.is_paired:
-            count_other += 1
-        elif not md_flag_checking(aln):
+            if 'unpaired' not in count_other:
+                count_other['unpaired'] = 1
+            else:
+                count_other['unpaired'] += 1
+        elif md_flag!=1:
             #snp checking
-            count_other += 1
+            if 'md_%d'%md_flag not in count_other:
+                count_other['md_%d'%md_flag] = 1
+            else:
+                count_other['md_%d'%md_flag] += 1
             """
             Identifying SNPs:
 
@@ -131,15 +149,17 @@ def calculate_chrom_stat(alignments,min_mapq=0):
         else:
             final_alignments.append(aln)
     count_proper = len(final_alignments)
+    print("Detailed removed in others: ",count_other_total)
     print("Chrom total number of sequences with proper cigar and md tag: %d" % count_proper)
     alignments = final_alignments
+    count_other_total = sum([count_other[key] for key in count_other])
     stats = {"proper":count_proper,
             "unmapped":count_unmapped_remove,
             "low quality (mapq)":count_mapq_remove,
             "duplicate":count_dup_remove,
             "map multiple times":count_secondary_remove,
             "singleton":count_singletons,
-            "other":count_other,
+            "other":count_other_total,
             "all":count_all,}
     return stats
 
@@ -173,16 +193,16 @@ def calculate_stat(sorted_bam_file,output_dir):
         stats = calculate_chrom_stat(alignments)
         for key in stats:
             final_stats[key].append(stats[key])
-            with open(output_record,"a+") as f:
-                f.write("%s\t%d\t%d\t%d\t%d \
-                        \t%d\t%d\t%d\t%d\n" % (chrom,stats["proper"],
-                                               stats["unmapped"],
-                                               stats["low quality (mapq)"],
-                                               stats["duplicate"],
-                                               stats["map multiple times"],
-                                               stats["singleton"],
-                                               stats["other"],
-                                               stats["all"]))
+        with open(output_record,"a+") as f:
+            f.write("%s\t%d\t%d\t%d\t%d \
+                    \t%d\t%d\t%d\t%d\n" % (chrom,stats["proper"],
+                                            stats["unmapped"],
+                                            stats["low quality (mapq)"],
+                                            stats["duplicate"],
+                                            stats["map multiple times"],
+                                            stats["singleton"],
+                                            stats["other"],
+                                            stats["all"]))
     #calculate total stats, with percentage level
     total_stats = defaultdict(int)
     for key in final_stats:
