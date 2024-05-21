@@ -15,7 +15,7 @@ def parser_stats(output_stats_tsv, output_report):
             line = line.strip()
             fields = line.split("\t")
             pair_type = fields[0]
-            pair_count = int(fields[1])
+            pair_count = float(fields[1])
             map_dict[pair_type] = pair_count
     total_counts = map_dict["total"]
     total_unmapped = map_dict["total_unmapped"]#including WW,NN,XX,NM,MM type
@@ -28,6 +28,12 @@ def parser_stats(output_stats_tsv, output_report):
     total_multimapped = total_multimapped + mu_mr_count
     total_duplicate = map_dict["total_dups"]#UU
     final_remain = map_dict['total_nodups']#RR,RU,UR,
+    #convert int for all total count
+    total_unmapped = int(total_unmapped)
+    total_singleton = int(total_singleton)
+    total_duplicate = int(total_duplicate)
+    total_multimapped = int(total_multimapped)
+    final_remain = int(final_remain)
     with open(output_report, "w") as f:
         f.write("Unmapped sequences: \t" + str(total_unmapped) + "(%.5f%%)\n"%(total_unmapped/total_counts*100))
         f.write("Singleton sequences: \t" + str(total_singleton) + "(%.5f%%)\n"%(total_singleton/total_counts*100))
