@@ -40,9 +40,9 @@ def parser_stats(output_stats_tsv, output_report):
         f.write("Duplicate sequences: \t" + str(total_duplicate) + "(%.5f%%)\n"%(total_duplicate/total_counts*100))
         f.write("Multimapped sequences: \t" + str(total_multimapped) + "(%.5f%%)\n"%(total_multimapped/total_counts*100))
         f.write("Final remain sequences: \t" + str(final_remain) + "(%.5f%%)\n"%(final_remain/total_counts*100))
-        f.write("Total sequences: \t" + str(total_counts) + "\t(%.5f%%)\n"%100)
+        f.write("Total sequences: \t" + str(total_counts) + "(%.5f%%)\n"%100)
 
-
+    return output_report
 
 if __name__ == '__main__':
     if len(sys.argv) !=4:
@@ -66,3 +66,4 @@ if __name__ == '__main__':
     #analyze the stats
     output_report = os.path.join(output_dir, prefix_name + ".report.txt")
     parser_stats(output_stats_tsv, output_report)
+    print(f"Output stat is saved in {output_report}")
