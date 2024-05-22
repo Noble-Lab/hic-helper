@@ -8,6 +8,12 @@ def access_count(pair_dict,key):
     else:
         count = 0
     return count
+
+def int2scientific(num):
+    if num == 0:
+        return "0"
+    output_str = str.format("{:.3e}", num)
+    return output_str
 def parser_stats(output_stats_tsv, output_report):
     map_dict={}
     with open(output_stats_tsv, "r") as f:
@@ -34,13 +40,24 @@ def parser_stats(output_stats_tsv, output_report):
     total_duplicate = int(total_duplicate)
     total_multimapped = int(total_multimapped)
     final_remain = int(final_remain)
+
+    total_ru_count = access_count(map_dict,"pair_types/RU")
+    total_ur_count = access_count(map_dict,"pair_types/UR")
+    total_uu_count = access_count(map_dict,"pair_types/UU")
     with open(output_report, "w") as f:
-        f.write("Unmapped sequences: \t" + str(total_unmapped) + "(%.5f%%)\n"%(total_unmapped/total_counts*100))
-        f.write("Singleton sequences: \t" + str(total_singleton) + "(%.5f%%)\n"%(total_singleton/total_counts*100))
-        f.write("Duplicate sequences: \t" + str(total_duplicate) + "(%.5f%%)\n"%(total_duplicate/total_counts*100))
-        f.write("Multimapped sequences: \t" + str(total_multimapped) + "(%.5f%%)\n"%(total_multimapped/total_counts*100))
-        f.write("Final remain sequences: \t" + str(final_remain) + "(%.5f%%)\n"%(final_remain/total_counts*100))
-        f.write("Total sequences: \t" + str(total_counts) + "(%.5f%%)\n"%100)
+        f.write("Unmapped sequences: \t" + int2scientific(total_unmapped) + "(%.3f%%)\n"%(total_unmapped/total_counts*100))
+        f.write("Singleton sequences: \t" + int2scientific(total_singleton) + "(%.3f%%)\n"%(total_singleton/total_counts*100))
+        f.write("Multimapped sequences: \t" + int2scientific(total_multimapped) + "(%.3f%%)\n"%(total_multimapped/total_counts*100))
+        f.write("Duplicate sequences: \t" + int2scientific(total_duplicate) + "(%.3f%%)\n"%(total_duplicate/total_counts*100))
+        f.write("Unique sequences: \t" + int2scientific(final_remain) + "(%.3f%%)\n"%(final_remain/total_counts*100))
+        f.write("Total sequences: \t" + int2scientific(total_counts) + "(%.3f%%)\n"%100)
+        f.write("-"*50 + "\n")
+        f.write("Detailed Unique Sequences Information:\n")
+        f.write("RU sequences: \t" + int2scientific(total_ru_count) + "(%.3f%%)\n"%(total_ru_count/final_remain*100))
+        f.write("UR sequences: \t" + int2scientific(total_ur_count) + "(%.3f%%)\n"%(total_ur_count/final_remain*100))
+        f.write("UU sequences: \t" + int2scientific(total_uu_count) + "(%.3f%%)\n"%(total_uu_count/final_remain*100))
+        f.write("For detailed definition of RU/UR/UU, please see https://pairtools.readthedocs.io/en/latest/formats.html#pair-types\n")
+
 
     return output_report
 
