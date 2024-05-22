@@ -203,7 +203,7 @@ python3 pairs_4dn.py [input.pairs.gz] [chrom_size_file] [output_dir] [mode] [num
 Recommended running with 8 cores and 64GB memory. <br>
 
 #### 11. run-fastqc.sh
-[run-fastqc.sh](pre_processing/run-fastqc.sh)
+[run-fastqc.sh](pre_processing/run-fastqc.sh)  <br>
 This script is used for fastq file's quality analysis.
 ```
 ./run-fastqc.sh [input_fastq] [num_threads] [output_dir]
@@ -213,7 +213,7 @@ This script is used for fastq file's quality analysis.
 [output_dir] : output directory, will be created automatically if not exists.<br>
 
 #### 12. pairs_qc.py
-[pairs_qc.py](pre_processing/pairs_qc.py)
+[pairs_qc.py](pre_processing/pairs_qc.py)  <br>
 This script is used to perform quality control on the pairs file.<br>
 **You must sussessfully run ./set_up.sh before you can use this script.** <br>
 ```
@@ -225,7 +225,7 @@ python3 pairs_qc.py [input.pairs.gz] [chrom_size_file] [output_dir] [enzyme]
 - enzyme: enzyme used for Hi-C experiment, either 4 or 6. <br>
 
 #### 13. bamqc
-[bamqc](bin/bamqc)
+[bamqc](bin/bamqc)  <br>
 This script is used to perform quality control on the bam files.<br>
 **You must sussessfully run ./set_up.sh before you can use this script.** <br>
 ```
@@ -236,7 +236,7 @@ This script is used to perform quality control on the bam files.<br>
 
 
 #### 14. array2cool
-[array2cool.py](pre_processing/array2cool.py)
+[array2cool.py](pre_processing/array2cool.py)  <br>
 This script is used to convert dict of arrays format to .cool format.<br>
 Usage
 ```
@@ -250,7 +250,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [mode]:  0: all chromosome mode (scipy sparce array); 1: intra-chromosome mode(scipy sparce array); 2: all chromosome mode (numpy array); 3: intra-chromosome mode(numpy array). <br>
 
 #### 15. bam_align_quality.py
-
+[bam_align_quality.py](analysis/bam_align_quality.py)  <br>
 This script calculates the alignment quality of a given bam file.
 ```
 python3 bam_align_quality.py [input.bam] [output_dir] [number_cpu] [mode]
@@ -261,6 +261,29 @@ python3 bam_align_quality.py [input.bam] [output_dir] [number_cpu] [mode]
 [mode]: 0 for unsorted bam file, 1 for sorted bam file. <br>
 The output includes stats of Unmapped, Low quality (mapq), Singleton, Multimapped, Duplicate, Other, Unique, and Total.
 
+
+#### 16. pairs_quality.py
+[pairs_quality.py](analysis/pairs_quality.py) <br>
+This script is used to analyze the quality of the pairs file.
+```
+python3 pairs_quality.py [input.pairs.gz] [output_dir] [number_cpu]
+```
+[input.pairs.gz]: the input pairs gz file from 4DN pipeline (*.marked.sam.pairs.gz).<br>
+[output_dir]: the output directory<br>
+[number_cpu]: the number of cpu used<br>
+The script will generate a report file in the output directory.<br>
+The report file will contain the following information:<br>
+1. Unmapped sequences: the number of unmapped sequences and the percentage.<br>
+2. Singleton sequences: the number of singleton sequences and the percentage.<br>
+3. Multimapped sequences: the number of multimapped sequences and the percentage.<br>
+4. Duplicate sequences: the number of duplicate sequences and the percentage.<br>
+5. Unique sequences: the number of unique sequences and the percentage.<br>
+6. Total sequences: the total number of sequences.<br>
+7. Detailed Unique Sequences Information:<br>
+    RU sequences: the number of RU sequences and the percentage.<br>
+    UR sequences: the number of UR sequences and the percentage.<br>
+    UU sequences: the number of UU sequences and the percentage.<br>
+    For detailed definition of RU/UR/UU, please see https://pairtools.readthedocs.io/en/latest/formats.html#pair-types<br>
 
 
 

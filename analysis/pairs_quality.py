@@ -60,12 +60,35 @@ def parser_stats(output_stats_tsv, output_report):
 
 
     return output_report
+"""
+This script is used to analyze the quality of the pairs file.
+```
+python3 pairs_quality.py [input.pairs.gz] [output_dir] [number_cpu]
+```
+[input.pairs.gz]: the input pairs gz file from 4DN pipeline (*.marked.sam.pairs.gz).<br>
+[output_dir]: the output directory<br>
+[number_cpu]: the number of cpu used<br>
+The script will generate a report file in the output directory.<br>
+The report file will contain the following information:<br>
+1. Unmapped sequences: the number of unmapped sequences and the percentage.<br>
+2. Singleton sequences: the number of singleton sequences and the percentage.<br>
+3. Multimapped sequences: the number of multimapped sequences and the percentage.<br>
+4. Duplicate sequences: the number of duplicate sequences and the percentage.<br>
+5. Unique sequences: the number of unique sequences and the percentage.<br>
+6. Total sequences: the total number of sequences.<br>
+7. Detailed Unique Sequences Information:<br>
+    RU sequences: the number of RU sequences and the percentage.<br>
+    UR sequences: the number of UR sequences and the percentage.<br>
+    UU sequences: the number of UU sequences and the percentage.<br>
+    For detailed definition of RU/UR/UU, please see https://pairtools.readthedocs.io/en/latest/formats.html#pair-types<br>
+"""
+
 
 if __name__ == '__main__':
     if len(sys.argv) !=4:
         #4DN.marked.sam.pairs.gz
-        print("Usage: python raw_quality.py [input.marked.sam.pairs.gz] [output_dir] [number_cpu]")
-        print("input.bam: the input bam file")
+        print("Usage: python pairs_quality.py [input.marked.sam.pairs.gz] [output_dir] [number_cpu]")
+        print("input.pairs.gz: the input pairs gz file from 4DN pipeline.")
         print("output_dir: the output directory")
         print("number_cpu: the number of cpu used")
         sys.exit(1)
