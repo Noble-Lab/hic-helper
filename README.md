@@ -248,3 +248,19 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [resolution] is used to specify the resolution that stored in the output array. <br>
 [refer_genome_name] is used to specify the reference genome name. For example, "hg38","hg19","mm10" are valid inputs. <br>
 [mode]:  0: all chromosome mode (scipy sparce array); 1: intra-chromosome mode(scipy sparce array); 2: all chromosome mode (numpy array); 3: intra-chromosome mode(numpy array). <br>
+
+#### 15. bam_align_quality.py
+
+This script calculates the alignment quality of a given bam file.
+```
+python3 bam_align_quality.py [input.bam] [output_dir] [number_cpu] [mode]
+```
+[input.bam]: the input bam file. <br>
+[output_dir]: the output directory. <br>
+[number_cpu]: the number of cpu used. <br>
+[mode]: 0 for unsorted bam file, 1 for sorted bam file. <br>
+The output includes stats of Unmapped, Low quality (mapq), Singleton, Multimapped, Duplicate, Other, Unique, and Total.
+
+
+
+

@@ -240,10 +240,10 @@ def calculate_stat(sorted_bam_file,output_dir):
             #calculate the percentage in the chromsome report
             chrom_stats= {}
             for key in stats:
-                if key == "all":
+                if key == "Total":
                     continue
-                chrom_stats[key] = stats[key]/stats["all"]*100
-            chrom_stats["all"] = 100
+                chrom_stats[key] = stats[key]/stats["Total"]*100
+            chrom_stats["Total"] = 100
             f.write( "%s\t%.4f\t%.4f\t%.4f\t%.4f \
                     \t%.4f\t%.4f\t%.4f\t%d\n" % (chrom,chrom_stats['Unmapped'],
                                                  chrom_stats['Low quality (mapq)'],
@@ -252,7 +252,7 @@ def calculate_stat(sorted_bam_file,output_dir):
                                                  chrom_stats['Duplicate'],
                                                  chrom_stats['Other'],
                                                  chrom_stats['Unique'],
-                                                 chrom_stats['all']))
+                                                 chrom_stats['Total']))
     #calculate total stats, with percentage level
     total_stats = defaultdict(int)
     for key in final_stats:
@@ -260,17 +260,17 @@ def calculate_stat(sorted_bam_file,output_dir):
     
     percent_stats = {}
     for key in total_stats:
-        if key == "all":
+        if key == "Total":
             continue
-        percent_stats[key] = total_stats[key]/total_stats["all"]*100
+        percent_stats[key] = total_stats[key]/total_stats["Total"]*100
     
     final_record = os.path.join(output_dir,"output_report.txt")
     with open(final_record,"w") as wfile:
         wfile.write("Total stats for all chromosomes\n")
         #write the total number of sequences
-        wfile.write("Total number of sequences: %d\n" % total_stats["all"])
+        wfile.write("Total number of sequences: %d\n" % total_stats["Total"])
         for key in total_stats:
-            if key == "all":
+            if key == "Total":
                 continue
             wfile.write(f"%s: %s (%.3f%%)\n" % (key,int2scientific(total_stats[key]),percent_stats[key]))
     return final_record
@@ -283,9 +283,7 @@ python3 bam_align_quality.py [input.bam] [output_dir] [number_cpu] [mode]
 [output_dir]: the output directory. <br>
 [number_cpu]: the number of cpu used. <br>
 [mode]: 0 for unsorted bam file, 1 for sorted bam file. <br>
-Example Output Stat:
-
-
+The output includes stats of Unmapped, Low quality (mapq), Singleton, Multimapped, Duplicate, Other, Unique, and Total.
 
 """
 
