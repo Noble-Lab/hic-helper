@@ -63,18 +63,7 @@ def calculate_chrom_stat(alignments,min_mapq=0):
     count_mapq = len(alignments)
     count_mapq_remove = count_mapped - count_mapq
     print("Chrom total number of sequences with mapq > %d: %d" % (min_mapq,count_mapq))
-    #remove duplicate alignment
-    alignments = [a for a in alignments if not a.is_duplicate]
-    count_nodup = len(alignments)
-    count_dup_remove = count_mapq - count_nodup
-    print("Chrom total number of sequences without duplicate: %d" % count_nodup)
-
-    #remove mapped multiple times
-    alignments = [a for a in alignments if not a.is_secondary]
-    count_primary = len(alignments)
-    count_secondary_remove = count_nodup - count_primary
-    print("Chrom total number of sequences with only primary alignment: %d" % count_primary)
-
+    
     #count singletons
     count_singletons = 0
     final_alignments =[]
@@ -118,9 +107,24 @@ def calculate_chrom_stat(alignments,min_mapq=0):
             final_alignments.append(aln)
     print("possible singleton categories: ",count_singletons)
     count_remain = len(final_alignments)
-    print("Chrom total number of sequences with mate correctly mapped: %d" % count_remain)
-    count_singletons = count_primary - count_remain
+    print("Chrom total number of sequences with mate mapped: %d" % count_remain)
+    count_singletons = count_mapq - count_remain
     alignments = final_alignments
+
+    #remove mapped multiple times
+    alignments = [a for a in alignments if not a.is_secondary]
+    count_primary = len(alignments)
+    count_secondary_remove = count_remain - count_primary
+    print("Chrom total number of sequences with only primary alignment: %d" % count_primary)
+
+    
+    
+    #remove duplicate alignment
+    alignments = [a for a in alignments if not a.is_duplicate]
+    count_nodup = len(alignments)
+    count_dup_remove = count_primary - count_nodup
+    print("Chrom total number of sequences without duplicate: %d" % count_nodup)
+
     count_other = {}
     final_alignments = []
     for aln in alignments:
@@ -178,18 +182,23 @@ def calculate_chrom_stat(alignments,min_mapq=0):
     print("Chrom total number of sequences with proper cigar and md tag: %d" % count_proper)
     alignments = final_alignments
     count_other_total = sum([count_other[key] for key in count_other])
-    stats = {"proper":count_proper,
-            "unmapped":count_unmapped_remove,
-            "low quality (mapq)":count_mapq_remove,
-            "duplicate":count_dup_remove,
+    stats = {
+            "Unmapped":count_unmapped_remove,
+            "Low quality (mapq)":count_mapq_remove,
+            "Singleton":count_singletons,
             "Multimapped":count_secondary_remove,
-            "singleton":count_singletons,
-            "other":count_other_total,
-            "all":count_all,}
+            "Duplicate":count_dup_remove,
+            "Other":count_other_total,
+            "Unique":count_proper,
+            "Total":count_all,}
     return stats
 
 
-
+def int2scientific(num):
+    if num == 0:
+        return "0"
+    output_str = str.format("{:.3e}", num)
+    return output_str
 def calculate_stat(sorted_bam_file,output_dir):
     #open bam file
     """
@@ -220,14 +229,14 @@ def calculate_stat(sorted_bam_file,output_dir):
             final_stats[key].append(stats[key])
         with open(output_record,"a+") as f:
             f.write("%s\t%d\t%d\t%d\t%d \
-                    \t%d\t%d\t%d\t%d\n" % (chrom,stats["proper"],
-                                            stats["unmapped"],
-                                            stats["low quality (mapq)"],
-                                            stats["duplicate"],
-                                            stats["Multimapped"],
-                                            stats["singleton"],
-                                            stats["other"],
-                                            stats["all"]))
+                    \t%d\t%d\t%d\t%d\n" % (chrom,stats['Unmapped'],
+                                            stats['Low quality (mapq)'],
+                                            stats['Singleton'],
+                                            stats['Multimapped'],
+                                            stats['Duplicate'],
+                                            stats['Other'],
+                                            stats['Unique'],
+                                            stats['Total']))
             #calculate the percentage in the chromsome report
             chrom_stats= {}
             for key in stats:
@@ -236,14 +245,14 @@ def calculate_stat(sorted_bam_file,output_dir):
                 chrom_stats[key] = stats[key]/stats["all"]*100
             chrom_stats["all"] = 100
             f.write( "%s\t%.4f\t%.4f\t%.4f\t%.4f \
-                    \t%.4f\t%.4f\t%.4f\t%d\n" % (chrom,chrom_stats["proper"],
-                                            chrom_stats["unmapped"],
-                                            chrom_stats["low quality (mapq)"],
-                                            chrom_stats["duplicate"],
-                                            chrom_stats["Multimapped"],
-                                            chrom_stats["singleton"],
-                                            chrom_stats["other"],
-                                            chrom_stats["all"]))
+                    \t%.4f\t%.4f\t%.4f\t%d\n" % (chrom,chrom_stats['Unmapped'],
+                                                 chrom_stats['Low quality (mapq)'],
+                                                 chrom_stats['Singleton'],
+                                                 chrom_stats['Multimapped'],
+                                                 chrom_stats['Duplicate'],
+                                                 chrom_stats['Other'],
+                                                 chrom_stats['Unique'],
+                                                 chrom_stats['all']))
     #calculate total stats, with percentage level
     total_stats = defaultdict(int)
     for key in final_stats:
@@ -263,16 +272,29 @@ def calculate_stat(sorted_bam_file,output_dir):
         for key in total_stats:
             if key == "all":
                 continue
-            wfile.write("%s: %d (%.6f%%)\n" % (key,total_stats[key],percent_stats[key]))
+            wfile.write(f"%s: %s (%.3f%%)\n" % (key,int2scientific(total_stats[key]),percent_stats[key]))
     return final_record
+"""
+This script calculates the alignment quality of a given bam file.
+```
+python3 bam_align_quality.py [input.bam] [output_dir] [number_cpu] [mode]
+```
+[input.bam]: the input bam file. <br>
+[output_dir]: the output directory. <br>
+[number_cpu]: the number of cpu used. <br>
+[mode]: 0 for unsorted bam file, 1 for sorted bam file. <br>
+Example Output Stat:
 
+
+
+"""
 
 
 
 
 if __name__ == '__main__':
     if len(sys.argv) !=5:
-        print("Usage: python raw_quality.py [input.bam] [output_dir] [number_cpu] [mode]")
+        print("Usage: python bam_align_quality.py [input.bam] [output_dir] [number_cpu] [mode]")
         print("input.bam: the input bam file")
         print("output_dir: the output directory")
         print("number_cpu: the number of cpu used")
