@@ -285,5 +285,14 @@ The report file will contain the following information:<br>
     UU sequences: the number of UU sequences and the percentage.<br>
     For detailed definition of RU/UR/UU, please see https://pairtools.readthedocs.io/en/latest/formats.html#pair-types<br>
 
-
-
+#### 17. addnorm2hic.py
+[addnorm2hic.py](pre_processing/addnorm2hic.py) <br>
+This script is used to add norm to the hic files.
+```
+ python3 addnorm2hic.py [input.hic] [resolution] [num_cpu] [memory]
+```
+[input.hic]: input hic path. <br>
+[resolution]: minimum resolution that normalization works. <br>
+[num_cpu]: number of cpus used to normalize. <br>
+[memory]: maximum memory (GB) that this script is allowed to use. <br>
+The calculated norm vectors will be automatically saved in the input.hic file. <br>
