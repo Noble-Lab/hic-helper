@@ -107,7 +107,7 @@ The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] form
 3: KR normalization; 
 4: SCALE normalization.
 ```
-Two modes are supported for different format saving: 
+Four modes are supported for different format saving: 
 ```
 0: scipy coo_array format output; 
 1: numpy array format output;

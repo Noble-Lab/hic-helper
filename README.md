@@ -64,11 +64,14 @@ The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] form
 3: KR normalization; 
 4: SCALE normalization.
 ```
-Two modes are supported for different format saving: 
+Four modes are supported for different format saving: 
 ```
 0: scipy coo_array format output; 
-1: numpy array format output.
+1: numpy array format output;
+2: scipy csr_array format output (only include intra-chromsome region).
+3: numpy array format output (only include intra-chromsome region).
 ```
+
 
 #### 3. array2hic.py
 [array2hic.py](pre_processing/array2hic.py) <br>
