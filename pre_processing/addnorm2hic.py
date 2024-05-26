@@ -3,7 +3,7 @@ import sys
 import os
 
 def addnorm2hic(juicer_tools,input_hic,resolution,number_cpu,max_memory):
-    command_line=f"java -Xmx{max_memory}g -Xms{max_memory}g -jar {juicer_tools} addNorm -j {number_cpu} -w {resolution} -d -F {input_hic}"
+    command_line=f"java -Xmx{max_memory}g -jar {juicer_tools} addNorm -j {number_cpu} -w {resolution} -d -F {input_hic}"
     print("exec command:")
     print(command_line)
     os.system(command_line)
