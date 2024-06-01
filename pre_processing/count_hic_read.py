@@ -85,11 +85,26 @@ def count_hic_read(input_hic_path,normalization_type):
 
     total_count,cis_count = count_cistotal(nondiag_read_dict)
     print(f"Total Non-Diag Read {total_count}, Total Non-Diag Cis Read {cis_count}")
-    
+"""
+This script is to count the total/total non-diag reads of cis/all. <br>
+```
+python3 count_hic_read.py [input.hic] [resolution] [normalization_type] 
+```
+[input.hic]: input hic path. <br>
+[resolution] is used to specify the resolution that stored in the output array. <br>
+[normalization_type]: should be an integer 0-4, corresponds the following type: <br>
+```
+0: NONE normalization applied, save the raw data to array.
+1: VC normalization; 
+2: VC_SQRT normalization; 
+3: KR normalization; 
+4: SCALE normalization.
+```
+"""
 if __name__ == '__main__':
     import os 
     import sys
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print('Usage: python3 count_hic_read.py [input.hic] [resolution] [normalization_type]')
         print("This is the script to count the total reads, total non-diagonal reads from a input hic. ")
         print("[input.hic]: the input hic path.")

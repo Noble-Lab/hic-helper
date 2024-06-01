@@ -299,3 +299,20 @@ This script is used to add norm to the hic files.
 [num_cpu]: number of cpus used to normalize. <br>
 [memory]: maximum memory (GB) that this script is allowed to use. <br>
 The calculated norm vectors will be automatically saved in the input.hic file. <br>
+
+#### 18. count_hic_read.py
+[count_hic_read.py](pre_processing/count_hic_read.py) <br>
+This script is to count the total/total non-diag reads of cis/all.
+```
+python3 count_hic_read.py [input.hic] [resolution] [normalization_type] 
+```
+[input.hic]: input hic path. <br>
+[resolution] is used to specify the resolution that stored in the output array. <br>
+[normalization_type]: should be an integer 0-4, corresponds the following type: <br>
+```
+0: NONE normalization applied, save the raw data to array.
+1: VC normalization; 
+2: VC_SQRT normalization; 
+3: KR normalization; 
+4: SCALE normalization.
+```
