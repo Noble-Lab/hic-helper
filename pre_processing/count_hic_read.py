@@ -3,6 +3,18 @@ from scipy.sparse import coo_matrix
 import hicstraw
 import os
 def read_chrom_count(chr1,chr2, normalization,hic_file, resolution):
+    """
+    The read_chrom_count function takes in a chromosome, normalization method, hic file and resolution.
+    It then returns the total number of reads for that chromosome as well as the number of non-diagonal reads.
+    
+    :param chr1: Specify the chromosome of interest
+    :param chr2: Specify the chromosome to be compared with chr_name
+    :param normalization: Normalize the hic matrix
+    :param hic_file: Specify the hi-c file
+    :param resolution: Determine the resolution of the hi-c matrix
+    :return: The total number of reads in the chromosome
+    :doc-author: Trelent
+    """
     chr1_name = chr1.name
     chr2_name = chr2.name
     infos = []
@@ -22,12 +34,22 @@ def read_chrom_count(chr1,chr2, normalization,hic_file, resolution):
         cur_row=(int)(ret.binX // resolution)
         cur_col = (int)(ret.binY // resolution)
         val.append(ret.counts)
-        if cur_row==cur_col:
+        if cur_row!=cur_col:
             nondiag_val.append(ret.counts)
     total_read = np.sum(val)
     nondiag_read = np.sum(nondiag_val)
     return total_read,nondiag_read
 def count_cistotal(input_dict):
+    """
+    The count_cistotal function takes a dictionary as input and returns the total number of interactions in the dictionary,
+    and the number of cis interactions. The function does this by splitting each key into two parts (split_key 1 and split_key 2)
+    and then checking if they are equal. If they are equal, it adds one to cis count for every interaction that is found between 
+    the same chromosome.
+    
+    :param input_dict: Pass in the dictionary that will be used to count cis and total interactions
+    :return: A tuple of the total number of interactions and the cis interactions
+    :doc-author: Trelent
+    """
     cis_count=0
     total_count=0
     for key in input_dict:
@@ -72,7 +94,7 @@ def count_hic_read(input_hic_path,resolution,normalization_type):
             cur_read,cur_nondiag_read = read_chrom_count(chrom1,chrom2, normalization_type, input_hic_path, resolution)
             if chrom1_name!=chrom2_name:
                 cur_nondiag_read=0 #if they are not same chrom, diag is meaningless
-            print(f"chrom-{chrom1_name} chrom-{chrom2_name} read {cur_read}, non-diag read {cur_read}")
+            print(f"chrom-{chrom1_name} chrom-{chrom2_name} read {cur_read}, non-diag read {cur_nondiag_read}")
             read_dict["%s_%s"%(chrom1_name,chrom2_name)]=cur_read
             nondiag_read_dict["%s_%s"%(chrom1_name,chrom2_name)]=cur_nondiag_read
     print("chromosome-wise total read:")
