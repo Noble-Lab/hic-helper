@@ -36,7 +36,7 @@ def count_cistotal(input_dict):
             cis_count+=input_dict[key]
         total_count+=input_dict[key]
     return total_count,cis_count
-def count_hic_read(input_hic_path,normalization_type):
+def count_hic_read(input_hic_path,resolution,normalization_type):
     """
     The count_hic_read function takes in a HiC file and returns the number of reads for each chromosome.
     
@@ -70,6 +70,9 @@ def count_hic_read(input_hic_path,normalization_type):
             chrom2 = chrom_list[j]
             chrom2_name = chrom_list[j].name
             cur_read,cur_nondiag_read = read_chrom_count(chrom1,chrom2, normalization_type, input_hic_path, resolution)
+            if chrom1_name!=chrom2_name:
+                cur_nondiag_read=0 #if they are not same chrom, diag is meaningless
+            print(f"chrom-{chrom1_name} chrom-{chrom2_name} read {cur_read}, non-diag read {cur_read}")
             read_dict["%s_%s"%(chrom1_name,chrom2_name)]=cur_read
             nondiag_read_dict["%s_%s"%(chrom1_name,chrom2_name)]=cur_nondiag_read
     print("chromosome-wise total read:")
