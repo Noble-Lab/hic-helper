@@ -51,7 +51,9 @@ cd ../..
 ln -s BamQC/bin/bamqc bamqc
 cd ..
 
-
+# download UCSC genome annotation database files
+# wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/database/cytoBand.txt.gz
+# gunzip cytoBand.txt.gz
 
 
 
