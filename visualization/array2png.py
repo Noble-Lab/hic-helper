@@ -21,8 +21,8 @@ def convert_rgb(data,max_value):
     data_rgb = (data_rgb*255).astype(np.uint8)
     return data_rgb
 
-def array2png(input_array_pickle,output_png,chrom1,start_index1,
-              end_index1,chrom2,start_index2,end_index2,max_value,mode):
+def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
+              end_index1,input_chrom2,start_index2,end_index2,max_value,mode):
     #load array
     """
     The array2png function takes in a pickled array, and outputs a png image.
@@ -63,19 +63,20 @@ def array2png(input_array_pickle,output_png,chrom1,start_index1,
     output_dir = os.path.dirname(output_png)
     os.makedirs(output_dir, exist_ok=True)
     if mode == 0:
-        if "chr" not in chrom1:
-            chrom1 = 'chr' + chrom1
+        if "chr" not in input_chrom1:
+            input_chrom1 = 'chr' + input_chrom1
         if "chr" not in chrom2:
-            chrom2 = 'chr' + chrom2
-        input_key = "%s_%s" % (chrom1, chrom2)
+            input_chrom2 = 'chr' + input_chrom2
+        input_key = "%s_%s" % (input_chrom1,input_chrom2)
     else:
-        if chrom1 != chrom2:
+        if input_chrom1!=input_chrom2:
             print('Please specify the same chromosome in intra-chromosome mode.')
             sys.exit(1)
-        if "chr" not in chrom1:
-            chrom1 = 'chr' + chrom1
-        input_key = chrom1
+        if "chr" not in input_chrom1:
+            input_chrom1 = 'chr' + input_chrom1
+        input_key = input_chrom1
     matrix = data[input_key]
+    print('The matrix has been loaded.',input_key,'shape:',matrix.shape)
     matrix_row = matrix.row
     matrix_col = matrix.col
     matrix_data = matrix.data
