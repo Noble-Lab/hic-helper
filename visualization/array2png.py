@@ -67,15 +67,15 @@ def array2png(input_array_pickle,output_png,chrom1,start_index1,
             chrom1 = 'chr' + chrom1
         if "chr" not in chrom2:
             chrom2 = 'chr' + chrom2
-        key = f'{chrom1}_{chrom2}'
+        input_key = "%s_%s" % (chrom1, chrom2)
     else:
         if chrom1 != chrom2:
             print('Please specify the same chromosome in intra-chromosome mode.')
             sys.exit(1)
         if "chr" not in chrom1:
             chrom1 = 'chr' + chrom1
-        key = chrom1
-    matrix = data[key]
+        input_key = chrom1
+    matrix = data[input_key]
     matrix_row = matrix.row
     matrix_col = matrix.col
     matrix_data = matrix.data
