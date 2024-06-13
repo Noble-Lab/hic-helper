@@ -42,15 +42,38 @@ def array2png(input_array_pickle,output_png,chrom1,start_index1,
     """
     with open(input_array_pickle, 'rb') as f:
         data = pickle.load(f)
-    
+    #format data to with chr shape
+    final_data = {}
+    for key in data.keys():
+        if mode == 0:
+            chrom1,chrom2 = key.split('_')
+            if "chr" not in chrom1:
+                chrom1 = 'chr' + chrom1
+            if "chr" not in chrom2:
+                chrom2 = 'chr' + chrom2
+            new_key = f'{chrom1}_{chrom2}'
+        else:
+            chrom1 = key
+            if "chr" not in chrom1:
+                chrom1 = 'chr' + chrom1
+            new_key = chrom1
+        final_data[new_key] = data[key]
+    data = final_data
+    print("allow input data with chromosomes: ",data.keys())    
     output_dir = os.path.dirname(output_png)
     os.makedirs(output_dir, exist_ok=True)
     if mode == 0:
+        if "chr" not in chrom1:
+            chrom1 = 'chr' + chrom1
+        if "chr" not in chrom2:
+            chrom2 = 'chr' + chrom2
         key = f'{chrom1}_{chrom2}'
     else:
         if chrom1 != chrom2:
             print('Please specify the same chromosome in intra-chromosome mode.')
             sys.exit(1)
+        if "chr" not in chrom1:
+            chrom1 = 'chr' + chrom1
         key = chrom1
     matrix = data[key]
     matrix_row = matrix.row
