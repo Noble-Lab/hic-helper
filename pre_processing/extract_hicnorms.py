@@ -292,7 +292,7 @@ def extract_hicnorms(input_hic,norm_type,resolution):
             chrom2 = chrom_list[j]
             chrom2_name = chrom_list[j].name
             mzd = hic.getMatrixZoomData(chrom1_name, chrom2_name, 'observed', norm_type, "BP", resolution)
-            norm_vector = mzd.getNormVector(chrom1_name)
+            norm_vector = mzd.getNormVector(chrom1.index)
             hicnorms[chrom1_name] = norm_vector
     return hicnorms
 
