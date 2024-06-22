@@ -217,7 +217,7 @@ def read_normalization_vector(f, buf, entry):
     nValues = struct.unpack(b'<i', f.read(4))[0]
     return np.frombuffer(buf, dtype=np.dtype('<d'), count=nValues, offset=filepos+4)
 
-def extract_hicnorms(input_hic,norm_type,use_resolution):
+def extract_hicnorms_binary(input_hic,norm_type,use_resolution):
     """
     input_hic: .hic file
     """
@@ -259,6 +259,43 @@ def write_pickle(output_pkl,hic_norms):
     with open(output_pkl, 'wb') as f:
         pickle.dump(hic_norms, f)
     print(f"Normalization vectors saved to {output_pkl}")
+import hicstraw
+def extract_hicnorms(input_hic,norm_type,resolution):
+    """
+    input_hic: .hic file
+    norm_type: normalization type
+    resolution: resolution to extract the normalization vector
+    """
+    hic = hicstraw.HiCFile(input_hic)
+    chrom_list=[]
+    chrom_dict={}
+    for chrom in hic.getChromosomes():
+        print(chrom.name, chrom.length)
+        if "all" in chrom.name.lower():
+            continue
+        chrom_list.append(chrom)
+        chrom_dict[chrom.name]=chrom.length
+    resolution_list = hic.getResolutions()
+    if resolution not in resolution_list:
+        print("Resolution not found in the hic file, please choose from the following list:")
+        print(resolution_list)
+        exit()
+    hicnorms = {}
+    for i in range(len(chrom_list)):
+        for j in range(i,len(chrom_list)):
+            if i!=j:
+                #skip inter-chromosome region
+                #since shared the norm vector
+                continue
+            chrom1 = chrom_list[i]
+            chrom1_name = chrom_list[i].name
+            chrom2 = chrom_list[j]
+            chrom2_name = chrom_list[j].name
+            mzd = hic.getMatrixZoomData(chrom1, chrom2, 'observed', norm_type, "BP", resolution)
+            norm_vector = mzd.getNormVector(chrom1.index)
+            hicnorms[chrom1_name] = norm_vector
+    return hicnorms
+
 
 """
 This script is to extract the normalization vectors from a .hic file. <br>
@@ -290,6 +327,8 @@ if __name__ == '__main__':
     if norm_type not in ['NONE', 'VC', 'VC_SQRT', 'KR', 'SCALE']:
         print("Normalization type should be one of the following: NONE, VC, VC_SQRT, KR, SCALE.")
         sys.exit(1)
+    #hic_norms = extract_hicnorms_binary(input_hic,norm_type,resolution)
+    #switch to hicstraw to get the normalization vectors
     hic_norms = extract_hicnorms(input_hic,norm_type,resolution)
     write_pickle(output_pkl,hic_norms)
         
