@@ -84,11 +84,11 @@ def read_header(req):
         resolutions.append(res)
     return chrs, resolutions, masterindex, genome, metadata
 
-def read_footer(f, buf, masterindex,NORMS=[]):
-    f.seek(masterindex)
+def read_footer(f, buf, footerPosition,NORMS):
+    f.seek(footerPosition)
 
     cpair_info = {}
-    nBytes = struct.unpack(b'<i', f.read(4))[0]
+    nBytes = struct.unpack(b'<q', f.read(8))[0]
     nEntries = struct.unpack(b'<i', f.read(4))[0]
     for _ in range(nEntries):
         key = readcstr(f)
@@ -105,21 +105,21 @@ def read_footer(f, buf, masterindex,NORMS=[]):
         unit = readcstr(f)
         binsize = struct.unpack(b'<i', f.read(4))[0]
 
-        nValues = struct.unpack(b'<i', f.read(4))[0]
+        nValues = struct.unpack(b'<q', f.read(8))[0]
         expected['RAW', unit, binsize] = np.frombuffer(
             buf,
-            dtype=np.dtype('<d'),
+            dtype=np.dtype('<f'),
             count=nValues,
             offset=f.tell())
-        f.seek(nValues * 8, 1)
-
+        f.seek(nValues * 4, 1)
+        
         nNormalizationFactors = struct.unpack(b'<i', f.read(4))[0]
         factors['RAW', unit, binsize] = np.frombuffer(
             buf,
-            dtype={'names':['chrom','factor'], 'formats':['<i', '<d']},
+            dtype={'names':['chrom','factor'], 'formats':['<i', '<f']},
             count=nNormalizationFactors,
             offset=f.tell())
-        f.seek(nNormalizationFactors * 12, 1)
+        f.seek(nNormalizationFactors * 8, 1)
     # normalized (norm != 'NONE')
     possibleNorms = f.read(4)
     if not possibleNorms:
@@ -133,21 +133,21 @@ def read_footer(f, buf, masterindex,NORMS=[]):
         unit = readcstr(f)
         binsize = struct.unpack(b'<i', f.read(4))[0]
 
-        nValues = struct.unpack(b'<i', f.read(4))[0]
+        nValues = struct.unpack(b'<q', f.read(8))[0]
         expected[normtype, unit, binsize] = np.frombuffer(
             buf,
-            dtype='<d',
+            dtype='<f',
             count=nValues,
             offset=f.tell())
-        f.seek(nValues * 8, 1)
+        f.seek(nValues * 4, 1)
 
         nNormalizationFactors = struct.unpack(b'<i', f.read(4))[0]
         factors[normtype, unit, binsize] = np.frombuffer(
             buf,
-            dtype={'names':['chrom','factor'], 'formats':['<i', '<d']},
+            dtype={'names':['chrom','factor'], 'formats':['<i', '<f']},
             count=nNormalizationFactors,
             offset=f.tell())
-        f.seek(nNormalizationFactors * 12, 1)
+        f.seek(nNormalizationFactors * 8, 1)
 
     nEntries = struct.unpack(b'<i', f.read(4))[0]
     for _ in range(nEntries):
@@ -156,7 +156,7 @@ def read_footer(f, buf, masterindex,NORMS=[]):
         unit = readcstr(f)
         resolution = struct.unpack(b'<i', f.read(4))[0]
         filePosition = struct.unpack(b'<q', f.read(8))[0]
-        sizeInBytes = struct.unpack(b'<i', f.read(4))[0]
+        sizeInBytes = struct.unpack(b'<q', f.read(8))[0]
         norm_info[normtype, unit, resolution, chrIdx] = {
             'filepos': filePosition,
             'size': sizeInBytes
