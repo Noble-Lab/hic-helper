@@ -38,7 +38,6 @@ def readcstr(f):
         else:
             buf += b
 def read_header(req):
-    #from hic2cool script
     """
     Takes in a .hic file and returns a dictionary containing information about
     the chromosome. Keys are chromosome index numbers (0 through # of chroms
@@ -51,39 +50,50 @@ def read_header(req):
     resolutions = []
     magic_string = struct.unpack(b'<3s', req.read(3))[0]
     req.read(1)
-    if (magic_string != b"HIC"):
-        error_string = ('... This does not appear to be a HiC file; '
-                       'magic string is incorrect')
+    if magic_string != b"HIC":
+        error_string = '... This does not appear to be a HiC file; magic string is incorrect'
         force_exit(error_string, req)
     global version
     version = struct.unpack(b'<i', req.read(4))[0]
-    masterindex = struct.unpack(b'<q', req.read(8))[0]
+    footerPosition = struct.unpack(b'<q', req.read(8))[0]
     genome = b""
     c = req.read(1)
-    while (c != b'\0'):
+    while c != b'\0':
         genome += c
         c = req.read(1)
     genome = genome.decode('ascii')
-    # metadata extraction
-    metadata = {}
+    if version >= 9:
+        frag_resolutions = []
+        normVectorIndexPosition = struct.unpack('<q', req.read(8))[0]
+        normVectorIndexLength = struct.unpack('<q', req.read(8))[0]
     nattributes = struct.unpack(b'<i', req.read(4))[0]
-    for x in range(nattributes):
+    metadata = {}
+    for _ in range(nattributes):
         key = readcstr(req)
         value = readcstr(req)
         metadata[key] = value
+
     nChrs = struct.unpack(b'<i', req.read(4))[0]
-    for i in range(0, nChrs):
+    for i in range(nChrs):
         name = readcstr(req)
-        length = struct.unpack(b'<i', req.read(4))[0]
+        if version >= 9:
+            length = struct.unpack(b'<q', req.read(8))[0]
+        else:
+            length = struct.unpack(b'<i', req.read(4))[0]
         if name and length:
             chrs[i] = [i, name, length]
+
     nBpRes = struct.unpack(b'<i', req.read(4))[0]
-    # find bp delimited resolutions supported by the hic file
-    for x in range(0, nBpRes):
+    for _ in range(nBpRes):
         res = struct.unpack(b'<i', req.read(4))[0]
         resolutions.append(res)
-    return chrs, resolutions, masterindex, genome, metadata
+        
+    nBpResFrag = struct.unpack(b'<i', req.read(4))[0]
+    for _ in range(nBpResFrag):
+        res = struct.unpack(b'<i', req.read(4))[0]
+        frag_resolutions.append(res)
 
+    return chrs, resolutions, footerPosition, genome, metadata
 def read_footer(f, buf, footerPosition,NORMS):
     f.seek(footerPosition)
 
@@ -179,6 +189,8 @@ def extract_hicnorms(input_hic,norm_type,use_resolution):
     with open(input_hic, 'r') as req:
         buf = mmap.mmap(req.fileno(), 0, access=mmap.ACCESS_READ)
         used_chrs, resolutions, masteridx,genome,metadata = read_header(buf)
+        #chrs, resolutions, frag_resolutions, footerPosition, normVectorIndexPosition, normVectorIndexLength, genome, metadata
+       
         #chrs[i] = [i, name, length] dict
         #resolutions = list of resolutions
         #masteridx = master index
