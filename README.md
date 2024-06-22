@@ -316,3 +316,15 @@ python3 count_hic_read.py [input.hic] [resolution] [normalization_type]
 3: KR normalization; 
 4: SCALE normalization.
 ```
+
+#### 19. extract_hicnorms.py
+[extract_hicnorms.py](pre_processing/extract_hicnorms.py)
+This script is to extract the normalization vectors from a .hic file. <br>
+```
+python3 extract_hicnorms.py [input.hic] [resolution] [normalization_type] [output_pkl]
+```
+[input.hic]: input hic path. <br>
+[resolution]: resolution to extract the normalization vector, [Integer]. <br>
+[normalization_type]: should be one of the following: NONE, VC, VC_SQRT, KR, SCALE, [string]. <br>
+[output_pkl]: output pickle file path. <br> 
+The normalization vector is saved in dict format, where the key is the chromosome name and the value is the normalization vector.
