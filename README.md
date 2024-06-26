@@ -328,3 +328,15 @@ python3 extract_hicnorms.py [input.hic] [resolution] [normalization_type] [outpu
 [normalization_type]: should be one of the following: NONE, VC, VC_SQRT, KR, SCALE, [string]. <br>
 [output_pkl]: output pickle file path. <br> 
 The normalization vector is saved in dict format, where the key is the chromosome name and the value is the normalization vector.
+
+#### 20. loop_cleaner.py
+[loop_cleaner.py](post_processing/loop_cleaner.py)
+This script is for filter out the loops on low mappability regions
+```
+python3 loop_cleaner.py [input.bed] [mappablility.bw] [output.bed] [threshold]
+```
+- input.bed: the input bed file <br>
+- mappablility.bw: the mappablility bigwig file <br>
+- output.bed: the output bed file <br>
+- threshold: the mappablility threshold used to clean loops <br>
+
