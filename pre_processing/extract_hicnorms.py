@@ -294,6 +294,12 @@ def extract_hicnorms(input_hic,norm_type,resolution):
             mzd = hic.getMatrixZoomData(chrom1_name, chrom2_name, 'observed', norm_type, "BP", resolution)
             norm_vector = mzd.getNormVector(chrom1.index)
             hicnorms[chrom1_name] = norm_vector
+            #add analysis for the norm vector to output if it is valid
+            tmp_vector = np.array(norm_vector)
+            tmp_vector = np.nan_to_num(tmp_vector)
+            if np.sum(tmp_vector)==0:
+                print(f"Normalization vector for {chrom1_name} is invalid, please check the hic file.")
+                
     return hicnorms
 
 
