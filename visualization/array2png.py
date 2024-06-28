@@ -96,6 +96,11 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
     #image=np.array(output_data,dtype=np.uint8)
     
     img = Image.fromarray(output_data, 'RGB')
+    expect_min_size=224
+    if img.size[0] < expect_min_size or img.size[1] < expect_min_size:
+        ratio=max(expect_min_size/img.size[0],expect_min_size/img.size[1])
+        img = img.resize((int(img.size[0]*ratio),int(img.size[1]*ratio)),Image.BICUBIC)
+    
     img.save(output_png)
     print('The image has been saved to', output_png + '.')
     return output_png
