@@ -48,14 +48,14 @@ def clean_loops(input_bed, mappability_bw, output_bed, threshold):
             # Sum the signal values (reads) within the peak
             signal_values=np.array(list(signal_values))
             signal_values = np.nan_to_num(signal_values)
-
-            mappability1 = np.mean(signal_values)
+            mappable_percentage1 = np.sum(signal_values>0.5)/len(signal_values)
+        
 
             signal_values = input_bw.values(chrom2, start2, end2)
             signal_values=np.array(list(signal_values))
             signal_values = np.nan_to_num(signal_values)
-            mappability2 = np.mean(signal_values)
-            if mappability1 < threshold or mappability2 < threshold:
+            mapable_percentage2 = np.sum(signal_values>0.5)/len(signal_values)
+            if mappable_percentage1 < threshold or mapable_percentage2 < threshold:
                 continue
 
             final_record_list.append([chrom1, start1, end1, chrom2, start2, end2])
@@ -82,7 +82,7 @@ if __name__ == '__main__':
         print("input.bed: the input bed file")
         print("mappablility.bw: the mappablility bigwig file")
         print("output.bed: the output bed file")
-        print("threshold: the mappablility threshold used to clean loops")
+        print("threshold: the mappablility percentage in the loop region to clean loops")
         sys.exit(1)
     input_bed = os.path.abspath(sys.argv[1])
     mappability_bw = os.path.abspath(sys.argv[2])
