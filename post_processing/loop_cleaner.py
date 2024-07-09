@@ -61,7 +61,7 @@ def clean_loops(input_bed, mappability_bw, output_bed, threshold):
             final_record_list.append([chrom1, start1, end1, chrom2, start2, end2])
     print("After filtering, there are",len(final_record_list),"loops left")
     with open(output_bed, 'w') as f:
-        f.write("#chrom1\tstart1\tend1\tchrom2\tstart2\tend2\n")
+        f.write("chrom1\tstart1\tend1\tchrom2\tstart2\tend2\n")
         for record in final_record_list:
             f.write("\t".join(map(str, record)) + "\n")
 
