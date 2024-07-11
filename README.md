@@ -340,3 +340,12 @@ python3 loop_cleaner.py [input.bed] [mappablility.bw] [output.bed] [threshold]
 - output.bed: the output bed file <br>
 - threshold: the mappablility threshold used to clean loops <br>
 
+#### 21. merge_bigwig.py
+[merge_bigwig.py](pre_processing/merge_bigwig.py)
+This script is used to merge bigwig files into one bigwig file.
+```
+python3 merge_bigwig.py [input_dir] [output_bw] [refer_genome.sizes]
+```
+[input_dir]: the directory containing all the bigwig files. <br>
+[output_bw]: the output bigwig file. <br>
+[refer_genome.sizes]: the chromosome sizes of the reference genome. <br>
