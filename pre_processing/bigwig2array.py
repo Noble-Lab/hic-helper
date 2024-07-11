@@ -10,10 +10,12 @@ def bigwig2array(input_bw, output_pkl, resolution):
     for chrom in chroms:
         print("Processing", chrom)
         chrom_size = chroms[chrom]
+        print("Chrom size:", chrom_size)
         signal = bw.values(chrom, 0, chrom_size, numpy=True)
         #each resolution interval should sum to get the overall signal
         cutoff_length = len(signal) // resolution * resolution
         signal = signal[:cutoff_length]
+        signal = np.nan_to_num(signal)
         if resolution > 1:
             signal = signal.reshape(-1, resolution).sum(axis=1)
         signal_dict[chrom] = signal
