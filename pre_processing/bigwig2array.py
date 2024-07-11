@@ -2,6 +2,7 @@ import sys
 import os
 import pyBigWig
 import pickle 
+import numpy as np
 def bigwig2array(input_bw, output_pkl, resolution):
     bw = pyBigWig.open(input_bw)
     chroms = bw.chroms()
@@ -17,6 +18,8 @@ def bigwig2array(input_bw, output_pkl, resolution):
             signal = signal.reshape(-1, resolution).sum(axis=1)
         signal_dict[chrom] = signal
         print("Finished procssing! Signal shape:", signal.shape)
+        #output signal stats
+        print("Signal stats: mean ",np.mean(signal), "std ", np.std(signal), "max ", np.max(signal), "min ", np.min(signal))
     bw.close()
     with open(output_pkl, 'wb') as f:
         pickle.dump(signal_dict, f)
