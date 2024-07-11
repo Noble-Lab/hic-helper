@@ -7,6 +7,7 @@ def bigwig2array(input_bw, output_pkl, resolution):
     chroms = bw.chroms()
     signal_dict = {}
     for chrom in chroms:
+        print("Processing", chrom)
         chrom_size = chroms[chrom]
         signal = bw.values(chrom, 0, chrom_size, numpy=True)
         #each resolution interval should sum to get the overall signal
@@ -15,6 +16,7 @@ def bigwig2array(input_bw, output_pkl, resolution):
         if resolution > 1:
             signal = signal.reshape(-1, resolution).sum(axis=1)
         signal_dict[chrom] = signal
+        print("Finished procssing! Signal shape:", signal.shape)
     bw.close()
     with open(output_pkl, 'wb') as f:
         pickle.dump(signal_dict, f)
