@@ -23,6 +23,7 @@ def bigwig2array(input_bw, output_pkl, resolution):
         # if resolution > 1:
         #     signal = signal.reshape(-1, resolution).mean(axis=1)
         # signal_dict[chrom] = signal
+        value_list = []
         for i in list(range(0, cutoff_length, resolution)):
             value_list.append(bw.stats(chrom, i, i + resolution)[0])
 
