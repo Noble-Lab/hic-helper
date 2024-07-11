@@ -318,7 +318,7 @@ python3 count_hic_read.py [input.hic] [resolution] [normalization_type]
 ```
 
 #### 19. extract_hicnorms.py
-[extract_hicnorms.py](pre_processing/extract_hicnorms.py)
+[extract_hicnorms.py](pre_processing/extract_hicnorms.py) <br>
 This script is to extract the normalization vectors from a .hic file. <br>
 ```
 python3 extract_hicnorms.py [input.hic] [resolution] [normalization_type] [output_pkl]
@@ -330,7 +330,7 @@ python3 extract_hicnorms.py [input.hic] [resolution] [normalization_type] [outpu
 The normalization vector is saved in dict format, where the key is the chromosome name and the value is the normalization vector.
 
 #### 20. loop_cleaner.py
-[loop_cleaner.py](post_processing/loop_cleaner.py)
+[loop_cleaner.py](post_processing/loop_cleaner.py) <br>
 This script is for filter out the loops on low mappability regions
 ```
 python3 loop_cleaner.py [input.bed] [mappablility.bw] [output.bed] [threshold]
@@ -341,7 +341,7 @@ python3 loop_cleaner.py [input.bed] [mappablility.bw] [output.bed] [threshold]
 - threshold: the mappablility threshold used to clean loops <br>
 
 #### 21. merge_bigwig.py
-[merge_bigwig.py](pre_processing/merge_bigwig.py)
+[merge_bigwig.py](pre_processing/merge_bigwig.py) <br>
 This script is used to merge bigwig files into one bigwig file.
 ```
 python3 merge_bigwig.py [input_dir] [output_bw] [refer_genome.sizes]
@@ -349,3 +349,13 @@ python3 merge_bigwig.py [input_dir] [output_bw] [refer_genome.sizes]
 [input_dir]: the directory containing all the bigwig files. <br>
 [output_bw]: the output bigwig file. <br>
 [refer_genome.sizes]: the chromosome sizes of the reference genome. <br>
+
+#### 22. bigwig2array.py
+[bigwig2array.py](pre_processing/bigwig2array.py) <br>
+This script converts bigwig file to array format specified by resolution.
+```
+python3 bigwig2array.py [input_bw] [output_pkl] [resolution]
+```
+[input_bw]: the input bigwig file. <br>
+[output_pkl]: the output pkl file with [chrom]:[signal] format. <br>
+[resolution]: the resolution of the signal. <br>
