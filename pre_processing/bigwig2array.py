@@ -16,6 +16,9 @@ def bigwig2array(input_bw, output_pkl, resolution):
         cutoff_length = len(signal) // resolution * resolution
         signal = signal[:cutoff_length]
         signal = np.nan_to_num(signal)
+        if len(signal)==0:
+            print("Empty signal for", chrom)
+            continue
         if resolution > 1:
             signal = signal.reshape(-1, resolution).sum(axis=1)
         signal_dict[chrom] = signal
