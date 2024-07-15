@@ -21,7 +21,7 @@ def merge_bam(input_dir, output_bam):
     #output_sorted_bam = output_bam.replace(".bam", ".sorted.bam")
     os.system(f"samtools sort -o {output_bam} {output_unsorted_bam}")
     os.system(f"samtools index {output_bam}")
-
+    return output_bam
 
 """
 This script is used to merge bam files into one bam file.
