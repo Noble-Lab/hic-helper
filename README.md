@@ -359,3 +359,13 @@ python3 bigwig2array.py [input_bw] [output_pkl] [resolution]
 [input_bw]: the input bigwig file. <br>
 [output_pkl]: the output pkl file with [chrom]:[signal] format. <br>
 [resolution]: the resolution of the signal. <br>
+
+
+#### 23. merge_bam.py
+[merge_bam.py](pre_processing/merge_bam.py)
+This script is used to merge bam files into one bam file.
+```
+python3 merge_bam.py [input_dir] [output_bam]
+```
+[input_dir]: the directory containing all the bam files. <br>
+[output_bam]: the output merged bam file. <br>
