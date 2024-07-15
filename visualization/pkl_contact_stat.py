@@ -33,6 +33,7 @@ def plot_contact_stat(input_array_pickle, output_png, genomic_dist):
         all_column.append(matrix_col)
         all_row.append(matrix_row)
         all_data.append(matrix_data)
+        print('Finish loading matrix:',key," accumulated data size:",len(all_column))   
     all_column = np.concatenate(all_column)
     all_row = np.concatenate(all_row)
     all_data = np.concatenate(all_data)
@@ -40,8 +41,10 @@ def plot_contact_stat(input_array_pickle, output_png, genomic_dist):
     contact_freq_list=[]
     genome_dist_list=[]
     for k in range(1,genomic_dist):
+        
         select_index = all_relative_dist==k
         contact_freq = np.sum(all_data[select_index])
+        print('Processed genomic distance:',k,'contact frequency:',contact_freq)
         contact_freq_list.append(contact_freq)
         genome_dist_list.append(k)
 
