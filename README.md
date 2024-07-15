@@ -369,3 +369,13 @@ python3 merge_bam.py [input_dir] [output_bam]
 ```
 [input_dir]: the directory containing all the bam files. <br>
 [output_bam]: the output merged bam file. <br>
+
+#### 24. bed_cleaner.py
+[bed_cleaner.py](pre_processing/bed_cleaner.py)
+This script merges overlapping regions from bed file.
+```
+python3 bed_cleaner.py [input_bed] [output_bed]
+```
+[input_bed]: the input bed file. <br>
+[output_bed]: the output bed file without overlapping regions. <br>
+
