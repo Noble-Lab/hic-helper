@@ -362,7 +362,7 @@ python3 bigwig2array.py [input_bw] [output_pkl] [resolution]
 
 
 #### 23. merge_bam.py
-[merge_bam.py](pre_processing/merge_bam.py)
+[merge_bam.py](pre_processing/merge_bam.py) <br>
 This script is used to merge bam files into one bam file.
 ```
 python3 merge_bam.py [input_dir] [output_bam]
@@ -371,11 +371,23 @@ python3 merge_bam.py [input_dir] [output_bam]
 [output_bam]: the output merged bam file. <br>
 
 #### 24. bed_cleaner.py
-[bed_cleaner.py](pre_processing/bed_cleaner.py)
+[bed_cleaner.py](pre_processing/bed_cleaner.py) <br>
 This script merges overlapping regions from bed file.
 ```
 python3 bed_cleaner.py [input_bed] [output_bed]
 ```
 [input_bed]: the input bed file. <br>
 [output_bed]: the output bed file without overlapping regions. <br>
+
+
+#### 25. pkl_contact_stat.py
+[pkl_contact_stat.py](visualization/pkl_contact_stat.py) <br>
+This script is used to plot contact frequency vs. genomic distance.
+```
+python3 pkl_contact_stat.py [input.pkl] [output.png] [genomic_dist]
+```
+[input.pkl]: the path to the pickle file containing the contact matrix [String]. <br>
+[output.png]: the name of the output png file [String]. <br>
+[genomic_dist]: the genomic distance for the plot [Integer]. <br>
+
 
