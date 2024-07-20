@@ -71,7 +71,7 @@ def merge_hic(juicer_tools,hic_file1, hic_file2, output_hic, resolution,refer_ge
     hic2 = hicstraw.HiCFile(hic_file2)
     chrom_list1 = get_chrom_list(hic1)
     chrom_list2 = get_chrom_list(hic2)
-    chrom_list = list(set(chrom_list1) + set(chrom_list2))
+    chrom_list = list(set(chrom_list1)  & set(chrom_list2))
     if len(chrom_list)>len(chrom_list1):
         print("Warning: The chromosome list in the two hic files are not the same.")
         more_chrom = list(set(chrom_list) - set(chrom_list1))
