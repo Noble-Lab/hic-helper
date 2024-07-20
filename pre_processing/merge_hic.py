@@ -17,9 +17,9 @@ def get_chrom_list(hic):
             continue
         chrom_list.append(chrom)
     return chrom_list
-def read_chrom_data(chr1, chr2, normalization, hic_file, resolution):
-    chr1_name = chr1.name
-    chr2_name = chr2.name
+def read_chrom_data(chr1_name, chr2_name, normalization, hic_file, resolution):
+    #chr1_name = chr1.name
+    #chr2_name = chr2.name
     infos = []
     infos.append('observed')
     infos.append(normalization)
@@ -71,15 +71,17 @@ def merge_hic(juicer_tools,hic_file1, hic_file2, output_hic, resolution,refer_ge
     hic2 = hicstraw.HiCFile(hic_file2)
     chrom_list1 = get_chrom_list(hic1)
     chrom_list2 = get_chrom_list(hic2)
-    chrom_list = list(set(chrom_list1)  & set(chrom_list2))
-    if len(chrom_list)>len(chrom_list1):
+    chrom_name_list1 = [chrom.name for chrom in chrom_list1]
+    chrom_name_list2 = [chrom.name for chrom in chrom_list2]
+    chrom_list = list(set(chrom_name_list1)  | set(chrom_name_list2))
+    if len(chrom_list)>len(chrom_name_list1):
         print("Warning: The chromosome list in the two hic files are not the same.")
-        more_chrom = list(set(chrom_list) - set(chrom_list1))
+        more_chrom = list(set(chrom_list) - set(chrom_name_list1))
         print("The following chromosomes are only in the second hic file.")
         print(more_chrom)
-    if len(chrom_list)>len(chrom_list2):
+    if len(chrom_list)>len(chrom_name_list2):
         print("Warning: The chromosome list in the two hic files are not the same.")
-        more_chrom = list(set(chrom_list) - set(chrom_list2))
+        more_chrom = list(set(chrom_list) - set(chrom_name_list2))
         print("The following chromosomes are only in the first hic file.")
         print(more_chrom)
 
@@ -104,7 +106,7 @@ def merge_hic(juicer_tools,hic_file1, hic_file2, output_hic, resolution,refer_ge
             row = row1 + row2
             col = col1 + col2
             val = val1 + val2
-            write_record_txt(chrom_list[i].name, chrom_list[j].name, row, col, val, output_txt)
+            write_record_txt(chrom_list[i], chrom_list[j], row, col, val, output_txt)
     # convert the txt file to hic file
     code_path = os.path.dirname(juicer_tools)
     root_path = os.getcwd()
