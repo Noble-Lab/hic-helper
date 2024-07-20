@@ -390,4 +390,14 @@ python3 pkl_contact_stat.py [input.pkl] [output.png] [genomic_dist]
 [output.png]: the name of the output png file [String]. <br>
 [genomic_dist]: the genomic distance for the plot [Integer]. <br>
 
-
+#### 26. merge_hic.py
+[merge_hic.py](pre_processing/merge_hic.py) <br>
+This script is to merge two hic files to a new merged hic file with specified resolution.
+```
+python3 merge_hic.py [hic_file1] [hic_file2] [output_hic] [resolution] [refer_genome]
+```
+[hic_file1]: the first hic file to be merged. <br>
+[hic_file2]: the second hic file to be merged. <br>
+[output_hic]: the output merged hic file. <br>
+[resolution]: the resolution of the output merged hic file. <br>
+[refer_genome]: the name of the reference genome. For example, hg38, hg19, mm10. <br>
