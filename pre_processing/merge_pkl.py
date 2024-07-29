@@ -1,6 +1,7 @@
 import os 
 import sys
 import pickle
+import numpy as np
 def merge_pkl(pkl_file1, pkl_file2, output_pkl):
     """
     Merge two pkl files to a new merged pkl file.
@@ -23,7 +24,15 @@ def merge_pkl(pkl_file1, pkl_file2, output_pkl):
             continue   
         cur_data1 = data1[key]
         cur_data2 = data2[key]
-        final_data[key] = cur_data1 + cur_data2
+        #judge if cur_data1 is scipy.sparse.coo matrix or numpy
+        if hasattr(cur_data1, 'toarray') and hasattr(cur_data2, 'toarray'):
+            cur_data1.row = np.concatenate((cur_data1.row, cur_data2.row))
+            cur_data1.col = np.concatenate((cur_data1.col, cur_data2.col))
+            cur_data1.data = np.concatenate((cur_data1.data, cur_data2.data))
+        else:
+            cur_data1 = cur_data1 + cur_data2
+        final_data[key] = cur_data1 
+        print(f"Merge {key} successfully.")
     with open(output_pkl, 'wb') as wfile:
         pickle.dump(final_data, wfile)
 
