@@ -401,3 +401,13 @@ python3 merge_hic.py [hic_file1] [hic_file2] [output_hic] [resolution] [refer_ge
 [output_hic]: the output merged hic file. <br>
 [resolution]: the resolution of the output merged hic file. <br>
 [refer_genome]: the name of the reference genome. For example, hg38, hg19, mm10. <br>
+
+#### 26, merge_pkl.py
+[merge_pkl.py](pre_processing/merge_pkl.py) <br>
+This script is to merge two pkl files to a new merged pkl file.
+```
+python3 merge_pkl.py <pkl_file1> <pkl_file2> <output_pkl>
+```
+[pkl_file1]: the first pkl file to be merged. <br>
+[pkl_file2]: the second pkl file to be merged. <br>
+[output_pkl]: the output merged pkl file. <br>
