@@ -77,9 +77,9 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
         input_key = input_chrom1
     matrix = data[input_key]
     print('The matrix has been loaded.',input_key,'shape:',matrix.shape)
-    matrix_row = matrix.row
-    matrix_col = matrix.col
-    matrix_data = matrix.data
+    matrix_row = np.concatenate([matrix.row,matrix.col])
+    matrix_col = np.concatenate([matrix.col,matrix.row])
+    matrix_data = np.concatenate([matrix.data,matrix.data])
     select_index1 = (matrix_row >= start_index1) & (matrix_row < end_index1)
     select_index2 = (matrix_col >= start_index2) & (matrix_col < end_index2)
     select_index = select_index1 & select_index2
@@ -91,7 +91,7 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
     #gen coo_matrix with the selected data
     output_data = coo_matrix((matrix_data, (matrix_row, matrix_col)), shape=(end_index1-start_index1, end_index2-start_index2))
     output_data = output_data.toarray()
-    output_data = output_data + triu(output_data,1).T
+    #output_data = output_data + triu(output_data,1).T #limit its application to rectangular matrix
     output_data = convert_rgb(output_data,max_value)
     #image=np.array(output_data,dtype=np.uint8)
     
