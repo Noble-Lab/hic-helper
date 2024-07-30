@@ -65,7 +65,7 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
     if mode == 0:
         if "chr" not in input_chrom1:
             input_chrom1 = 'chr' + input_chrom1
-        if "chr" not in chrom2:
+        if "chr" not in input_chrom2:
             input_chrom2 = 'chr' + input_chrom2
         input_key = "%s_%s" % (input_chrom1,input_chrom2)
     else:
