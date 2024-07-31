@@ -102,6 +102,8 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=11):
             center_index = region_size//2
             center_region = tmp_array[center_index,center_index]
             left_bottom_region = tmp_array[-center_size:,:center_size]
+            if np.mean(left_bottom_region)==0:
+                continue
             pll_list.append(center_region/np.mean(left_bottom_region))
         print("Processed",chrom,"with",count_close_loop,"close loops skipped")
     output_array = output_array/total_loop
