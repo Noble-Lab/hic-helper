@@ -56,10 +56,12 @@ def reorganize_loop(loop_list):
     return loop_dict
 def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     center_size=5
+    limit_size  = 15
     #read the hic matrix
     hic_data=pickle.load(open(hic_file,'rb'))
     #read the input bed file get all records
     loop_list = extract_loc(input_bed)
+    total_loop = len(loop_list)
     output_array = np.zeros([region_size,region_size])
     #reorganize the loop list to a chrom key based dict
     loop_dict = reorganize_loop(loop_list)
@@ -71,6 +73,7 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
             chrom_hic = hic_data[chrom].toarray()
         chrom_hic = chrom_hic + np.triu(chrom_hic,1).T 
         #symmetrize the matrix
+        count_close_loop=0
         for kk,loop in enumerate(loop_list):
             chrom1, start1, end1, chrom2, start2, end2 = loop
             #chrom2 = find_chrom_key(hic_data,chrom2)
@@ -79,19 +82,23 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
             end1 = end1//resolution
             start2 = start2//resolution
             end2 = end2//resolution
+            if abs(start1-start2)<=limit_size:
+                count_close_loop+=1
+                continue
             mid1 = (start1+end1)//2
             mid2 = (start2+end2)//2
             start1 = max(0,mid1-half_size)
             end1 = min(chrom_hic.shape[0],mid1+half_size)
             start2 = max(0,mid2-half_size)
-            end2 = min(chrom_hic.shape[0],mid2+half_size)
+            end2 = min(chrom_hic.shape[1],mid2+half_size)
             output_start1 = half_size - (mid1-start1)
             output_end1 = output_start1 + end1-start1
             output_start2 = half_size - (mid2-start2)
             output_end2 = output_start2 + end2-start2
             output_array[output_start1:output_end1,output_start2:output_end2] += chrom_hic[start1:end1,start2:end2]
-        print("Processed",chrom)
-    output_array = output_array/len(loop_list)
+            
+        print("Processed",chrom,"with",count_close_loop,"close loops skipped")
+    output_array = output_array/total_loop
     #calculate the average peak value
     left_bottom_region = output_array[-center_size:,:center_size]
     center_start = (region_size-center_size)//2
@@ -102,7 +109,7 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     print("Peak to lower-left ratios:",p2ll)
     import matplotlib.pyplot as plt
     plt.figure(figsize=(5,5))
-    plt.imshow(output_array,cmap='hot',interpolation='nearest')
+    plt.imshow(output_array,cmap='fall',interpolation='nearest')
     plt.colorbar()
     plt.title("Loop APA(Strength:%.2f, P2LL:%.2f)"%(peak_strength,p2ll))
     plt.savefig(output_png,dpi=600)
