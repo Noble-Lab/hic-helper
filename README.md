@@ -411,3 +411,14 @@ python3 merge_pkl.py <pkl_file1> <pkl_file2> <output_pkl>
 [pkl_file1]: the first pkl file to be merged. <br>
 [pkl_file2]: the second pkl file to be merged. <br>
 [output_pkl]: the output merged pkl file. <br>
+
+#### 27. loop_apa.py
+[loop_apa.py](visualization/loop_apa.py) <br>
+This script is for plot the loop average peak analysis (APA) on the hic matrix.
+```
+python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution]
+```
+- hic.pkl: the hic matrix file <br>
+- input.bed: the input bed file including the loop regions <br>
+- output.png: the output loop APA png file <br>
+- resolution: the resolution of the hic matrix <br>

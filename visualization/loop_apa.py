@@ -50,12 +50,13 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     #read the input bed file get all records
     loop_list = extract_loc(input_bed)
     output_array = np.zeros([region_size,region_size])
-    for loop in loop_list:
+    for kk,loop in enumerate(loop_list):
         chrom1, start1, end1, chrom2, start2, end2 = loop
-        chrom1 = find_chrom_key(hic_data,chrom1)
+        
         if chrom1!=chrom2:
             print("loop chromsome not match")
             sys.exit(1)
+        chrom1 = find_chrom_key(hic_data,chrom1)
         #chrom2 = find_chrom_key(hic_data,chrom2)
         half_size = region_size//2
         start1 = start1//resolution
@@ -73,6 +74,8 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
         output_start2 = half_size - (mid2-start2)
         output_end2 = output_start2 + end2-start2
         output_array[output_start1:output_end1,output_start2:output_end2] += hic_data[chrom1][start1:end1,start2:end2]
+        if kk%100==0:
+            print("APA process",kk,"/",len(loop_list))
     output_array = output_array/len(loop_list)
     #calculate the average peak value
     left_bottom_region = output_array[-center_size:,:center_size]
