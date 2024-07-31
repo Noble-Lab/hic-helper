@@ -43,6 +43,17 @@ def find_chrom_key(hic_data,chrom1):
     chrom_merge=chrom1_nochr+"_"+chrom1_nochr
     if chrom_merge in hic_data:
         return chrom_merge
+def reorganize_loop(loop_list):
+    loop_dict = {}
+    for loop in loop_list:
+        chrom1, start1, end1, chrom2, start2, end2 = loop
+        if chrom1!=chrom2:
+            print("loop chromsome not match")
+            sys.exit(1)
+        if chrom1 not in loop_dict:
+            loop_dict[chrom1] = []
+        loop_dict[chrom1].append(loop)
+    return loop_dict
 def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     center_size=5
     #read the hic matrix
@@ -50,32 +61,32 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     #read the input bed file get all records
     loop_list = extract_loc(input_bed)
     output_array = np.zeros([region_size,region_size])
-    for kk,loop in enumerate(loop_list):
-        chrom1, start1, end1, chrom2, start2, end2 = loop
-        
-        if chrom1!=chrom2:
-            print("loop chromsome not match")
-            sys.exit(1)
+    #reorganize the loop list to a chrom key based dict
+    loop_dict = reorganize_loop(loop_list)
+    for chrom in loop_dict:
+        loop_list = loop_dict[chrom]
         chrom1 = find_chrom_key(hic_data,chrom1)
-        #chrom2 = find_chrom_key(hic_data,chrom2)
-        half_size = region_size//2
-        start1 = start1//resolution
-        end1 = end1//resolution
-        start2 = start2//resolution
-        end2 = end2//resolution
-        mid1 = (start1+end1)//2
-        mid2 = (start2+end2)//2
-        start1 = max(0,mid1-half_size)
-        end1 = min(hic_data[chrom1].shape[0],mid1+half_size)
-        start2 = max(0,mid2-half_size)
-        end2 = min(hic_data[chrom1].shape[0],mid2+half_size)
-        output_start1 = half_size - (mid1-start1)
-        output_end1 = output_start1 + end1-start1
-        output_start2 = half_size - (mid2-start2)
-        output_end2 = output_start2 + end2-start2
-        output_array[output_start1:output_end1,output_start2:output_end2] += hic_data[chrom1][start1:end1,start2:end2]
-        if kk%100==0:
-            print("APA process",kk,"/",len(loop_list))
+        chrom_hic = hic_data[chrom1].toarray()
+        for kk,loop in enumerate(loop_list):
+            chrom1, start1, end1, chrom2, start2, end2 = loop
+            #chrom2 = find_chrom_key(hic_data,chrom2)
+            half_size = region_size//2
+            start1 = start1//resolution
+            end1 = end1//resolution
+            start2 = start2//resolution
+            end2 = end2//resolution
+            mid1 = (start1+end1)//2
+            mid2 = (start2+end2)//2
+            start1 = max(0,mid1-half_size)
+            end1 = min(chrom_hic.shape[0],mid1+half_size)
+            start2 = max(0,mid2-half_size)
+            end2 = min(chrom_hic.shape[0],mid2+half_size)
+            output_start1 = half_size - (mid1-start1)
+            output_end1 = output_start1 + end1-start1
+            output_start2 = half_size - (mid2-start2)
+            output_end2 = output_start2 + end2-start2
+            output_array[output_start1:output_end1,output_start2:output_end2] += chrom_hic[start1:end1,start2:end2]
+        print("Processed",chrom)
     output_array = output_array/len(loop_list)
     #calculate the average peak value
     left_bottom_region = output_array[-center_size:,:center_size]
