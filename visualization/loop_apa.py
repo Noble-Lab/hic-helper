@@ -54,8 +54,8 @@ def reorganize_loop(loop_list):
             loop_dict[chrom1] = []
         loop_dict[chrom1].append(loop)
     return loop_dict
-def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
-    center_size=5
+def loop_apa(hic_file, input_bed, output_png, resolution,region_size=11):
+    center_size=3
     limit_size  = 15
     #read the hic matrix
     hic_data=pickle.load(open(hic_file,'rb'))
@@ -65,6 +65,7 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     output_array = np.zeros([region_size,region_size])
     #reorganize the loop list to a chrom key based dict
     loop_dict = reorganize_loop(loop_list)
+    pll_list=[]
     for chrom in loop_dict:
         loop_list = loop_dict[chrom]
         chrom = find_chrom_key(hic_data,chrom)
@@ -88,23 +89,28 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
             mid1 = (start1+end1)//2
             mid2 = (start2+end2)//2
             start1 = max(0,mid1-half_size)
-            end1 = min(chrom_hic.shape[0],mid1+half_size)
+            end1 = min(chrom_hic.shape[0],start1+region_size)
             start2 = max(0,mid2-half_size)
-            end2 = min(chrom_hic.shape[1],mid2+half_size)
+            end2 = min(chrom_hic.shape[1],start2+region_size)
             output_start1 = half_size - (mid1-start1)
             output_end1 = output_start1 + end1-start1
             output_start2 = half_size - (mid2-start2)
             output_end2 = output_start2 + end2-start2
-            output_array[output_start1:output_end1,output_start2:output_end2] += chrom_hic[start1:end1,start2:end2]
-            
+            tmp_array = np.zeros([region_size,region_size])
+            tmp_array[output_start1:output_end1,output_start2:output_end2] = chrom_hic[start1:end1,start2:end2]
+            output_array[output_start1:output_end1,output_start2:output_end2] += tmp_array
+            center_index = region_size//2
+            center_region = tmp_array[center_index,center_index]
+            left_bottom_region = tmp_array[-center_size:,:center_size]
+            pll_list.append(center_region/np.mean(left_bottom_region))
         print("Processed",chrom,"with",count_close_loop,"close loops skipped")
     output_array = output_array/total_loop
     #calculate the average peak value
-    left_bottom_region = output_array[-center_size:,:center_size]
-    center_start = (region_size-center_size)//2
-    center_region = output_array[center_start:center_start+center_size,center_start:center_start+center_size]
-    peak_strength = np.mean(center_region)
-    p2ll = np.sum(center_region)/np.sum(left_bottom_region)
+    p2ll = np.mean(pll_list)
+    center_index = region_size//2
+    center_region = output_array[center_index,center_index]
+    peak_strength = center_region
+    #p2ll = np.sum(center_region)/np.sum(left_bottom_region)
     print("Peak strength:",peak_strength)
     print("Peak to lower-left ratios:",p2ll)
     import matplotlib.pyplot as plt
