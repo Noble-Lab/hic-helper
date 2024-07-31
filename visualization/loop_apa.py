@@ -65,8 +65,10 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     loop_dict = reorganize_loop(loop_list)
     for chrom in loop_dict:
         loop_list = loop_dict[chrom]
-        chrom1 = find_chrom_key(hic_data,chrom1)
-        chrom_hic = hic_data[chrom1].toarray()
+        chrom = find_chrom_key(hic_data,chrom)
+        #judge if it is coo matrix
+        if hasattr(hic_data[chrom],'toarray'):
+            chrom_hic = hic_data[chrom].toarray()
         for kk,loop in enumerate(loop_list):
             chrom1, start1, end1, chrom2, start2, end2 = loop
             #chrom2 = find_chrom_key(hic_data,chrom2)
