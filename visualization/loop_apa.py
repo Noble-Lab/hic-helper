@@ -69,6 +69,8 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
         #judge if it is coo matrix
         if hasattr(hic_data[chrom],'toarray'):
             chrom_hic = hic_data[chrom].toarray()
+        chrom_hic = chrom_hic + np.triu(chrom_hic,1).T 
+        #symmetrize the matrix
         for kk,loop in enumerate(loop_list):
             chrom1, start1, end1, chrom2, start2, end2 = loop
             #chrom2 = find_chrom_key(hic_data,chrom2)
