@@ -109,7 +109,7 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=21):
     print("Peak to lower-left ratios:",p2ll)
     import matplotlib.pyplot as plt
     plt.figure(figsize=(5,5))
-    plt.imshow(output_array,cmap='fall',interpolation='nearest')
+    plt.imshow(output_array,cmap='hot',interpolation='nearest')
     plt.colorbar()
     plt.title("Loop APA(Strength:%.2f, P2LL:%.2f)"%(peak_strength,p2ll))
     plt.savefig(output_png,dpi=600)
