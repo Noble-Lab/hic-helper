@@ -56,7 +56,7 @@ def reorganize_loop(loop_list):
     return loop_dict
 def loop_apa(hic_file, input_bed, output_png, resolution,region_size=11):
     center_size=3
-    limit_size  = 15
+    limit_size  = int(region_size*2)
     #read the hic matrix
     hic_data=pickle.load(open(hic_file,'rb'))
     #read the input bed file get all records
@@ -125,12 +125,13 @@ def loop_apa(hic_file, input_bed, output_png, resolution,region_size=11):
 """
 This script is for plot the loop average peak analysis (APA) on the hic matrix.
 ```
-python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution]
+python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution] [window_size]
 ```
 - hic.pkl: the hic matrix file <br>
 - input.bed: the input bed file including the loop regions <br>
 - output.png: the output loop APA png file <br>
 - resolution: the resolution of the hic matrix <br>
+- window_size: the window size of the loop region <br>
 """
     
 
@@ -138,18 +139,20 @@ python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution]
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 5:
-        print("Usage: python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution]")
+    if len(sys.argv) != 6:
+        print("Usage: python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution] [window_size]")
         print("This script is for plot the loop average peak analysis (APA) on the hic matrix")
         print("hic.pkl: the hic matrix file")  
         print("input.bed: the input bed file including the loop regions")
         print("output.png: the output loop APA png file")
         print("resolution: the resolution of the hic matrix")
+        print("window_size: the window size of the loop region")
         sys.exit(1)
     hic_file = os.path.abspath(sys.argv[1])
     input_bed = os.path.abspath(sys.argv[2])
     output_png = os.path.abspath(sys.argv[3])
     resolution = int(sys.argv[4])
+    window_size = int(sys.argv[5])
     output_dir = os.path.dirname(output_png)
     os.makedirs(output_dir,exist_ok=True)
-    loop_apa(hic_file, input_bed, output_png, resolution) 
+    loop_apa(hic_file, input_bed, output_png, resolution,region_size=window_size) 
