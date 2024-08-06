@@ -423,3 +423,14 @@ python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution] [window_size
 - output.png: the output loop APA png file <br>
 - resolution: the resolution of the hic matrix <br>
 - window_size: the window size of the loop region <br>
+
+
+#### 28. annotate_loop_gene.py
+[annotate_loop_gene.py](post_processing/annotate_loop_gene.py) <br>
+This script is for annotate the loop with gene information.
+```
+python3 annotate_loop_gene.py [input.bed] [gene_annotation] [output.bed]
+```
+input.bed: the input bed file that contains the loop information. <br>
+gene_annotation: the gene annotation file format:.gtf, like hg38.ncbiRefSeq.gtf. <br>
+output.bed: the output bed file that contains the annotated loop information. <br>
