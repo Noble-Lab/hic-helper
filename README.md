@@ -434,3 +434,4 @@ python3 annotate_loop_gene.py [input.bed] [gene_annotation] [output.bed]
 input.bed: the input bed file that contains the loop information. <br>
 gene_annotation: the gene annotation file format:.gtf, like hg38.ncbiRefSeq.gtf. <br>
 output.bed: the output bed file that contains the annotated loop information. <br>
+The last two columns in the output.bed file are the closest gene and the distance to the loop (corresponds to x and y).

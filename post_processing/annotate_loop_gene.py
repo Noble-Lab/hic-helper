@@ -113,10 +113,11 @@ def annotate_loop_gene(input_bed, gene_annotation, output_bed):
                 if cur_distance2<close2_distance:
                     close2_distance = cur_distance2
                     close2_gene = gene_name
-            output_list.append([chrom1, start1, end1, chrom2, start2, end2, close1_gene, close2_gene])
+            output_list.append([chrom1, start1, end1, chrom2, start2, end2, close1_gene+"-%d"%close1_distance, close2_gene+"-%d"%close2_distance])
             loop_label_count+=1
-            if loop_label_count%1000==0:
-                print("Annotated",loop_label_count,"loops")
+            if loop_label_count%100==0:
+                print("Annotated",loop_label_count,"/%d loops"%total_loop)
+                print("Example gene annotation:",output_list[-1])
     with open(output_bed, "w") as f:
         for record in output_list:
             f.write("\t".join([str(x) for x in record])+"\n")
@@ -128,7 +129,7 @@ python3 annotate_loop_gene.py [input.bed] [gene_annotation] [output.bed]
 input.bed: the input bed file that contains the loop information. <br>
 gene_annotation: the gene annotation file format:.gtf, like hg38.ncbiRefSeq.gtf. <br>
 output.bed: the output bed file that contains the annotated loop information. <br>
-
+The last two columns in the output.bed file are the closest gene and the distance to the loop (corresponds to x and y). <br>
 
 """
 
@@ -145,5 +146,7 @@ if __name__ == '__main__':
     input_bed = os.path.abspath(sys.argv[1])
     gene_annotation = os.path.abspath(sys.argv[2])
     output_bed = os.path.abspath(sys.argv[3])
+    output_dir = os.path.dirname(output_bed)
+    os.makedirs(output_dir, exist_ok=True)
     #read the input bed file get all records
     annotate_loop_gene(input_bed, gene_annotation, output_bed)
