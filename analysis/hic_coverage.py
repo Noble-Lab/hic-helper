@@ -30,7 +30,7 @@ if __name__ == '__main__':
         # print("[fragment_size]: the size of the fragment for building Hi-C")
         sys.exit(1)
     input_pkl = os.path.abspath(sys.argv[1])
-    resolution = int(sys.argv[2])
+    #resolution = int(sys.argv[2])
     #fragment_size = int(sys.argv[3])
     coverage = calculate_coverage(input_pkl)
     print("Hi-C Coverage: ", coverage)
