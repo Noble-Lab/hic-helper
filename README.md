@@ -435,3 +435,11 @@ input.bed: the input bed file that contains the loop information. <br>
 gene_annotation: the gene annotation file format:.gtf, like hg38.ncbiRefSeq.gtf. <br>
 output.bed: the output bed file that contains the annotated loop information. <br>
 The last two columns in the output.bed file are the closest gene and the distance to the loop (corresponds to x and y).
+
+#### 29. hic_coverage.py
+[hic_coverage.py](analysis/hic_coverage.py) <br>
+This script calculates the coverage of the Hi-C data.
+```
+python3 hic_coverage.py [input.pkl]
+```
+[input.pkl]: the input pkl file containing the Hi-C data <br>
