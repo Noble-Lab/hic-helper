@@ -93,16 +93,19 @@ def annotate_loop_gene(input_bed, gene_annotation, output_bed):
             close2_distance = 100000000
             close1_gene = ""
             close2_gene = ""
+            inside_gene_list=[]
             for gene in current_gene_list:
                 gene_start, gene_end, gene_name = gene
                 #if the gene is in the loop
                 if gene_start>=start1 and gene_end<=end1:
                     close1_distance = 0
                     close1_gene = gene_name
+                    inside_gene_list.append(gene_name)
                     continue
                 if gene_start>=start2 and gene_end<=end2:
                     close2_distance = 0
                     close2_gene = gene_name
+                    inside_gene_list.append(gene_name)
                     break
                 #check the distance
                 cur_distance1 = min(abs(gene_start-start1), abs(gene_end-end1))
@@ -113,7 +116,15 @@ def annotate_loop_gene(input_bed, gene_annotation, output_bed):
                 if cur_distance2<close2_distance:
                     close2_distance = cur_distance2
                     close2_gene = gene_name
-            output_list.append([chrom1, start1, end1, chrom2, start2, end2, close1_gene+"-%d"%close1_distance, close2_gene+"-%d"%close2_distance])
+            tmp_list=[chrom1, start1, end1, chrom2, start2, end2]
+            #[chrom1, start1, end1, chrom2, start2, end2, close1_gene+"-%d"%close1_distance, close2_gene+"-%d"%close2_distance])
+            if len(inside_gene_list)>0:
+                for gene_name in inside_gene_list:
+                    tmp_list.append(gene_name+"-0")
+            else:
+                tmp_list.append(close1_gene+"-%d"%close1_distance)
+                tmp_list.append(close2_gene+"-%d"%close2_distance)
+            output_list.append(tmp_list)
             loop_label_count+=1
             if loop_label_count%100==0:
                 print("Annotated",loop_label_count,"/%d loops"%total_loop)
