@@ -119,6 +119,7 @@ def annotate_loop_gene(input_bed, gene_annotation, output_bed):
             tmp_list=[chrom1, start1, end1, chrom2, start2, end2]
             #[chrom1, start1, end1, chrom2, start2, end2, close1_gene+"-%d"%close1_distance, close2_gene+"-%d"%close2_distance])
             if len(inside_gene_list)>0:
+                inside_gene_list =list(set(inside_gene_list))
                 for gene_name in inside_gene_list:
                     tmp_list.append(gene_name+"-0")
             else:
