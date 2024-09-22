@@ -301,7 +301,7 @@ This script is used to add norm to the hic files.
 The calculated norm vectors will be automatically saved in the input.hic file. <br>
 
 #### 18. count_hic_read.py
-[count_hic_read.py](pre_processing/count_hic_read.py) <br>
+[count_hic_read.py](analysis/count_hic_read.py) <br>
 This script is to count the total/total non-diag reads of cis/all.
 ```
 python3 count_hic_read.py [input.hic] [resolution] [normalization_type] 
@@ -443,3 +443,11 @@ This script calculates the coverage of the Hi-C data.
 python3 hic_coverage.py [input.pkl]
 ```
 [input.pkl]: the input pkl file containing the Hi-C data <br>
+
+#### 30. count_1d_read.py
+[count_1d_read.py](analysis/count_1d_read.py)
+This script is to calculate the average read count per base and total read count in the bigwig file.
+```
+python3 bigwig2count.py [input_bw]
+```
+[input_bw]: the input bigwig file. <br>
