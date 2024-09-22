@@ -15,7 +15,7 @@ def bigwig2count(input_bw):
         chrom_size = chroms[chrom]
         print("Chrom size:", chrom_size)
         signal = bw.stats(chrom)
-        total_read += float(signal)*chrom_size
+        total_read += np.sum(signal)*chrom_size
         total_chrom += chrom_size
     bw.close()
     print("Total reads:", total_read)
