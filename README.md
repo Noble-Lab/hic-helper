@@ -451,3 +451,13 @@ This script is to calculate the average read count per base and total read count
 python3 bigwig2count.py [input_bw]
 ```
 [input_bw]: the input bigwig file. <br>
+
+
+#### 31. peak_f1.py
+[peak_f1.py](analysis/peak_f1.py)
+```
+python3 peak_f1.py [true.bed] [pred.bed] [max_dist]
+```
+[true.bed]: the true peaks, in bed format <br>
+[pred.bed]: the predicted peaks, in bed format <br>
+[max_dist]: the maximum distance to match the peaks <br>
