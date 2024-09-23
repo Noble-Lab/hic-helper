@@ -29,6 +29,13 @@ def check_close_dist(true_loc,pred_loc):
     end1 = true_loc[1]
     start2 = pred_loc[0]
     end2 = pred_loc[1]
+    
+    #if have any overlaps, return 0, should be 4 different cases
+   
+    if start1 <= start2 and end1 >= start2:
+        return 0
+    if start2 <= start1 and end2 >= start1:
+        return 0
     dist1 = abs(start1 - start2)
     dist2 = abs(end1 - end2)
     dist3 = abs(start1 - end2)
