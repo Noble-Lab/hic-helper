@@ -461,3 +461,15 @@ python3 peak_f1.py [true.bed] [pred.bed] [max_dist]
 [true.bed]: the true peaks, in bed format <br>
 [pred.bed]: the predicted peaks, in bed format <br>
 [max_dist]: the maximum distance to match the peaks <br>
+
+
+#### 32. bigwig_peak_distribution.py
+[bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py)
+This script plots the peak distribution of the bigwig file.
+```
+python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fig]
+```
+[input.bw]: the input bigwig file. <br>
+[window_size]: the window size for analyzing peak distribution. <br>
+[stride]: the stride for analyzing peak distribution. <br>
+[output_fig]: the output figure path to show the peak distribution. <br>
