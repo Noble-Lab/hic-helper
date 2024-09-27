@@ -13,7 +13,7 @@ def bigwig2array(input_bw, output_pkl, resolution):
         print("Chrom size:", chrom_size)
         signal = bw.values(chrom, 0, chrom_size, numpy=True)
         #each resolution interval should sum to get the overall signal
-        cutoff_length = chrom_size // resolution * resolution
+        cutoff_length = chrom_size // resolution 
         if cutoff_length == 0:
             print("Chrom size is smaller than resolution, skipping")
             continue

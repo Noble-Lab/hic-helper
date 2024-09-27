@@ -18,6 +18,7 @@ def plot_distribution(input_bw, window_size, stride, output_fig):
             value = np.mean(signal[i:i+window_size])
             value_list.append(value)
         print("Accumulated value list length:", len(value_list))
+        print("value stats: mean ",np.mean(value_list), "std ", np.std(value_list), "max ", np.max(value_list), "min ", np.min(value_list))
     bw.close()
     plt.hist(value_list, bins=100)
     plt.xlabel("Peak Strength")
