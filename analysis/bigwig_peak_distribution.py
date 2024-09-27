@@ -26,6 +26,7 @@ def plot_distribution(input_bw, window_size, stride, output_fig,plot_mode):
     plt.xlabel("Peak Strength")
     plt.ylabel("Frequency")
     plt.title("Peak Distribution")
+    plt.yscale('log') #very necessary because many 0 values
     plt.savefig(output_fig,dpi=600)
 """
 This script plots the peak distribution of the bigwig file.
