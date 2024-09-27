@@ -467,9 +467,10 @@ python3 peak_f1.py [true.bed] [pred.bed] [max_dist]
 [bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py)
 This script plots the peak distribution of the bigwig file.
 ```
-python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fig]
+python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fig] [mode]
 ```
 [input.bw]: the input bigwig file. <br>
 [window_size]: the window size for analyzing peak distribution. <br>
 [stride]: the stride for analyzing peak distribution. <br>
 [output_fig]: the output figure path to show the peak distribution. <br>
+[mode]: 0:raw_value, 1:log10_value. <br>
