@@ -445,7 +445,7 @@ python3 hic_coverage.py [input.pkl]
 [input.pkl]: the input pkl file containing the Hi-C data <br>
 
 #### 30. count_1d_read.py
-[count_1d_read.py](analysis/count_1d_read.py)
+[count_1d_read.py](analysis/count_1d_read.py)<br>
 This script is to calculate the average read count per base and total read count in the bigwig file.
 ```
 python3 bigwig2count.py [input_bw]
@@ -454,7 +454,8 @@ python3 bigwig2count.py [input_bw]
 
 
 #### 31. peak_f1.py
-[peak_f1.py](analysis/peak_f1.py)
+[peak_f1.py](analysis/peak_f1.py)<br>
+This script is to compare two peak files to calculate the F1 score.
 ```
 python3 peak_f1.py [true.bed] [pred.bed] [max_dist]
 ```
@@ -464,7 +465,7 @@ python3 peak_f1.py [true.bed] [pred.bed] [max_dist]
 
 
 #### 32. bigwig_peak_distribution.py
-[bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py)
+[bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py)<br>
 This script plots the peak distribution of the bigwig file.
 ```
 python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fig] [mode]
@@ -474,3 +475,20 @@ python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fi
 [stride]: the stride for analyzing peak distribution. <br>
 [output_fig]: the output figure path to show the peak distribution. <br>
 [mode]: 0:raw_value, 1:log10_value. <br>
+
+#### 33. peak_call_bigWig.py
+[peak_call_bigWig.py](downstream/peak_call_bigWig.py) <br>
+This script is to call peaks from the bigWig file.
+The bigWig file is generated from the bam file by using the deepTools bamCoverage.
+```
+python3 peak_call_bigWig.py -t input.bw -c control.bw -o output_dir -q [qval] [--broad] --min_length [min_length] --thread [thread]
+```
+- t: path to the treatment bigWig file. <br>
+- c: path to the control bigWig file. <br>
+- o: output directory. <br>
+- q: q-value cutoff (minimum FDR) for peak calling. <br>
+- p: p-value cutoff for peak calling, if provided, q-value will be ignored. <br>
+- broad: use broad peak calling. <br>
+- min_length: minimum length of the peak, can be set with fragment size. <br>
+- thread: number of threads to use. <br>
+The output file is a bed file with the peak information. <br>
