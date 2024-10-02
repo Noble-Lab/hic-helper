@@ -5,7 +5,7 @@ import pyBigWig
 import numpy as np
 from multiprocessing import Pool
 import scipy.stats as stats
-def _call_peak(signal_window,config_lambda,broad):
+def _call_peak(signal_window,config_lambda,broad,current_index=0):
     """
     signal_window: numpy array
     config_lambda: float lambda from control sample
@@ -16,6 +16,7 @@ def _call_peak(signal_window,config_lambda,broad):
         max_value = np.mean(signal_window)
     max_value =int(np.floor(max_value))
     p_value =1 - stats.poisson.cdf(max_value,config_lambda)
+    print("p-value for the peak at", current_index, "is", p_value)
     return p_value
 def filter_peak(peak_list, pvalue, qvalue):
     tmp_peak_list = peak_list
@@ -88,7 +89,7 @@ def call_peak(input_bigwig, control_bigwig, output_dir, qvalue, pvalue, broad,  
                 end_index = min(i+tmp_window_size,chrom_size)
                 tmp_mean = np.mean(control_signal[start_index:end_index])
                 cur_lambda_max = max(cur_lambda_max,tmp_mean)
-            res = p.apply_async(_call_peak, args=(current_window,cur_lambda_max,broad))
+            res = p.apply_async(_call_peak, args=(current_window,cur_lambda_max,broad,i))
             res_list.append(res)
         p.close()
         p.join()
@@ -120,7 +121,7 @@ def call_peak(input_bigwig, control_bigwig, output_dir, qvalue, pvalue, broad,  
                 end_index2 = min(mid_index+tmp_window_size//2,chrom_size)
                 tmp_mean = np.mean(control_signal[start_index2:end_index2])
                 cur_lambda_max = max(cur_lambda_max,tmp_mean)
-            res = p.apply_async(_call_peak, args=(current_window,cur_lambda_max,broad))
+            res = p.apply_async(_call_peak, args=(current_window,cur_lambda_max,broad,start_index))
             res_list.append(res)
             candidate_list.append([start_index,end_index])
         p.close()
