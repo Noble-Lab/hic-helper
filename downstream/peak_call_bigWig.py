@@ -29,6 +29,7 @@ def filter_peak(peak_list, pvalue, qvalue,broad,broad_cutoff):
     tmp_peak_list = sorted(tmp_peak_list,key=lambda x:x[1])
     if pvalue is not None:
         tmp_peak_list = [x for x in tmp_peak_list if x[1] <= pvalue]
+        print("after filtering  summmit has", len(tmp_peak_list), "peaks")
         if broad:
             tmp_peak_list = [x for x in tmp_peak_list if x[2] <= broad_cutoff]
     elif qvalue is not None:
@@ -43,6 +44,7 @@ def filter_peak(peak_list, pvalue, qvalue,broad,broad_cutoff):
                 cur_qval = cur_pval * len(tmp_peak_list) / (i+1)
                 refine_peak_list.append([cur_index,cur_qval,cur_broad_pval])
         tmp_peak_list = [x for x in refine_peak_list if x[1] <= qvalue]
+        print("after filtering  summmit has", len(tmp_peak_list), "peaks")
         #if broad peak calling, we also need to check the broad q-value
         if broad:
             tmp_peak_list = sorted(tmp_peak_list,key=lambda x:x[2])
@@ -125,6 +127,9 @@ def call_peak(input_bigwig, control_bigwig, output_dir, qvalue, pvalue, broad, b
                 tmp_peak_list.append([current_index,pval,broad_pval])
         
         tmp_peak_list = filter_peak(tmp_peak_list, pvalue, qvalue,broad,broad_cutoff)
+        if len(tmp_peak_list) == 0:
+            print("No peak found in chromosome: ", chrom)
+            continue
         #merge nearby peaks and then calculate if it still pass the threshold
         refined_peak_list=[[x[0],x[0]+window_size] for x in tmp_peak_list]
         merged_peak_list = merge_peak(refined_peak_list)
@@ -175,11 +180,15 @@ def call_peak(input_bigwig, control_bigwig, output_dir, qvalue, pvalue, broad, b
                 end_index = end_index_map_dict[start_index]
                 
                 log_pval = -np.log10(pval)
-                fold_enrichment = np.mean(signal[start_index:end_index])/np.mean(control_signal[start_index:end_index])
+                control_avg = np.mean(control_signal[start_index:end_index])
+                if control_avg == 0:
+                    fold_enrichment = np.inf
+                else:
+                    fold_enrichment = np.mean(signal[start_index:end_index])/control_avg
                 
                 if broad:
                     log_broad_pval = -np.log10(broad_pval)
-                    peak_file.write("%s\t%d\t%d\t%.4f\t%.4f\t%.4f\n"%(chrom,start_index,end_index,log_pval,log_broad_pval))
+                    peak_file.write("%s\t%d\t%d\t%.4f\t%.4f\t%.4f\n"%(chrom,start_index,end_index,log_pval,log_broad_pval,fold_enrichment))
                 else:
                     peak_file.write("%s\t%d\t%d\t%.4f\t%.4f\n"%(chrom,start_index,end_index,log_pval,fold_enrichment))
     bw.close()
