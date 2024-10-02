@@ -481,14 +481,15 @@ python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fi
 This script is to call peaks from the bigWig file.
 The bigWig file is generated from the bam file by using the deepTools bamCoverage.
 ```
-python3 peak_call_bigWig.py -t input.bw -c control.bw -o output_dir -q [qval] [--broad] --min_length [min_length] --thread [thread]
+python3 peak_call_bigWig.py -t input.bw -c control.bw -o output_dir -q [qval] --min_length [min_length] --thread [thread] [--broad] [--broad_cutoff=[broad_cutoff]]
 ```
 - t: path to the treatment bigWig file. <br>
 - c: path to the control bigWig file. <br>
 - o: output directory. <br>
 - q: q-value cutoff (minimum FDR) for peak calling. <br>
 - p: p-value cutoff for peak calling, if provided, q-value will be ignored. <br>
-- broad: use broad peak calling. <br>
 - min_length: minimum length of the peak, can be set with fragment size. <br>
 - thread: number of threads to use. <br>
+- broad: use broad peak calling. <br>
+- broad_cutoff: cutoff for broad peak calling (it will be q-value or qvalue based on either you choose -p or -q). <br>
 The output file is a bed file with the peak information. <br>
