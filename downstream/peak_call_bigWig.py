@@ -21,6 +21,7 @@ def _call_peak(signal_window,config_lambda,broad,current_index=0):
     mean_value = np.mean(signal_window)
     mean_value = int(np.floor(mean_value))
     broad_pval = 1-stats.poisson.cdf(mean_value,config_lambda)
+    print("broad p-value for the peak at", current_index, "is", broad_pval, "with lambda", config_lambda," peak value", mean_value)
     return p_value,broad_pval
 def filter_peak(peak_list, pvalue, qvalue,broad,broad_cutoff):
     tmp_peak_list = peak_list
