@@ -15,7 +15,7 @@ def _call_peak(signal_window,config_lambda,broad,current_index=0):
     
     max_value =int(np.floor(max_value))
     p_value =1 - stats.poisson.cdf(max_value,config_lambda)
-    print("p-value for the peak at", current_index, "is", p_value)
+    print("p-value for the peak at", current_index, "is", p_value, "with lambda", config_lambda," peak value", max_value)
     if not broad:
         return p_value
     mean_value = np.mean(signal_window)
@@ -82,6 +82,13 @@ def call_peak(input_bigwig, control_bigwig, output_dir, qvalue, pvalue, broad, b
     output_bed = os.path.join(output_dir,"output_peaks.bed")
     with open(output_bed,'w') as wfile:
         wfile.write("#Peak calling from the bigWig file by hichelper.\n")
+        use_flag = "q-value" if qvalue else "p-value"
+        if broad:
+            wfile.write("#Broad peak calling is used\n")
+            
+            wfile.write(f"#Chromosome\tStart\tEnd\t-log10({use_flag})\t-log10(broad {use_flag})\tFold enrichment\n")
+        else:
+            wfile.write(f"#Chromosome\tStart\tEnd\t-log10({use_flag})\tFold enrichment\n")
     check_window_size=[1000,5000,10000]
     max_window = max(check_window_size)
     for chrom in chroms:
