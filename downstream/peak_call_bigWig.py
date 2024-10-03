@@ -168,7 +168,10 @@ def call_peak(input_bigwig, control_bigwig, output_dir, qvalue, pvalue, broad, b
                 pval,broad_pval=res_list[i].get()
                 tmp_peak_list.append([current_index,cur_end_index,pval,broad_pval])
             end_index_map_dict[current_index]=cur_end_index   
-        filter_peak_input=[[x[0],x[2],x[3]] for x in tmp_peak_list]
+        if broad:
+            filter_peak_input=[[x[0],x[2],x[3]] for x in tmp_peak_list]
+        else:
+            filter_peak_input=[[x[0],x[2]] for x in tmp_peak_list]
         #filter the peak list again
         tmp_peak_list = filter_peak(filter_peak_input, pvalue, qvalue,broad,broad_cutoff)
         with open(output_bed,'a') as peak_file:
