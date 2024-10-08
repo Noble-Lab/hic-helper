@@ -106,7 +106,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [end_index2] is the end index of the second chromosome. <br>
 [resolution] is the resolution of the input array. <br>
 [max_value] is the maximum threshold of the input array for figures. <br>
-[mode] is 0 for all chromosome mode and 1 for intra-chromosome mode. <br>
+[mode] is 0 for raw visualization, 1 for log visualization. <br>
 All index input should be absolute index counted by base. <br>
 
 #### 5.hiccups_loop.py

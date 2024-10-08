@@ -46,7 +46,7 @@ def find_key(data,input_chrom1,input_chrom2):
         print('The available chromosomes are:',data.keys())
         raise ValueError('The input chromosomes are not found in the input array.')
 def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
-              end_index1,input_chrom2,start_index2,end_index2,max_value):
+              end_index1,input_chrom2,start_index2,end_index2,max_value,run_mode):
     #load array
     """
     The array2png function takes in a pickled array, and outputs a png image.
@@ -60,6 +60,7 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
     :param start_index2: Specify the start index of the second chromosome
     :param end_index2: Specify the end index of the second chromosome
     :param max_value: Specify the maximum threshold of the input array for figures
+    :param run_mode: Specify the mode of the visualization. 0:raw visualization; 1: log visualization.
     :return: A figure of size (end_index2-start_index2) * (end_index2-start_index2)
     :doc-author: Trelent
     """
@@ -87,6 +88,9 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
     output_data = coo_matrix((matrix_data, (matrix_row, matrix_col)), shape=(end_index1-start_index1, end_index2-start_index2))
     output_data = output_data.toarray()
     #output_data = output_data + triu(output_data,1).T #limit its application to rectangular matrix
+    if run_mode == 1:
+        output_data = np.log(output_data+1)
+        max_value = np.log(max_value+1)
     output_data = convert_rgb(output_data,max_value)
     #image=np.array(output_data,dtype=np.uint8)
     
@@ -103,7 +107,7 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
 """
 Usage of array2png.py
 ```
-python3 array2png.py [input.pkl] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] 
+python3 array2png.py [input.pkl] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
 ```
 This is the full array2png script. <br>
 [input.pkl] is the path to the pickle file containing the array. <br>
@@ -118,6 +122,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [end_index2] is the end index of the second chromosome. <br>
 [resolution] is the resolution of the input array. <br>
 [max_value] is the maximum threshold of the input array for figures. <br>
+[mode]: 0:raw visualization; 1: log visualization. <br>
 All index input should be absolute index counted by base. <br>
 
 """
@@ -126,10 +131,10 @@ if __name__ == '__main__':
     import os
     import sys
     #take the overall array as input
-    if len(sys.argv) != 11:
+    if len(sys.argv) != 12:
         print('Usage: python3 array2png.py [input.pkl] [output.png] \
               [chrom1] [start_index1] [end_index1] \
-              [chrom2] [start_index2] [end_index2] [resolution] [max_value]')
+              [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]')
         print("This is the full array2png script. ")
         print("input.pkl: the path to the pickle file containing the array [String].")
         print("input.pkl format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array."\
@@ -143,6 +148,7 @@ if __name__ == '__main__':
         print("end_index2: the end index of the second chromosome [Integer].")
         print("resolution: resolution of the input array [Integer].")
         print("max_value: the maximum threshold of the input array for figures[Float].")
+        print("mode: 0:raw visualization; 1: log visualization. [Integer].")
         print("All index input should be absolute index counted by base.")
         sys.exit(1)
     input_array_pickle = os.path.abspath(sys.argv[1])
@@ -155,12 +161,13 @@ if __name__ == '__main__':
     end_index2 = int(sys.argv[8])
     resolution = int(sys.argv[9])
     max_value = float(sys.argv[10])
+    mode = int(sys.argv[11])
 
     start_index1 = start_index1//resolution
     end_index1 = end_index1//resolution
     start_index2 = start_index2//resolution
     end_index2 = end_index2//resolution
     array2png(input_array_pickle,output_png,chrom1,start_index1,
-              end_index1,chrom2,start_index2,end_index2,max_value)
+              end_index1,chrom2,start_index2,end_index2,max_value,mode)
     
     
