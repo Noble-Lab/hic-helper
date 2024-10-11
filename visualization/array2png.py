@@ -87,6 +87,7 @@ def array2png(input_array_pickle,output_png,input_chrom1,start_index1,
     #gen coo_matrix with the selected data
     output_data = coo_matrix((matrix_data, (matrix_row, matrix_col)), shape=(end_index1-start_index1, end_index2-start_index2))
     output_data = output_data.toarray()
+    print("select matrix stat, min:",np.min(output_data),"max:",np.max(output_data),"mean:",np.mean(output_data))
     #output_data = output_data + triu(output_data,1).T #limit its application to rectangular matrix
     if run_mode == 1:
         output_data = np.log(output_data+1)
