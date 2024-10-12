@@ -493,3 +493,15 @@ python3 peak_call_bigWig.py -t input.bw -c control.bw -o output_dir -q [qval] --
 - broad: use broad peak calling. <br>
 - broad_cutoff: cutoff for broad peak calling (it will be q-value or qvalue based on either you choose -p or -q). <br>
 The output file is a bed file with the peak information. <br>
+
+#### 34. peak_overlap.py
+[peak_overlap.py](post_processing/peak_overlap.py) <br>
+This script is to compare two bed files and find the overlapping peaks. <br>
+```
+python3 peak_overlap.py [input1.bed] [input2.bed] [overlap_ratio] [output_dir]
+```
+- input1.bed: the first input bed file  <br>
+- input2.bed: the second input bed file  <br>
+- overlap_ratio: the ratio of overlap to consider as overlap  <br>
+- output_dir: the output directory  <br>
+- The output files are overlap1.bed, overlap2.bed, independent1.bed, independent2.bed, indicating the overlap peaks in input1.bed, overlap peaks in input2.bed, independent peaks in input1.bed, independent peaks in input2.bed.
