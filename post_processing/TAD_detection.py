@@ -53,6 +53,16 @@ def compute_insulation_score_sparse(matrix, window_size):
 
             scores.append(current_region.sum()/window_size/window_size)
     return scores
+def compute_insulation_score(matrix, window_size):
+    #no need to sym matrix, since it only calcualte upper diagonal region.
+    L, _ = matrix.shape
+    scores = []
+    for i in range(L):
+        if i<window_size or i+window_size >= L: scores.append(None)
+        else:
+            current_region = matrix[i-window_size:i,i:i+window_size]
+            scores.append(current_region.sum()/window_size/window_size)
+    return scores
 
 def compute_bounds(insulation_scores, delta_smooth_size, bound_strength):
     L = len(insulation_scores)
@@ -122,11 +132,16 @@ if __name__ == '__main__':
     insulation_score_dict={}
     for chrom in data:
         current_data = data[chrom]
-        
-        cur_insulation_scores = compute_insulation_score_sparse(current_data,args.window_size)
+        try:
+            current_data = current_data.toarray()
+            cur_insulation_scores = compute_insulation_score(current_data,args.window_size)
+        except:
+            print("Matrix is too large, use sparse matrix instead!")
+            cur_insulation_scores = compute_insulation_score_sparse(current_data,args.window_size)
         cur_bounds= compute_bounds(cur_insulation_scores, args.delta_smooth_size, args.bound_strength)
         bound_dict[chrom]=cur_bounds
         insulation_score_dict[chrom]=cur_insulation_scores
+        print(f"Finish processing {chrom}", "detected bounds:", len(cur_bounds))
     output_dir = os.path.abspath(args.output)
     os.makedirs(output_dir, exist_ok=True)
     bound_bed = os.path.join(output_dir, 'TAD.bed')
