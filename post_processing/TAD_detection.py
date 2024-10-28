@@ -12,8 +12,8 @@ from collections import defaultdict
 def argparser():
     parser = argparse.ArgumentParser('TAD detection reports and insulation score reports.', add_help=True)
     
-    parser.add_argument('--input', type=str, help='Input pkl file path')
-    parser.add_argument('--output', type=str, help='Output directory, bound file will be saved in TAD.bed, insulation score will be saved in insulation_score.pkl')
+    parser.add_argument('--input', type=str, help='Input pkl file path', required=True)
+    parser.add_argument('--output', type=str, required=True, help='Output directory, bound file will be saved in TAD.bed, insulation score will be saved in insulation_score.pkl')
     parser.add_argument('--window-size', type=int, default=50)
     parser.add_argument('--delta-smooth-size', type=int, default=10)
     parser.add_argument('--bound-strength', type=float, default=0.1)
