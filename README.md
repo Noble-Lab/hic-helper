@@ -516,3 +516,13 @@ python3 report_peak_strength.py [input.bw] [input.bed] [output.bed]
 [input.bw]: the input bigwig file. <br>
 [input.bed]: the input bed file. <br>
 [output.bed]: the output bed file, with last column represents the peak strength. <br>
+
+#### 36. downsample_pkl.py
+[downsample_pkl.py](post_processing/downsample_pkl.py) <br>
+This script is used to downsample the input pickle file.
+```
+python3 downsample_pkl.py [input.pkl] [output.pkl] [downsample_rate]
+```
+[input.pkl]: the input pickle file. <br>
+[output.pkl]: the output pickle file. <br>
+[downsample_rate]: the downsample rate [Integer]. 16 means 1/16 of the original data.
