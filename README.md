@@ -505,3 +505,14 @@ python3 peak_overlap.py [input1.bed] [input2.bed] [overlap_ratio] [output_dir]
 - overlap_ratio: the ratio of overlap to consider as overlap  <br>
 - output_dir: the output directory  <br>
 - The output files are overlap1.bed, overlap2.bed, independent1.bed, independent2.bed, indicating the overlap peaks in input1.bed, overlap peaks in input2.bed, independent peaks in input1.bed, independent peaks in input2.bed.
+
+
+#### 35. report_peak_strength.py
+[report_peak_strength.py](analysis/report_peak_strength.py) <br>
+This script is used to report the peak strength of the input bed file.
+```
+python3 report_peak_strength.py [input.bw] [input.bed] [output.bed]
+```
+[input.bw]: the input bigwig file. <br>
+[input.bed]: the input bed file. <br>
+[output.bed]: the output bed file, with last column represents the peak strength. <br>

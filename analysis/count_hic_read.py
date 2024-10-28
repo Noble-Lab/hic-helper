@@ -109,7 +109,7 @@ def count_hic_read(input_hic_path,resolution,normalization_type):
     #sum all non-diag reads
 
     total_count,cis_count = count_cistotal(nondiag_read_dict)
-    print(f"Total Non-Diag Read {total_count}, Total Non-Diag Cis Read {cis_count}")
+    print(f"Intra-chromo stat: Total Non-Diag Read {total_count}, Total Non-Diag Cis Read {cis_count}")
 """
 This script is to count the total/total non-diag reads of cis/all. <br>
 ```
