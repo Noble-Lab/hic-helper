@@ -3,8 +3,9 @@ import os
 import pyBigWig
 
 import numpy as np
+from collections import defaultdict
 def read_peak_info(input_bed):
-    peak_dict={}
+    peak_dict=defaultdict(list)
     with open(input_bed,'r') as f:
         for line in f:
             line = line.strip()
