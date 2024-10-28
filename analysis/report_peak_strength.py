@@ -24,7 +24,7 @@ def report_peak_strength(input_bw, input_bed, output_bed):
     peak_dict = read_peak_info(input_bed)
     bw = pyBigWig.open(input_bw)
     chroms = bw.chroms()
-    return_peak_dict={}
+    return_peak_dict=defaultdict(list)
     for chrom in peak_dict:
         chrom_size = chroms[chrom]
         print("Chrom size:", chrom_size)
