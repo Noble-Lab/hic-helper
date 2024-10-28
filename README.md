@@ -526,3 +526,14 @@ python3 downsample_pkl.py [input.pkl] [output.pkl] [downsample_rate]
 [input.pkl]: the input pickle file. <br>
 [output.pkl]: the output pickle file. <br>
 [downsample_rate]: the downsample rate [Integer]. 16 means 1/16 of the original data.
+
+
+#### 37. TAD_detection.py
+[TAD_detection.py](post_processing/TAD_detection.py) <br>
+This script is used to detect TADs from the input pickle file. <br>
+```
+python3 TAD_detection.py --input [input.pkl] --output [output_dir] 
+```
+[input.pkl]: the input pickle file. <br>
+[output_dir]: the output directory. <br>
+In the output dir, the bound file will be saved in TAD.bed, insulation score will be saved in insulation_score.pkl.
