@@ -15,6 +15,10 @@ def parse_input_bed(input_bed):
             line = line.strip()
             if len(line)==0:
                 continue
+            if line.startswith("#"):
+                continue
+            if "start" in line or "chrom" in line:
+                continue
             arr = line.split('\t')
             chrom1 = arr[0]
             start1 = int(arr[1])
