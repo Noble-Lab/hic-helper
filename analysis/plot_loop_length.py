@@ -48,10 +48,10 @@ def plot_loop_length(input_bed, output_pdf):
     final_df = pd.DataFrame(final_df)
     plt.figure(figsize=(5,5))
     #plot the figure
-    sns.kdeplot(
+    sns.histplot(
         data=final_df, x="distance", 
-        fill=True, palette="crest",
-       alpha=.5, linewidth=0,
+        fill=True, 
+       alpha=0.5, linewidth=0,
     )
     plt.xlabel("Loop Length",fontsize=24)
     plt.ylabel("Density",fontsize=24)
@@ -60,7 +60,14 @@ def plot_loop_length(input_bed, output_pdf):
     #plt.yscale('log')
     plt.tight_layout()
     plt.savefig(output_pdf, dpi=600)
-
+"""
+This script is used to plot the loop strength report.
+```
+python3 plot_loop_strengt.py [input.bed] [output.pdf]
+```
+[input.bed]: the input bed file. <br>
+[output.pdf]: the output pdf/png file. <br>
+"""
 if __name__ == '__main__':
     if len(sys.argv)!=3:
         print("Usage: python3 plot_loop_strengt.py [input.bed] [output.pdf]")
