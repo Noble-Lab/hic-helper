@@ -52,7 +52,7 @@ def plot_TAD_score_report(input_bed, input_pkl, output_pdf, window_size):
 
     #plot the figure
     fig, ax = plt.subplots(figsize=(5,5))
-    sns.lineplot(data=final_df, x="distance", y="insulation_score", orient="y",alpha=0.5)
+    sns.lineplot(data=final_df, x="distance", y="insulation_score", orient="x",alpha=0.5)
     plt.xlabel("Distance to boundary",fontsize=24)
     plt.ylabel("Insulation score",fontsize=24)
     plt.xticks(fontsize=20)
