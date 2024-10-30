@@ -57,7 +57,7 @@ def plot_loop_length(input_bed, output_pdf):
     plt.ylabel("Density",fontsize=24)
     plt.xticks(fontsize=20)
     plt.yticks(fontsize=20)
-    #plt.yscale('log')
+    #plt.xscale('log')
     plt.tight_layout()
     plt.savefig(output_pdf, dpi=600)
 """

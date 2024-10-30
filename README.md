@@ -558,3 +558,16 @@ python3 plot_loop_strengt.py [input.bed] [output.pdf]
 ```
 [input.bed]: the input bed file. <br>
 [output.pdf]: the output pdf/png file. <br>
+
+#### 40. cmp_loop_report.py
+[cmp_loop_report.py](analysis/cmp_loop_report.py) <br>
+"""
+This script is used to compare the loop change between two bed files.
+```
+python3 cmp_loop_report.py [control.bed] [input.bed] [resolution] [output.pdf]
+```
+[control.bed]: the control bed file. <br>
+[input.bed]: the input bed file. <br>
+[resolution]: the resolution of the data. <br>
+[output.pdf]: the output pdf/png file. It is a pie chart showing the loop change. <br>
+"""
