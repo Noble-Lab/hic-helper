@@ -83,8 +83,11 @@ def cmp_loop_report(control_bed, input_bed, output_pdf,max_scope=5):
     print("Loop Same: %d (%.2f)"%(count_loop_same, count_loop_same/total_amount))
     #plot the figure make venn diagram
     plt.figure()
-    plt.pie([count_loop_lost, count_loop_gain, count_loop_same], labels=["Loop Lost", "Loop Gain", "Loop Unchanged"],autopct='%1.1f%%')
-    plt.legend(fontsize=18)
+    plattee = sns.color_palette("pastel")
+    plt.pie([count_loop_lost, count_loop_gain, count_loop_same], 
+            labels=["Loop Lost", "Loop Gain", "Loop Unchanged"],
+            colors=plattee,autopct='%1.1f%%', textprops={'fontsize': 14})
+    #plt.legend(fontsize=16,loc="upper right")
     plt.tight_layout()
     plt.savefig(output_pdf, dpi=600)
 
