@@ -50,6 +50,7 @@ def check_hic_norm(hic_file, chrom_list, resolutions, normalizations):
                     
                     # Check if the normalization vector is NaN
                     chrom_idx = valid_chrom_index_dict[chrom]
+                    # use chrom.index
                     norm_vector = mzd.getNormVector(chrom_idx)
                     if norm_vector is None or np.isnan(norm_vector).all():
                         print(f"{norm} {chrom} {resolution}: norm vector all NaN")
