@@ -52,7 +52,7 @@ def compare_loops(control_loc, input_loc,max_scope):
                     continue
                 visit_dict[idx] = 1
             if cur_visit is False:
-                count_loop_gain += 1
+                count_loop_same += 1
             # if min_idx in visit_dict:
             #     continue 
             # count_loop_same += 1
@@ -84,7 +84,7 @@ def cmp_loop_report(control_bed, input_bed, output_pdf,max_scope=5):
     #plot the figure make venn diagram
     plt.figure()
     plt.pie([count_loop_lost, count_loop_gain, count_loop_same], labels=["Loop Lost", "Loop Gain", "Loop Unchanged"],autopct='%1.1f%%')
-    plt.legend()
+    plt.legend(fontsize=18)
     plt.tight_layout()
     plt.savefig(output_pdf, dpi=600)
 
