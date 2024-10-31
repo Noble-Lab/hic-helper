@@ -691,6 +691,26 @@ def main():
         drop_chroms=args.drop_chroms,
         savememory=args.savememory
     )
-
+"""
+This script is to calculate loop enrichment and output to BEDPE file.
+```
+python3 hiccups_enrichment.py --input_bedpe [input.bed] --input_pkl [hic.pkl] \
+--output_bedpe [output.bed] --norm [norm_type] --num_cpus [int] --wobble_scope [int] \
+--zeros_thresh [int] --donut_size [int] --peak_size [int] --resolution [int] \
+--drop_chroms [chrY chrM] --savememory
+```
+[input.bed]: Path to the input .bedpe file, which records the loci information. <br>
+[hic.pkl]: Path to the input pickle file stored Hi-C data. <br>
+[output.bed]: Path to save the output .bedpe file. <br>
+[norm_type]: Normalization type for Hi-C data (e.g., 'VC', 'KR'). Required for peak enrichment calculation. <br>
+[num_cpus]: Number of CPUs for parallelization. <br>
+[wobble_scope]: Maximum allowed wobble around the initial bin coordinates. Default is 4(5Kb),2(10Kb),2(25Kb). <br>
+[zeros_thresh]: Maximum number of zeros allowed in the observed submatrix. Should set to (2*donut_size+1)^2. <br>
+[donut_size]: Radius of the donut kernel. Default is 7(5Kb),5(10Kb),3(25Kb). <br>
+[peak_size]: Radius of the peak region. Default is 4(5Kb),2(10Kb),1(25Kb). <br>
+[resolution]: Resolution for binning genomic coordinates. Default is 5000. <br>
+[drop_chroms]: Chromosomes to exclude from analysis. Default is ['chrY', 'chrM']. For example, ``--drop_chroms chrY chrM`` <br>
+[savememory]: Use memory-efficient calculations if set. <br>
+"""
 if __name__ == "__main__":
     main()

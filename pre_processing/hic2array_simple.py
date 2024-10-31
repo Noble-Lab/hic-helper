@@ -4,9 +4,7 @@ import numpy as np
 from scipy.sparse import coo_matrix
 import hicstraw
 import os
-import pickle
-from tqdm import tqdm
-
+import pickle 
 def write_pkl(data, path):
     with open(path, 'wb') as f:
         pickle.dump(data, f)
@@ -25,7 +23,7 @@ def read_chrom_array(chr1, chr2, normalization, hic_file, resolution):
     row, col, val = [], [], []
     rets = hicstraw.straw(*infos)
     print('\tlen(rets): {:3e}'.format(len(rets)))
-    for ret in tqdm(rets, desc=f"Processing {chr1_name}_{chr2_name} ({normalization})"):
+    for ret in rets:
         row.append((int)(ret.binX // resolution))
         col.append((int)(ret.binY // resolution))
         val.append(ret.counts)
@@ -46,16 +44,12 @@ def read_chrom_array(chr1, chr2, normalization, hic_file, resolution):
 
 
 def hic2array(input_hic,output_pkl=None,
-              resolution=25000,normalizations=["NONE"],
+              resolution=25000,normalization="NONE",
               tondarray=0):
     """
-    Convert Hi-C data to array format and save as pickle.
-    
     input_hic: str, input hic file path
     output_pkl: str, output pickle file path
     resolution: int, resolution of the hic file
-    normalizations: list, list of normalizations to apply
-    tondarray: int, format option for output
     """
 
     hic = hicstraw.HiCFile(input_hic)
@@ -82,18 +76,13 @@ def hic2array(input_hic,output_pkl=None,
             chrom1_name = chrom_list[i].name
             chrom2 = chrom_list[j]
             chrom2_name = chrom_list[j].name
-            
-            output_dict[f"{chrom1_name}_{chrom2_name}"] = {}
-            
-            for normalization in normalizations:
-                read_array=read_chrom_array(chrom1,chrom2, normalization, input_hic, resolution)
-                if read_array is None:
-                    print("No data found for",chrom1_name,chrom2_name)
-                    continue
-                if tondarray in [1,3]:
-                    read_array = read_array.toarray()
-                output_dict[f"{chrom1_name}_{chrom2_name}"][normalization]=read_array
-                
+            read_array=read_chrom_array(chrom1,chrom2, normalization, input_hic, resolution)
+            if read_array is None:
+                print("No data found for",chrom1_name,chrom2_name)
+                continue
+            if tondarray in [1,3]:
+                read_array = read_array.toarray()
+            output_dict[chrom1_name+"_"+chrom2_name]=read_array
     if output_pkl is not None:
         output_dir = os.path.dirname(os.path.realpath(output_pkl))
         os.makedirs(output_dir, exist_ok=True)
@@ -104,11 +93,11 @@ def hic2array(input_hic,output_pkl=None,
 
 Usage
 ```
-python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]
+python3 hic2array_simple.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]
 ```
 
-This is the full hic2array script, converting both intra, inter chromosome regions to array format. <br>
-The output array is saved in a pickle file as dict: [chrom1_chrom2][norm_type]:[array] format. <br>
+This is the full cool2array script, converting both intra, inter chromosome regions to array format. <br>
+The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] format. <br>
 [resolution] is used to specify the resolution that stored in the output array. <br>
 [normalization_type] supports the following type: <br>
 ```
@@ -116,8 +105,7 @@ The output array is saved in a pickle file as dict: [chrom1_chrom2][norm_type]:[
 1: VC normalization; 
 2: VC_SQRT normalization; 
 3: KR normalization; 
-4: SCALE normalization;
-or a combination of types as a comma-separated list. (e.g. 0,3)
+4: SCALE normalization.
 ```
 Four modes are supported for different format saving: 
 ```
@@ -132,23 +120,20 @@ if __name__ == '__main__':
     import os 
     import sys
     if len(sys.argv) != 6:
-        print('Usage: python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_types] [mode]')
+        print('Usage: python3 hic2array_simple.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]')
         print("This is the full hic2array script. ")
-        print("provide normalization_types as comma-separated values",
-              "normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
-        print("mode: 0 for sparse matrix, 1 for dense matrix, 2 for sparce matrix (only cis-contact); 3 for dense matrix (only cis-contact). or a combination of types as a comma-separated list. (e.g. 0,3)")
+        print("normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
+        print("mode: 0 for sparse matrix, 1 for dense matrix, 2 for sparce matrix (only cis-contact); 3 for dense matrix (only cis-contact).")
         sys.exit(1)
     resolution = int(sys.argv[3])
-    # Accept a list of integer arguments
-    normalization_types = list(map(int, sys.argv[4].split(',')))
+    normalization_type = int(sys.argv[4])
     mode = int(sys.argv[5])
     normalization_dict={0:"NONE",1:"VC",2:"VC_SQRT",3:"KR",4:"SCALE"}
-    if any(norm not in normalization_dict for norm in normalization_types):
+    if normalization_type not in normalization_dict:
         print('normalization type should be 0,1,2,3,4')
         print("normalization type: 0: None normalization; 1: VC normalization; 2: VC_SQRT normalization; 3: KR normalization; 4: SCALE normalization")
         sys.exit(1)
-        
-    normalizations = [normalization_dict[norm] for norm in normalization_types]
+    normalization_type = normalization_dict[normalization_type]
     if mode not in [0,1,2,3]:
         print('mode should be in choice of 0/1/2/3')
         print("mode: 0 for sparse matrix, 1 for dense matrix, 2 for sparce matrix (only cis-contact); 3 for dense matrix (only cis-contact).")
@@ -157,5 +142,5 @@ if __name__ == '__main__':
     output_pkl_path = os.path.abspath(sys.argv[2])
     output_dir = os.path.dirname(output_pkl_path)
     os.makedirs(output_dir,exist_ok=True)
-    hic2array(input_hic_path,output_pkl_path,resolution,normalizations,mode)
+    hic2array(input_hic_path,output_pkl_path,resolution,normalization_type,mode)
     

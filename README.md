@@ -48,13 +48,11 @@ For different resolution, please simply input cool path as [xx.cool::resolutions
 
 #### 2. hic2array.py
 [hic2array.py](pre_processing/hic2array.py) <br>
-This script is to convert .hic format to dict of arrays format.
 ```
 python3 hic2array.py [input.hic] [output.pkl] [resolution] [normalization_type] [mode]
 ```
-
-This is the full cool2array script, converting both intra, inter chromosome regions to array format. <br>
-The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] format. <br>
+This is the full hic2array script, converting both intra, inter chromosome regions to array format. <br>
+The output array is saved in a pickle file as dict: [chrom1_chrom2][norm_type]:[array] format. <br>
 [resolution] is used to specify the resolution that stored in the output array. <br>
 [normalization_type] supports the following type: <br>
 ```
@@ -62,7 +60,8 @@ The output array is saved in a pickle file as dict: [chrom1_chrom2]:[array] form
 1: VC normalization; 
 2: VC_SQRT normalization; 
 3: KR normalization; 
-4: SCALE normalization.
+4: SCALE normalization;
+or a combination of types as a comma-separated list. (e.g. 0,3)
 ```
 Four modes are supported for different format saving: 
 ```
@@ -71,7 +70,7 @@ Four modes are supported for different format saving:
 2: scipy csr_array format output (only include intra-chromsome region).
 3: numpy array format output (only include intra-chromsome region).
 ```
-
+If you do not want to maintain ``norm_type`` in the dict, please simply use hic2array_simple.py, which will save dict in format of [chrom1_chrom2]:[array].
 
 #### 3. array2hic.py
 [array2hic.py](pre_processing/array2hic.py) <br>
@@ -561,7 +560,6 @@ python3 plot_loop_strengt.py [input.bed] [output.pdf]
 
 #### 40. cmp_loop_report.py
 [cmp_loop_report.py](analysis/cmp_loop_report.py) <br>
-"""
 This script is used to compare the loop change between two bed files.
 ```
 python3 cmp_loop_report.py [control.bed] [input.bed] [resolution] [output.pdf]
@@ -570,4 +568,25 @@ python3 cmp_loop_report.py [control.bed] [input.bed] [resolution] [output.pdf]
 [input.bed]: the input bed file. <br>
 [resolution]: the resolution of the data. <br>
 [output.pdf]: the output pdf/png file. It is a pie chart showing the loop change. <br>
-"""
+
+#### 41. hiccups_enrichment.py
+[hiccups_enrichment.py](post_processing/hiccups_enrichment.py) <br>
+This script is to calculate loop enrichment and output to BEDPE file.
+```
+python3 hiccups_enrichment.py --input_bedpe [input.bed] --input_pkl [hic.pkl] \
+--output_bedpe [output.bed] --norm [norm_type] --num_cpus [int] --wobble_scope [int] \
+--zeros_thresh [int] --donut_size [int] --peak_size [int] --resolution [int] \
+--drop_chroms [chrY chrM] --savememory
+```
+[input.bed]: Path to the input .bedpe file, which records the loci information. <br>
+[hic.pkl]: Path to the input pickle file stored Hi-C data. <br>
+[output.bed]: Path to save the output .bedpe file. <br>
+[norm_type]: Normalization type for Hi-C data (e.g., 'VC', 'KR'). Required for peak enrichment calculation. <br>
+[num_cpus]: Number of CPUs for parallelization. <br>
+[wobble_scope]: Maximum allowed wobble around the initial bin coordinates. Default is 4(5Kb),2(10Kb),2(25Kb). <br>
+[zeros_thresh]: Maximum number of zeros allowed in the observed submatrix. Should set to (2*donut_size+1)^2. <br>
+[donut_size]: Radius of the donut kernel. Default is 7(5Kb),5(10Kb),3(25Kb). <br>
+[peak_size]: Radius of the peak region. Default is 4(5Kb),2(10Kb),1(25Kb). <br>
+[resolution]: Resolution for binning genomic coordinates. Default is 5000. <br>
+[drop_chroms]: Chromosomes to exclude from analysis. Default is ['chrY', 'chrM']. For example, ``--drop_chroms chrY chrM`` <br>
+[savememory]: Use memory-efficient calculations if set. <br>
