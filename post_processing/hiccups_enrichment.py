@@ -488,7 +488,18 @@ def write_peak_output(output_bedpe_path, resolution,
         "ref_chr2": chrom2, "ref_y1": ref_y1, "ref_y2": ref_y2
     })
     peak_df.to_csv(output_bedpe_path, index=False, sep="\t")
-
+def find_chrom_key(hic_data,chrom1):
+    if chrom1 in hic_data:
+        return chrom1
+    chrom1_nochr = chrom1.replace("chr","")
+    if chrom1_nochr in hic_data:
+        return chrom1_nochr
+    chrom_merge=chrom1+"_"+chrom1 
+    if chrom_merge in hic_data:
+        return chrom_merge
+    chrom_merge=chrom1_nochr+"_"+chrom1_nochr
+    if chrom_merge in hic_data:
+        return chrom_merge
 def run_loop_ratio_wobble(input_bedpe_path, pkl_filepath, output_bedpe_path, norm, 
                           wobble_scope=4, zeros_thresh=225, donut_size=7, peak_size=4, 
                           resolution=5000, drop_chroms=["chrY", "chrM"], savememory=False):
@@ -560,29 +571,23 @@ def run_loop_ratio_wobble(input_bedpe_path, pkl_filepath, output_bedpe_path, nor
     
     exp_vec_dict = {}
     for chrom in tqdm(chrom_list):
-        if f"{chrom}_{chrom}" in norm_data_dict:
-            sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
-        else:
-            sparse_norm_mat = norm_data_dict[f"{chrom}"]
+        cur_key=find_chrom_key(norm_data_dict,chrom)
+        sparse_norm_mat = norm_data_dict[cur_key]
         exp_vec = compute_expvec(sparse_norm_mat, savememory=savememory)
         exp_vec_dict[chrom] = exp_vec
     print(f"Finish computing exp_vec_dict")
 
     csr_norm_dict = {}
     for chrom in tqdm(chrom_list):
-        if f"{chrom}_{chrom}" in norm_data_dict:
-            sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
-        else:
-            sparse_norm_mat = norm_data_dict[f"{chrom}"]
+        cur_key=find_chrom_key(norm_data_dict,chrom)
+        sparse_norm_mat = norm_data_dict[cur_key]
         csr_norm_dict[chrom] = sparse_norm_mat.tocsr()
     print(f"Finish computing csr_mat_dict")
     
     csr_raw_dict = {}
     for chrom in tqdm(chrom_list):
-        if f"{chrom}_{chrom}" in norm_data_dict:
-            sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
-        else:
-            sparse_norm_mat = norm_data_dict[f"{chrom}"]
+        cur_key=find_chrom_key(norm_data_dict,chrom)
+        sparse_raw_mat = raw_data_dict[cur_key]
         csr_raw_dict[chrom] = sparse_raw_mat.tocsr()
     print(f"Finish computing csr_raw_dict")     
     
