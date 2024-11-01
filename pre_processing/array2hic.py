@@ -46,6 +46,9 @@ def array2hic(juicer_tools,input_array_pickle,
             matrix = data[key]
             if mode>=2:
                 matrix = array2sparse(matrix)
+            #matrix merge records in the same loc
+            matrix.eliminate_zeros()
+            matrix.sum_duplicates()
             matrix_row = matrix.row
             matrix_col = matrix.col
             matrix_data = matrix.data
