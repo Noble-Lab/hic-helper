@@ -380,8 +380,15 @@ def read_input_pkl(pkl_filepath, norm, drop_chroms=["chrY", "chrM"]):
     norm_data_dict = {}
     for key, value in data.items():
         chrom1, chrom2 = key.split("_")
-        
+        if "chr" not in chrom1:
+            chrom1 = "chr" + chrom1
+        if "chr" not in chrom2:
+            chrom2 = "chr" + chrom2
         if chrom1 in drop_chroms or chrom2 in drop_chroms:
+            continue
+        tmp_chr1=chrom1.replace("chr","")
+        tmp_chr2=chrom2.replace("chr","")
+        if tmp_chr1 in drop_chroms or tmp_chr2 in drop_chroms:
             continue
         
         assert "NONE" in value, f"{key}: not containing raw data"
