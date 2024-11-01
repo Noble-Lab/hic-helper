@@ -120,9 +120,9 @@ def generate_loop_overlap(control_bed, input_bed,resolution, output_dir,max_dist
         independent2_dict[chrom] = indepedent_loc2
         print("Chromosome", chrom, "done")
     #write the output
-    write_bed(os.path.join(output_dir, "overlap_loop.bed"), overlap_dict)
-    write_bed(os.path.join(output_dir, "control_independent.bed"), independent1_dict)
-    write_bed(os.path.join(output_dir, "input_independent.bed"), independent2_dict)
+    write_bed(os.path.join(output_dir, "overlap_loop.bed"), overlap_dict,resolution)
+    write_bed(os.path.join(output_dir, "control_independent.bed"), independent1_dict,resolution)
+    write_bed(os.path.join(output_dir, "input_independent.bed"), independent2_dict,resolution)
 
 
 
