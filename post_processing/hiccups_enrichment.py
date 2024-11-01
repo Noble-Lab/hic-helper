@@ -332,6 +332,38 @@ def read_bedpe(filepath):
                      comment = "#", names = header)
     return df
 
+def read_bedpe_noheader(filepath):
+    overall_dict = {"chr1":[], "chr2":[], "x1":[], "y1":[], "x2":[], "y2":[]}
+    with open(filepath) as f:
+        for line in f:
+            if line.startswith("#"):
+                continue
+            if "x1" in line or "start" in line:
+                print("skip header",line)
+                continue
+            line = line.strip().split()
+            chrom1 = line[0]
+            try:
+                start1 = int(float(line[1]))
+                end1 = int(float(line[2]))
+            except:
+                continue
+            chrom2 = line[3]
+            try:
+                start2 = int(float(line[4]))
+                end2 = int(float(line[5]))
+            except:
+                continue
+            if "chr" not in chrom1:
+                chrom1 = "chr"+chrom1
+            overall_dict["chr1"].append(chrom1)
+            overall_dict["chr2"].append(chrom2)
+            overall_dict["x1"].append(start1)
+            overall_dict["y1"].append(start2)
+            overall_dict["x2"].append(end1)
+            overall_dict["y2"].append(end2)
+    return pd.DataFrame(overall_dict)
+
 def get_coords_df(bedpe_df, resolution=5000):
     """
     Compute bin coordinates from a bedpe DataFrame.
@@ -497,8 +529,11 @@ def run_loop_ratio_wobble(input_bedpe_path, pkl_filepath, output_bedpe_path, nor
     computes poisson p-values, and writes results to an output .bedpe file.
     """  
     raw_data_dict, norm_data_dict = read_input_pkl(pkl_filepath, norm, drop_chroms = drop_chroms)
-    
-    df_bedpe = read_bedpe(input_bedpe_path)
+    try:
+        df_bedpe = read_bedpe(input_bedpe_path)
+    except:
+        print("detect no header in bedpe, switch mode!")
+        df_bedpe = read_bedpe_noheader(input_bedpe_path)
     df_coords = get_coords_df(df_bedpe, resolution=resolution)
 
     chrom_full_list = ["chr1", "chr2", "chr3", "chr4", "chr5", 
