@@ -98,7 +98,11 @@ def write_bed(output_path, loc_dict,resolution):
                 end2 = loc[1]+resolution
                 f.write(chrom + "\t" + str(start1) + "\t" + str(end1) + "\t" + chrom + "\t" + str(start2) + "\t" + str(end2) + "\n")
 
-
+def count_loop(input_dict):
+    count = 0
+    for chrom in input_dict:
+        count += len(input_dict[chrom])
+    return count
 def generate_loop_overlap(control_bed, input_bed,resolution, output_dir,max_dist=5):
     contro_dict = extract_loc(control_bed)
     input_dict = extract_loc(input_bed)
@@ -123,8 +127,22 @@ def generate_loop_overlap(control_bed, input_bed,resolution, output_dir,max_dist
     write_bed(os.path.join(output_dir, "overlap_loop.bed"), overlap_dict,resolution)
     write_bed(os.path.join(output_dir, "control_independent.bed"), independent1_dict,resolution)
     write_bed(os.path.join(output_dir, "input_independent.bed"), independent2_dict,resolution)
+    #output each category number
+    print("Overlap loops:", count_loop(overlap_dict))
+    print("Independent loops in control:", count_loop(independent1_dict))
+    print("Independent loops in input:", count_loop(independent2_dict))
+"""
+This script is used to compare the loop change between two bed files and outputs independent/overlap loops.
+```
+python3 loop_overlap.py [control.bed] [input.bed] [resolution] [output_dir]
+```
+[control.bed]: the control bed file recording the control loop location. <br>
+[input.bed]: the input bed file recording the input loop location. <br>
+[resolution]: the resolution of the Hi-C data. <br>
+[output_dir]: the output directory. <br>
+The output files are overlap.bed, independent1.bed, independent2.bed, indicating the overlap loops, independent loops in control, independent loops in input. <br>
 
-
+"""
 
 
 

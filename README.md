@@ -590,3 +590,16 @@ python3 hiccups_enrichment.py --input_bedpe [input.bed] --input_pkl [hic.pkl] \
 [resolution]: Resolution for binning genomic coordinates. Default is 5000. <br>
 [drop_chroms]: Chromosomes to exclude from analysis. Default is ['chrY', 'chrM']. For example, ``--drop_chroms chrY chrM`` <br>
 [savememory]: Use memory-efficient calculations if set. <br>
+
+
+#### 42. loop_overlap.py
+[loop_overlap.py](post_processing/loop_overlap.py) <br>
+This script is used to compare the loop change between two bed files and outputs independent/overlap loops.
+```
+python3 loop_overlap.py [control.bed] [input.bed] [resolution] [output_dir]
+```
+[control.bed]: the control bed file recording the control loop location. <br>
+[input.bed]: the input bed file recording the input loop location. <br>
+[resolution]: the resolution of the Hi-C data. <br>
+[output_dir]: the output directory. <br>
+The output files are overlap.bed, independent1.bed, independent2.bed, indicating the overlap loops, independent loops in control, independent loops in input. <br>
