@@ -560,20 +560,29 @@ def run_loop_ratio_wobble(input_bedpe_path, pkl_filepath, output_bedpe_path, nor
     
     exp_vec_dict = {}
     for chrom in tqdm(chrom_list):
-        sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
+        if f"{chrom}_{chrom}" in norm_data_dict:
+            sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
+        else:
+            sparse_norm_mat = norm_data_dict[f"{chrom}"]
         exp_vec = compute_expvec(sparse_norm_mat, savememory=savememory)
         exp_vec_dict[chrom] = exp_vec
     print(f"Finish computing exp_vec_dict")
 
     csr_norm_dict = {}
     for chrom in tqdm(chrom_list):
-        sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
+        if f"{chrom}_{chrom}" in norm_data_dict:
+            sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
+        else:
+            sparse_norm_mat = norm_data_dict[f"{chrom}"]
         csr_norm_dict[chrom] = sparse_norm_mat.tocsr()
     print(f"Finish computing csr_mat_dict")
     
     csr_raw_dict = {}
     for chrom in tqdm(chrom_list):
-        sparse_raw_mat = raw_data_dict[f"{chrom}_{chrom}"]
+        if f"{chrom}_{chrom}" in norm_data_dict:
+            sparse_norm_mat = norm_data_dict[f"{chrom}_{chrom}"]
+        else:
+            sparse_norm_mat = norm_data_dict[f"{chrom}"]
         csr_raw_dict[chrom] = sparse_raw_mat.tocsr()
     print(f"Finish computing csr_raw_dict")     
     
