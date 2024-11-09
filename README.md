@@ -535,8 +535,7 @@ python3 TAD_detection.py --input [input.pkl] --output [output_dir]
 ```
 [input.pkl]: the input pickle file. <br>
 [output_dir]: the output directory. <br>
-In the output dir, the bound file will be saved in TAD.bed, insulation score will be saved in insulation_score.pkl.
-
+In the output dir, the bound file will be saved in TAD.bed, insulation score and normed insulation score will be saved in insulation_score.pkl/norm_insulation_score.pkl.
 #### 38 plot_TAD_score_report.py
 [plot_TAD_score_report.py](analysis/plot_TAD_score_report.py) <br>
 This script is used to plot the TAD score report.

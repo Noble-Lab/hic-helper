@@ -13,7 +13,7 @@ def argparser():
     parser = argparse.ArgumentParser('TAD detection reports and insulation score reports.', add_help=True)
     
     parser.add_argument('--input', type=str, help='Input pkl file path', required=True)
-    parser.add_argument('--output', type=str, required=True, help='Output directory, bound file will be saved in TAD.bed, insulation score will be saved in insulation_score.pkl')
+    parser.add_argument('--output', type=str, required=True, help='Output directory, bound file will be saved in TAD.bed, insulation score and normed insulation score will be saved in insulation_score.pkl/norm_insulation_score.pkl.')
     parser.add_argument('--window-size', type=int, default=50)
     parser.add_argument('--delta-smooth-size', type=int, default=10)
     parser.add_argument('--bound-strength', type=float, default=0.1)
@@ -113,7 +113,7 @@ def compute_bounds(insulation_scores, delta_smooth_size, bound_strength):
         if delta[r] - delta[l] >= bound_strength:
             bounds.append(minima)
 
-    return bounds
+    return normalized_scores,bounds
 """
 This script is used to detect TADs from the input pickle file. <br>
 ```
@@ -121,7 +121,7 @@ python3 TAD_detection.py --input [input.pkl] --output [output_dir]
 ```
 [input.pkl]: the input pickle file. <br>
 [output_dir]: the output directory. <br>
-In the output dir, the bound file will be saved in TAD.bed, insulation score will be saved in insulation_score.pkl.
+In the output dir, the bound file will be saved in TAD.bed, insulation score and normed insulation score will be saved in insulation_score.pkl/norm_insulation_score.pkl.
 """
 
 if __name__ == '__main__':
@@ -130,6 +130,7 @@ if __name__ == '__main__':
     data=pickle.load(open(input_pkl,'rb'))
     bound_dict={}
     insulation_score_dict={}
+    norm_insulation_score_dict={}
     for chrom in data:
         current_data = data[chrom]
         try:
@@ -138,9 +139,10 @@ if __name__ == '__main__':
         except:
             print("Matrix is too large, use sparse matrix instead!")
             cur_insulation_scores = compute_insulation_score_sparse(current_data,args.window_size)
-        cur_bounds= compute_bounds(cur_insulation_scores, args.delta_smooth_size, args.bound_strength)
+        norm_insulation_score,cur_bounds= compute_bounds(cur_insulation_scores, args.delta_smooth_size, args.bound_strength)
         bound_dict[chrom]=cur_bounds
         insulation_score_dict[chrom]=cur_insulation_scores
+        norm_insulation_score_dict[chrom]= norm_insulation_score
         print(f"Finish processing {chrom}", "detected bounds:", len(cur_bounds))
     output_dir = os.path.abspath(args.output)
     os.makedirs(output_dir, exist_ok=True)
@@ -151,5 +153,7 @@ if __name__ == '__main__':
             for bound in bound_dict[chrom]:
                 f.write(f"{chrom}\t{bound}\t{bound+1}\n")
     pickle.dump(insulation_score_dict, open(insulation_score_pkl, "wb"))
+    norm_insulation_score_pkl = os.path.join(output_dir, 'norm_insulation_score.pkl')
+    pickle.dump(norm_insulation_score_dict, open(norm_insulation_score_pkl, "wb"))
     
 
