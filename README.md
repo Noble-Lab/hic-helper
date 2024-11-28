@@ -357,7 +357,7 @@ python3 bigwig2array.py [input_bw] [output_pkl] [resolution]
 ```
 [input_bw]: the input bigwig file. <br>
 [output_pkl]: the output pkl file with [chrom]:[signal] format. <br>
-[resolution]: the resolution of the signal. <br>
+[resolution]: the output resolution of the signal. <br>
 
 
 #### 23. merge_bam.py

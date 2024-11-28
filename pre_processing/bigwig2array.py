@@ -13,7 +13,7 @@ def bigwig2array(input_bw, output_pkl, resolution):
         print("Chrom size:", chrom_size)
         signal = bw.values(chrom, 0, chrom_size, numpy=True)
         #each resolution interval should sum to get the overall signal
-        cutoff_length = chrom_size // resolution 
+        cutoff_length = chrom_size // resolution * resolution
         if cutoff_length == 0:
             print("Chrom size is smaller than resolution, skipping")
             continue
@@ -33,7 +33,7 @@ def bigwig2array(input_bw, output_pkl, resolution):
         # value_list = [0 if v is None else v for v in value_list]
         # signal = np.array(value_list)
 
-        signal_dict[chrom] = signal
+        # signal_dict[chrom] = signal
         print("Finished procssing! Signal shape:", signal.shape)
         #output signal stats
         print("Signal stats: mean ",np.mean(signal), "std ", np.std(signal), "max ", np.max(signal), "min ", np.min(signal))
@@ -47,7 +47,7 @@ python3 bigwig2array.py [input_bw] [output_pkl] [resolution]
 ```
 [input_bw]: the input bigwig file. <br>
 [output_pkl]: the output pkl file with [chrom]:[signal] format. <br>
-[resolution]: the resolution of the signal. <br>
+[resolution]: the output resolution of the signal. <br>
 
 """
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
         print("Usage: python bigwig2array.py [input_bw] [output_pkl] [resolution]")
         print("input_bw: the input bigwig file")
         print("output_pkl: the output pkl file with [chrom]:[signal] format")
-        print("resolution: the resolution of the signal")
+        print("resolution: the resolution the signal should be converted to")
         sys.exit(1)
     input_bw = os.path.abspath(sys.argv[1])
     output_pkl = os.path.abspath(sys.argv[2])
