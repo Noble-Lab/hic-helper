@@ -140,11 +140,12 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     #     img = img.resize((int(img.size[0]*ratio),int(img.size[1]*ratio)),Image.BICUBIC)
     # img.save(output_png)
     input_track1,input_track2 = input_track
-    fig, ax = plt.subplots(2, 2, figsize=(5, 5),width_ratios=[1,9],height_ratios=[1,9])
+    fig, axs = plt.subplots(2, 2, figsize=(5, 5),width_ratios=[1,9],height_ratios=[1,9])
     input_track1= input_track1/np.max(input_track1)
     input_track2= input_track2/np.max(input_track2)
-    track_range1=np.arange(start_index1,end_index1)
-    track_range2=np.arange(start_index2,end_index2)
+    track_range1=np.arange(0,len(input_track1))
+    track_range2=np.arange(0,len(input_track2))
+    axs[0,0].remove()
     ax=plt.subplot(2,2,2)
     plt.plot(track_range1, input_track1,color='blue')
     plt.fill_between(x=track_range1, y1=input_track1, color='blue')
@@ -157,7 +158,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     ax.tick_params(left=False, labelleft=False)
     #remove background patch (only needed for non-white background)
     ax.patch.set_visible(False)
-
+    ax.set_position([0, 0, 1, 1])
     ax=plt.subplot(2,2,3)
     plt.plot(input_track2,track_range2,color='blue')
     plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
@@ -168,6 +169,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     plt.setp(ax.spines.values(), visible=False)
     # remove ticks and labels for the left axis
     ax.tick_params(left=False, labelleft=False)
+    ax.set_position([0, 0, 1, 1])
     #remove background patch (only needed for non-white background)
     ax.patch.set_visible(False)
     ax=plt.subplot(2,2,4)
@@ -175,9 +177,11 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     #convert to np.uint8
     output_data = output_data.astype(np.uint8)
     ax.imshow(output_data)
-    plt.gca().set_position([0, 0, 1, 1])
-    plt.gca().set_aspect('auto')
-    plt.axis('off')
+    ax.set_position([0, 0, 1, 1])
+    # plt.gca().set_position([0, 0, 1, 1])
+    # plt.gca().set_aspect('auto')
+    #plt.axis('off')
+    plt.tight_layout()
     plt.savefig(output_png, bbox_inches='tight', pad_inches=0, dpi=600)
     print('The image has been saved to', output_png + '.')
     return output_png
@@ -222,9 +226,7 @@ def fetch_track(bw,chrom,start_index,end_index,resolution):
         
     signal = np.nan_to_num(signal)
     
-    if resolution > 1:
-        signal = signal.reshape(-1, resolution).mean(axis=1)
-    signal = signal[start_index:end_index]
+    signal =signal[start_index*resolution:end_index*resolution]
     return signal
 def fetch_pair_track(input_bw,
                     chrom1,start_index1,end_index1,
