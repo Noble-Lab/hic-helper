@@ -47,12 +47,26 @@ def array2bigwig(input_file,output_bigwig,resolution=1000):
             print("start chrom",chrom,"size",chrom_size[chrom])
             #pos_embedding = np.arange(0, len(data), dtype=int)
             start_embedding = np.arange(0, chrom_size[chrom], resolution)
-            end_embedding = np.arange(resolution-1, chrom_size[chrom]+resolution, resolution)
+            start_embedding = start_embedding.astype(int)
+            end_embedding= start_embedding+resolution
             end_embedding = np.clip(end_embedding, 0, chrom_size[chrom]-1)
             # bw.addEntries("chr1", [500, 600, 635], values=[-2.0, 150.0, 25.0], span=20)
             chrom_data = data[chrom]
-            bw.addEntries([chrom]*len(chrom_data), start_embedding, ends=end_embedding, values=list(chrom_data))
-            # bw.addEntries(str(chrom), pos_embedding, values=list(data), span=resolution)
+            chrom_data= np.nan_to_num(chrom_data)
+            start_embedding = [int(x) for x in start_embedding]
+            end_embedding = [int(x) for x in end_embedding]
+            chrom_data= [float(x) for x in chrom_data]
+            print(set([type(x) for x in chrom_data]))
+            print(len(chrom_data),len(start_embedding),len(end_embedding))
+            assert all(isinstance(c, str) for c in chrom), "Chromosomes must be strings"
+            assert all(isinstance(s, int) for s in start_embedding), "Start positions must be integers"
+            assert all(isinstance(e, int) for e in end_embedding), "End positions must be integers"
+            assert all(isinstance(v, (int, float)) for v in chrom_data), "Values must be int or float"
+            assert all(s >= 0 for s in start_embedding), "Start positions must be non-negative"
+            assert all(e >= s for s, e in zip(start_embedding, end_embedding)), "End must be >= Start"
+            for c, s, e, v in zip(chrom[:10], start_embedding[:10], end_embedding[:10], chrom_data[:10]):
+                print(f"Chromosome: {c}, Start: {s}, End: {e}, Value: {v}")
+            bw.addEntries([chrom]*len(chrom_data), list(start_embedding), ends=list(end_embedding), values=list(chrom_data))
             print("finished",chrom)
     return output_bigwig
 
