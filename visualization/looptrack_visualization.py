@@ -166,7 +166,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     plt.plot(input_track2,track_range2,color='blue')
     plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
     ax.invert_xaxis()
-    ax.invert_yaxis()
+    #ax.invert_yaxis()
     ax.set_ylim(track_range2.min(), track_range2.max())
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
