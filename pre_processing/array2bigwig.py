@@ -64,8 +64,8 @@ def array2bigwig(input_file,output_bigwig,resolution=1000):
             assert all(isinstance(v, (int, float)) for v in chrom_data), "Values must be int or float"
             assert all(s >= 0 for s in start_embedding), "Start positions must be non-negative"
             assert all(e >= s for s, e in zip(start_embedding, end_embedding)), "End must be >= Start"
-            for c, s, e, v in zip(chrom[:10], start_embedding[:10], end_embedding[:10], chrom_data[:10]):
-                print(f"Chromosome: {c}, Start: {s}, End: {e}, Value: {v}")
+            for s, e, v in zip(start_embedding[:10], end_embedding[:10], chrom_data[:10]):
+                print(f"Chromosome: {chrom}, Start: {s}, End: {e}, Value: {v}")
             bw.addEntries([chrom]*len(chrom_data), list(start_embedding), ends=list(end_embedding), values=list(chrom_data))
             print("finished",chrom)
     return output_bigwig
