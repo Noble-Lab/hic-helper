@@ -633,3 +633,25 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [resolution] is the resolution of the input array. <br>
 [max_value] is the maximum threshold of the input array for figures. <br>
 [mode]: 0:raw visualization; 1: log visualization. <br>
+
+#### 45. looptrack_visualization.py
+[looptrack_visualization.py](visualization/looptrack_visualization.py) <br>
+This script is to annotate and visualize the input array with loop information and related to epigenomic assays.
+```
+python3 looptrack_visualization.py [input.pkl] [loop.bed] [track.bigWig] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
+```
+[input.pkl] is the path to the pickle file containing the Hi-C array. <br>
+[input.pkl] format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
+For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files. <br>
+[loop.bed] is the path to the bed file containing the loop information. <br>]
+[track.bigWig] is the path to the bigWig file containing the epigenomic track information. <br>
+[output.png] is the name of the output png file. <br>
+[chrom1] is the name of the first chromosome. <br>
+[start_index1] is the start index of the first chromosome. <br>
+[end_index1] is the end index of the first chromosome. <br>
+[chrom2] is the name of the second chromosome. <br>
+[start_index2] is the start index of the second chromosome. <br>
+[end_index2] is the end index of the second chromosome. <br>
+[resolution] is the resolution of the input array. <br>
+[max_value] is the maximum threshold of the input array for figures. <br>
+[mode]: 0:raw visualization; 1: log visualization. <br>

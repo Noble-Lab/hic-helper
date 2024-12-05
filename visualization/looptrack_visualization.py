@@ -5,6 +5,7 @@ import numpy as np
 from PIL import Image
 from numpy import triu
 from collections import defaultdict
+import pyBigWig
 def convert_rgb(data,max_value):
     """
     The convert_rgb function takes in a 2D array and converts it to a 3D RGB array.
@@ -90,7 +91,7 @@ def locate_array_region(matrix,start_index1,end_index1,start_index2,end_index2):
     output_data = output_data.toarray()
     return output_data
 
-def annotate_loop(input_array,loop_list,output_png,start_index1,end_index1,
+def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index1,end_index1,
                    start_index2,end_index2,max_value,run_mode):
     #locate the array region
     # if array is sparse version
@@ -132,12 +133,52 @@ def annotate_loop(input_array,loop_list,output_png,start_index1,end_index1,
         output_data[revise_start1:revise_end1,revise_start2:revise_end2,2] = 255
         count_mark_loop+=1
     print("total marked loops in the region: ",count_mark_loop)
-    img = Image.fromarray(output_data, 'RGB')
-    expect_min_size=224
-    if img.size[0] < expect_min_size or img.size[1] < expect_min_size:
-        ratio=max(expect_min_size/img.size[0],expect_min_size/img.size[1])
-        img = img.resize((int(img.size[0]*ratio),int(img.size[1]*ratio)),Image.BICUBIC)
-    img.save(output_png)
+    # img = Image.fromarray(output_data, 'RGB')
+    # expect_min_size=224
+    # if img.size[0] < expect_min_size or img.size[1] < expect_min_size:
+    #     ratio=max(expect_min_size/img.size[0],expect_min_size/img.size[1])
+    #     img = img.resize((int(img.size[0]*ratio),int(img.size[1]*ratio)),Image.BICUBIC)
+    # img.save(output_png)
+    input_track1,input_track2 = input_track
+    fig, ax = plt.subplots(2, 2, figsize=(5, 5),width_ratios=[1,9],height_ratios=[1,9])
+    input_track1= input_track1/np.max(input_track1)
+    input_track2= input_track2/np.max(input_track2)
+    track_range1=np.arange(start_index1,end_index1)
+    track_range2=np.arange(start_index2,end_index2)
+    ax=plt.subplot(2,2,2)
+    plt.plot(track_range1, input_track1,color='blue')
+    plt.fill_between(x=track_range1, y1=input_track1, color='blue')
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    plt.axis('off')
+    # make spines (the box) invisible
+    plt.setp(ax.spines.values(), visible=False)
+    # remove ticks and labels for the left axis
+    ax.tick_params(left=False, labelleft=False)
+    #remove background patch (only needed for non-white background)
+    ax.patch.set_visible(False)
+
+    ax=plt.subplot(2,2,3)
+    plt.plot(input_track2,track_range2,color='blue')
+    plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
+    ax.xaxis.set_visible(False)
+    ax.yaxis.set_visible(False)
+    plt.axis('off')
+    # make spines (the box) invisible
+    plt.setp(ax.spines.values(), visible=False)
+    # remove ticks and labels for the left axis
+    ax.tick_params(left=False, labelleft=False)
+    #remove background patch (only needed for non-white background)
+    ax.patch.set_visible(False)
+    ax=plt.subplot(2,2,4)
+    ax.set_axis_off()
+    #convert to np.uint8
+    output_data = output_data.astype(np.uint8)
+    ax.imshow(output_data)
+    plt.gca().set_position([0, 0, 1, 1])
+    plt.gca().set_aspect('auto')
+    plt.axis('off')
+    plt.savefig(output_png, bbox_inches='tight', pad_inches=0, dpi=600)
     print('The image has been saved to', output_png + '.')
     return output_png
 def update_loop_to_mask(loop_list,resolution):
@@ -162,15 +203,50 @@ def update_loop_to_mask(loop_list,resolution):
         end2 = end2 + difference_margin
         update_list.append((start1,end1,start2,end2))
     return update_list
+def find_chromkey(chroms,query_chrom):
+    if query_chrom in chroms:
+        return query_chrom
+    if "chr"+query_chrom in chroms:
+        return "chr"+query_chrom
+    query_chrom= query_chrom.replace("chr","")
+    if query_chrom in chroms:
+        return query_chrom
+def fetch_track(bw,chrom,start_index,end_index,resolution):
+    chroms = bw.chroms()
+    chrom_key = find_chromkey(chroms,chrom)
+    chrom_size = chroms[chrom_key]
+    print("Chrom size:", chrom_size)
+    signal = bw.values(chrom_key, 0, chrom_size, numpy=True)
+    cutoff_length = chrom_size // resolution * resolution
+    signal = signal[:cutoff_length]
+        
+    signal = np.nan_to_num(signal)
+    
+    if resolution > 1:
+        signal = signal.reshape(-1, resolution).mean(axis=1)
+    signal = signal[start_index:end_index]
+    return signal
+def fetch_pair_track(input_bw,
+                    chrom1,start_index1,end_index1,
+                    chrom2,start_index2,end_index2,
+                    resolution):
+    bw = pyBigWig.open(input_bw)
+    signal1 = fetch_track(bw,chrom1,start_index1,end_index1,resolution)
+    signal2 = fetch_track(bw,chrom2,start_index2,end_index2,resolution)
+    
+    bw.close()
+    return signal1,signal2
+
 """
-This script is to annotate and visualize the input array with loop information.
+This script is to annotate and visualize the input array with loop information and related to epigenomic assays.
 ```
-python3 annotate_array_loop.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
+python3 looptrack_visualization.py [input.pkl] [loop.bed] [track.bigWig] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
 ```
 [input.pkl] is the path to the pickle file containing the Hi-C array. <br>
 [input.pkl] format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
 For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files. <br>
-[loop.bed] is the path to the bed file containing the loop information. <br>
+[loop.bed] is the path to the bed file containing the loop information. <br>]
+[track.bigWig] is the path to the bigWig file containing the epigenomic track information. <br>
 [output.png] is the name of the output png file. <br>
 [chrom1] is the name of the first chromosome. <br>
 [start_index1] is the start index of the first chromosome. <br>
@@ -185,14 +261,13 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 
 
 
-
 if __name__ == '__main__':
     import os
     import sys
 
     #take the overall array as input
-    if len(sys.argv) != 13:
-        print('Usage: python3 array2png.py [input.pkl] [loop.bed] [output.png] \
+    if len(sys.argv) != 14:
+        print('Usage: python3 array2png.py [input.pkl] [loop.bed] [track.bigWig] [output.png] \
               [chrom1] [start_index1] [end_index1] \
               [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]')
         print("This is the full array2png script. ")
@@ -200,6 +275,7 @@ if __name__ == '__main__':
         print("input.pkl format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array."\
               "For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.")
         print("loop.bed: the path to the bed file containing the loop information [String].")
+        print("track.bigWig: the path to the bigWig file containing the epigenomic track information [String].")
         print("output.png: the name of the output png file [String].")
         print("chrom1: the name of the first chromosome [String].")
         print("start_index1: the start index of the first chromosome [Integer].")
@@ -214,18 +290,19 @@ if __name__ == '__main__':
         sys.exit(1)
     input_array_pickle = os.path.abspath(sys.argv[1])
     loop_file = os.path.abspath(sys.argv[2])
-    output_png = os.path.abspath(sys.argv[3])
+    input_track = os.path.abspath(sys.argv[3])
+    output_png = os.path.abspath(sys.argv[4])
     output_dir = os.path.dirname(output_png)
     os.makedirs(output_dir, exist_ok=True)
-    chrom1 = sys.argv[4]
-    start_index1 = int(sys.argv[5])
-    end_index1 = int(sys.argv[6])
-    chrom2 = sys.argv[7]
-    start_index2 = int(sys.argv[8])
-    end_index2 = int(sys.argv[9])
-    resolution = int(sys.argv[10])
-    max_value = float(sys.argv[11])
-    mode = int(sys.argv[12])
+    chrom1 = sys.argv[5]
+    start_index1 = int(sys.argv[6])
+    end_index1 = int(sys.argv[7])
+    chrom2 = sys.argv[8]
+    start_index2 = int(sys.argv[9])
+    end_index2 = int(sys.argv[10])
+    resolution = int(sys.argv[11])
+    max_value = float(sys.argv[12])
+    mode = int(sys.argv[13])
     start_index1 = start_index1//resolution
     end_index1 = end_index1//resolution
     start_index2 = start_index2//resolution
@@ -238,5 +315,10 @@ if __name__ == '__main__':
     loop_list= update_loop_to_mask(loop_list,resolution)
     #load the input array
     input_array = load_input_array(input_array_pickle,chrom1,chrom2)
-    annotate_loop(input_array,loop_list,output_png,start_index1,end_index1,
+    input_track1, input_track2 = fetch_pair_track(input_track,
+                                                  chrom1,start_index1,end_index1,
+                                                  chrom2,start_index2,end_index2,
+                                                  resolution)
+
+    visualize_looptrack(input_array,loop_list,[input_track1,input_track2],output_png,start_index1,end_index1,
                    start_index2,end_index2,max_value,mode)
