@@ -163,6 +163,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     ax.set_aspect('auto')
     #ax.set_position([0, 0, 1, 1])
     ax=plt.subplot(2,2,3)
+    input_track2 = input_track2[::-1]
     plt.plot(input_track2,track_range2,color='blue')
     plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
     ax.invert_xaxis()
