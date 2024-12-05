@@ -102,6 +102,7 @@ def annotate_loop(input_array,loop_list,output_png,start_index1,end_index1,
     else:
         print("Current input array type: ",type(input_array))
         raise ValueError("The input array is not supported.")
+    output_data = input_array
     print("select matrix stat, min:",np.min(output_data),"max:",np.max(output_data),"mean:",np.mean(output_data))
     #output_data = output_data + triu(output_data,1).T #limit its application to rectangular matrix
     if run_mode == 1:
