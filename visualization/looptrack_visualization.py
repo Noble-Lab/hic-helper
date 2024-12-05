@@ -149,7 +149,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     ax=plt.subplot(2,2,2)
     plt.plot(track_range1, input_track1,color='blue')
     plt.fill_between(x=track_range1, y1=input_track1, color='blue')
-    ax.set_xlim(input_track1.min(), input_track1.max())
+    ax.set_xlim(track_range1.min(), track_range1.max())
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     plt.axis('off')
@@ -165,7 +165,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     ax=plt.subplot(2,2,3)
     plt.plot(input_track2,track_range2,color='blue')
     plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
-    ax.set_xlim(input_track2.min(), input_track2.max())
+    ax.set_ylim(track_range2.min(), track_range2.max())
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     
