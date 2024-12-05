@@ -149,22 +149,28 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     ax=plt.subplot(2,2,2)
     plt.plot(track_range1, input_track1,color='blue')
     plt.fill_between(x=track_range1, y1=input_track1, color='blue')
+    ax.set_xlim(input_track1.min(), input_track1.max())
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
     plt.axis('off')
+    ax.set_axis_off()
     # make spines (the box) invisible
     plt.setp(ax.spines.values(), visible=False)
     # remove ticks and labels for the left axis
     ax.tick_params(left=False, labelleft=False)
     #remove background patch (only needed for non-white background)
     ax.patch.set_visible(False)
+    ax.set_aspect('auto')
     #ax.set_position([0, 0, 1, 1])
     ax=plt.subplot(2,2,3)
     plt.plot(input_track2,track_range2,color='blue')
     plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
+    ax.set_xlim(input_track2.min(), input_track2.max())
     ax.xaxis.set_visible(False)
     ax.yaxis.set_visible(False)
+    
     plt.axis('off')
+    ax.set_axis_off()
     # make spines (the box) invisible
     plt.setp(ax.spines.values(), visible=False)
     # remove ticks and labels for the left axis
@@ -172,6 +178,8 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     #ax.set_position([0, 0, 1, 1])
     #remove background patch (only needed for non-white background)
     ax.patch.set_visible(False)
+    ax.set_aspect('auto')
+
     ax=plt.subplot(2,2,4)
     ax.set_axis_off()
     #convert to np.uint8
@@ -182,7 +190,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     # plt.gca().set_position([0, 0, 1, 1])
     # plt.gca().set_aspect('auto')
     #plt.axis('off')
-    plt.tight_layout()
+    plt.tight_layout(pad=0)
     plt.savefig(output_png, bbox_inches='tight', pad_inches=0, dpi=600)
     print('The image has been saved to', output_png + '.')
     return output_png
