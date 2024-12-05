@@ -154,6 +154,8 @@ if __name__ == '__main__':
         sys.exit(1)
     input_array_pickle = os.path.abspath(sys.argv[1])
     output_png = os.path.abspath(sys.argv[2])
+    output_dir = os.path.dirname(output_png)
+    os.makedirs(output_dir, exist_ok=True)
     chrom1 = sys.argv[3]
     start_index1 = int(sys.argv[4])
     end_index1 = int(sys.argv[5])

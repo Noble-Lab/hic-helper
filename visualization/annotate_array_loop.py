@@ -54,6 +54,7 @@ def load_input_array(input_path,input_chrom1,input_chrom2):
     data = load_pickle(input_path)
     input_key = find_key(data,input_chrom1,input_chrom2)
     input_array = data[input_key]
+    print("loaded the corresponding matrix shape: ",input_array.shape)
     return input_array
 def parse_bed_file(input_bed):
     loop_dict=defaultdict(list)
@@ -142,6 +143,10 @@ def update_loop_to_mask(loop_list,resolution):
     update_list=[]
     for item in loop_list:
         start1,end1,start2,end2 = item
+        #make sure the start1 is smaller than start2, otherwise swap
+        if start1 > start2:
+            start1,start2 = start2,start1
+            end1,end2 = end2,end1
         difference_margin= end1-start1
         difference_margin = difference_margin//resolution
         difference_margin = max(1,difference_margin)
@@ -160,7 +165,7 @@ def update_loop_to_mask(loop_list,resolution):
 """
 This script is to annotate and visualize the input array with loop information.
 ```
-python3 array2png.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
+python3 annotate_array_loop.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
 ```
 [input.pkl] is the path to the pickle file containing the Hi-C array. <br>
 [input.pkl] format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
@@ -210,6 +215,8 @@ if __name__ == '__main__':
     input_array_pickle = os.path.abspath(sys.argv[1])
     loop_file = os.path.abspath(sys.argv[2])
     output_png = os.path.abspath(sys.argv[3])
+    output_dir = os.path.dirname(output_png)
+    os.makedirs(output_dir, exist_ok=True)
     chrom1 = sys.argv[4]
     start_index1 = int(sys.argv[5])
     end_index1 = int(sys.argv[6])
@@ -225,7 +232,6 @@ if __name__ == '__main__':
     end_index2 = end_index2//resolution
     #first parse loop bed to get the loop regions
     loop_dict = parse_bed_file(loop_file)
-    print("total loops: ", len(loop_dict))  
     loop_key = find_key(loop_dict,chrom1,chrom2)
     loop_list = loop_dict[loop_key]
     print("current focus chromosome loop: ", len(loop_list))
