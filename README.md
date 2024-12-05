@@ -602,3 +602,13 @@ python3 loop_overlap.py [control.bed] [input.bed] [resolution] [output_dir]
 [resolution]: the resolution of the Hi-C data. <br>
 [output_dir]: the output directory. <br>
 The output files are overlap.bed, independent1.bed, independent2.bed, indicating the overlap loops, independent loops in control, independent loops in input. <br>
+
+#### 43. array2bigwig.py
+[array2bigwig.py](pre_processing/array2bigwig.py) <br>
+This script is used to merge bigwig files into one bigwig file.
+```
+python3 array2bigwig.py [input_file] [output_bigwig] [resolution]
+```
+[input_file]: the pkl file to be converted, should be a dict in format of [chr]:[array]. <br>
+[output_bigwig]: the output bigwig file. <br>
+[resolution]: the resolution stored in the pkl file. <br>
