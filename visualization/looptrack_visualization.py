@@ -158,7 +158,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     ax.tick_params(left=False, labelleft=False)
     #remove background patch (only needed for non-white background)
     ax.patch.set_visible(False)
-    ax.set_position([0, 0, 1, 1])
+    #ax.set_position([0, 0, 1, 1])
     ax=plt.subplot(2,2,3)
     plt.plot(input_track2,track_range2,color='blue')
     plt.fill_betweenx(y=track_range2, x1=input_track2, color='blue')
@@ -169,7 +169,7 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     plt.setp(ax.spines.values(), visible=False)
     # remove ticks and labels for the left axis
     ax.tick_params(left=False, labelleft=False)
-    ax.set_position([0, 0, 1, 1])
+    #ax.set_position([0, 0, 1, 1])
     #remove background patch (only needed for non-white background)
     ax.patch.set_visible(False)
     ax=plt.subplot(2,2,4)
@@ -177,7 +177,8 @@ def visualize_looptrack(input_array,loop_list,input_track,output_png,start_index
     #convert to np.uint8
     output_data = output_data.astype(np.uint8)
     ax.imshow(output_data)
-    ax.set_position([0, 0, 1, 1])
+    #ax.set_position([0, 0, 1, 1])
+    plt.subplots_adjust(wspace=0, hspace=0)  # No space between subplots
     # plt.gca().set_position([0, 0, 1, 1])
     # plt.gca().set_aspect('auto')
     #plt.axis('off')
