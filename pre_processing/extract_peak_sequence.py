@@ -76,16 +76,16 @@ python3 extract_peak_sequence.py [peak_bed] [genome_fasta] [output_fasta] [windo
 ```
 [peak_bed]: the bed file containing peak regions. <br>
 [genome_fasta]: the genome fasta file. <br>
-[output_fasta]: the output fasta file containing peak sequences. <br>
+[output.fna]: the output .fna file containing peak sequences. <br>
 [window_region]: the window region to extract sequence around peak regions. <br>
 If set to 0, then use the peak region itself. <br>
 """
 if __name__ == '__main__':
     if len(sys.argv)!=5:
-        print("Usage: python extract_peak_sequence.py [peak_bed] [genome_fasta] [output_fasta] [window_region]")
+        print("Usage: python extract_peak_sequence.py [peak_bed] [genome_fasta] [output.fna] [window_region]")
         print("peak_bed: the bed file containing peak regions")
         print("genome_fasta: the genome fasta file")
-        print("output_fasta: the output fasta file containing peak sequences")
+        print("output.fna: the output .fna file containing peak sequences")
         print("window_region: the window region to extract sequence around peak regions. \n \
               If set to 0, then use the peak region itself")
         sys.exit(1)
