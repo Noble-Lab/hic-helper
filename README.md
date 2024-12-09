@@ -655,3 +655,15 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 [resolution] is the resolution of the input array. <br>
 [max_value] is the maximum threshold of the input array for figures. <br>
 [mode]: 0:raw visualization; 1: log visualization. <br>
+
+#### 46. extract_peak_sequence.py
+[extract_peak_sequence.py](pre_processing/extract_peak_sequence.py) <br>
+This script is used to extract peak sequences from genome fasta file.
+```
+python3 extract_peak_sequence.py [peak_bed] [genome_fasta] [output_fasta] [window_region]
+```
+[peak_bed]: the bed file containing peak regions. <br>
+[genome_fasta]: the genome fasta file. <br>
+[output_fasta]: the output fasta file containing peak sequences. <br>
+[window_region]: the window region to extract sequence around peak regions. <br>
+If set to 0, then use the peak region itself. <br>

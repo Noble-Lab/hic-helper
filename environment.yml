@@ -29,6 +29,7 @@ dependencies:
       - scipy
       - hic2cool
       - hic-straw
+      - pyfaidx
       
       
 
