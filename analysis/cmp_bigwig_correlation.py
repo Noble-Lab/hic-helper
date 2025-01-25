@@ -17,9 +17,12 @@ def calculate_correlation(input1, input2, resolution):
         print("Chrom size:", chrom_size)
         signal1 = bw1.values(chrom, 0, chrom_size, numpy=True)
         signal2 = bw2.values(chrom, 0, chrom_size, numpy=True)
+        if len(signal1)==0 or len(signal2)==0:
+            continue
         #average the signal according to the resolution, and remove nan values
         signal1 = signal1[~np.isnan(signal1)]
         signal2 = signal2[~np.isnan(signal2)]
+        
         #average the signal according to the resolution, every resolution window will be converted to one value
         signal1 = np.mean(signal1[:len(signal1)//resolution*resolution].reshape(-1, resolution), axis=1)
         signal2 = np.mean(signal2[:len(signal2)//resolution*resolution].reshape(-1, resolution), axis=1)
@@ -37,7 +40,16 @@ def calculate_correlation(input1, input2, resolution):
     print("Pearson correlation:", np.mean(report_dict['pearson']))
     print("Spearman correlation:", np.mean(report_dict['spearman']))
     print("Cosine similarity:", np.mean(report_dict['cosine']))
-        
+"""
+This script is used to calculate the correlation between two bigwig files.
+```
+python3 cmp_bigwig_correlation.py [input1.bigWig] [input2.bigWig] [resolution]
+```
+[input1.bigWig]: the first bigwig file. <br>
+[input2.bigWig]: the second bigwig file. <br>
+[resolution]: the resolution to calculate the correlation. <br>
+This script will output pearson correlation, spearman correlation, and cosine similarity between the two bigwig files. <br>
+""" 
 
 
 
