@@ -17,12 +17,12 @@ def calculate_correlation(input1, input2, resolution):
         print("Chrom size:", chrom_size)
         signal1 = bw1.values(chrom, 0, chrom_size, numpy=True)
         signal2 = bw2.values(chrom, 0, chrom_size, numpy=True)
-        if len(signal1)==0 or len(signal2)==0:
-            continue
+        
         #average the signal according to the resolution, and remove nan values
         signal1 = signal1[~np.isnan(signal1)]
         signal2 = signal2[~np.isnan(signal2)]
-        
+        if len(signal1)==0 or len(signal2)==0:
+            continue
         #average the signal according to the resolution, every resolution window will be converted to one value
         signal1 = np.mean(signal1[:len(signal1)//resolution*resolution].reshape(-1, resolution), axis=1)
         signal2 = np.mean(signal2[:len(signal2)//resolution*resolution].reshape(-1, resolution), axis=1)
