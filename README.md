@@ -667,3 +667,14 @@ python3 extract_peak_sequence.py [peak_bed] [genome_fasta] [output_fasta] [windo
 [output_fasta]: the output fasta file containing peak sequences. <br>
 [window_region]: the window region to extract sequence around peak regions. <br>
 If set to 0, then use the peak region itself. <br>
+
+#### 47. cmp_bigwig_correlation.py
+[cmp_bigwig_correlation.py](analysis/cmp_bigwig_correlation.py) <br>
+This script is used to calculate the correlation between two bigwig files.
+```
+python3 cmp_bigwig_correlation.py [input1.bigWig] [input2.bigWig] [resolution]
+```
+[input1.bigWig]: the first bigwig file. <br>
+[input2.bigWig]: the second bigwig file. <br>
+[resolution]: the resolution to calculate the correlation. <br>
+This script will output pearson correlation, spearman correlation, and cosine similarity between the two bigwig files. 
