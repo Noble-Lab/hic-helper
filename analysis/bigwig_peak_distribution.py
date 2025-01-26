@@ -39,7 +39,7 @@ def plot_distribution(input_bw, input_peak, output_fig):
             signal_locus = signal[start:end]
             signal_locus = np.nan_to_num(signal_locus)
             signal_average = np.mean(signal_locus)
-            value_list.extend(signal_average)
+            value_list.append(signal_average)
     bw.close()
     plt.hist(value_list, bins=100)
     plt.xlabel("Peak strength per base")
