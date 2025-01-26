@@ -6,6 +6,8 @@ import numpy as np
 from scipy import stats
 from collections import defaultdict
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 def read_bed(input_bed):
     locus_dict=defaultdict(list)
     with open(input_bed) as f:
@@ -80,7 +82,11 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed,output_png):
     print("Pearson correlation:", pearon_count)
     print("Spearman correlation:", spearman_count)
     plt.figure(figsize=(8, 8))
-    plt.hist2d(count_cmp_dict["x"], count_cmp_dict["y"], bins=100, cmap=plt.cm.jet)
+    #plt.hist2d(count_cmp_dict["x"], count_cmp_dict["y"], bins=100, cmap=plt.cm.jet)
+    count_cmp_df = pd.DataFrame(count_cmp_dict)
+    sns.kdeplot(
+    data=count_cmp_df, x="x", y="y", fill=True,
+    )
     #set x scale, y scale to 95% percentile xmax,ymax
     xmax = np.percentile(count_cmp_dict["x"], 95)
     ymax = np.percentile(count_cmp_dict["y"], 95)
