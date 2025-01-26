@@ -65,7 +65,7 @@ python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig] [mode]
 
 
 if __name__ == '__main__':
-    if len(sys.argv)!=4:
+    if len(sys.argv)!=5:
         print("Usage: python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig] [mode]")
         print("input.bw: the input bigwig file")
         print("input.peak: the input peak file,specify the peak region")
