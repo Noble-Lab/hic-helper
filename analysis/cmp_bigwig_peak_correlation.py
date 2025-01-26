@@ -81,10 +81,15 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed,output_png):
     print("Spearman correlation:", spearman_count)
     plt.figure(figsize=(8, 8))
     plt.hist2d(count_cmp_dict["x"], count_cmp_dict["y"], bins=100, cmap=plt.cm.jet)
+    #set x scale, y scale to 95% percentile xmax,ymax
+    xmax = np.percentile(count_cmp_dict["x"], 95)
+    ymax = np.percentile(count_cmp_dict["y"], 95)
+    plt.xlim(0, xmax)
+    plt.ylim(0, ymax)
     plt.xlabel("Peak reads in bigwig1",fontsize=18)
     plt.ylabel("Peak reads in bigwig2",fontsize=18)
     plt.title("Pearson: %.2f"%pearon_count,fontsize=18)
-    plt.savefig(output_png)
+    plt.savefig(output_png,dpi=300)
 
 """
 This script is used to calculate the correlation between two bigwig files on the locus specified in .bed file.
