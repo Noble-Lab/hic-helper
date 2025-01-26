@@ -27,6 +27,8 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed):
     chroms = bw1.chroms()
     for chrom in chroms:
         current_locus = locus_dict[chrom]
+        if len(current_locus)==0:
+            continue
         chrom_size = chroms[chrom]
         print("chrom",chrom, " Chrom size:", chrom_size)
         signal1 = bw1.values(chrom, 0, chrom_size, numpy=True)
@@ -39,6 +41,11 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed):
             signal2_locus = signal2[start:end]
             if len(signal1_locus)==0 or len(signal2_locus)==0:
                 continue
+            if np.sum(signal1_locus)==0 or np.sum(signal2_locus)==0:
+                report_dict['pearson'].append(0)
+                report_dict['spearman'].append(0)
+                report_dict['cosine'].append(0)
+                continue
             #calculate pearson correlation
             res = stats.pearsonr(signal1_locus, signal2_locus)
             report_dict['pearson'].append(res[0])
@@ -48,6 +55,10 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed):
             #add cosine similarity
             res = np.dot(signal1_locus, signal2_locus)/(np.linalg.norm(signal1_locus)*np.linalg.norm(signal2_locus))
             report_dict['cosine'].append(res)
+        print("finished chrom", chrom)
+        print("Pearson correlation:", np.mean(report_dict['pearson']))
+        print("Spearman correlation:", np.mean(report_dict['spearman']))
+        print("Cosine similarity:", np.mean(report_dict['cosine']))
     bw1.close()
     bw2.close()
     print("Pearson correlation:", np.mean(report_dict['pearson']))
