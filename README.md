@@ -683,9 +683,10 @@ This script will output pearson correlation, spearman correlation, and cosine si
 [cmp_bigwig_peak_correlation.py](analysis/cmp_bigwig_peak_correlation.py) <br>
 This script is used to calculate the correlation between two bigwig files on the locus specified in .bed file.
 ```
-python3 cmp_bigwig_peak_correlation.py [input1.bigWig] [input2.bigWig] [reference.bed]
+python3 cmp_bigwig_peak_correlation.py [input1.bigWig] [input2.bigWig] [reference.bed] [output_png]
 ```
 [input1.bigWig]: the first bigwig file. <br>
 [input2.bigWig]: the second bigwig file. <br>
 [reference.bed]: the bed file containing the locus to calculate the correlation. <br>
+[output_png]: the output png file to save the peak total reads comparison. <br>
 This script will output pearson correlation, spearman correlation, and cosine similarity between the two bigwig files. <br>
