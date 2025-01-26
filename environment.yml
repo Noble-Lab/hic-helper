@@ -30,6 +30,7 @@ dependencies:
       - hic2cool
       - hic-straw
       - pyfaidx
+      - seaborn
       
       
 

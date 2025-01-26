@@ -15,6 +15,9 @@ def calculate_correlation(input1, input2, resolution):
         print("Processing", chrom)
         chrom_size = chroms1[chrom]
         print("Chrom size:", chrom_size)
+        chrom_size2 = chroms2[chrom]
+        print("chrom",chrom, " Chrom size2:", chrom_size2)
+        chrom_size = min(chrom_size, chrom_size2)
         signal1 = bw1.values(chrom, 0, chrom_size, numpy=True)
         signal2 = bw2.values(chrom, 0, chrom_size, numpy=True)
         

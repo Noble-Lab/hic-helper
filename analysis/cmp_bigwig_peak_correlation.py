@@ -37,6 +37,10 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed,output_png):
             continue
         chrom_size = chroms[chrom]
         print("chrom",chrom, " Chrom size:", chrom_size)
+        chrom_size2 = chroms2[chrom]
+        print("chrom",chrom, " Chrom size2:", chrom_size2)
+        chrom_size = min(chrom_size, chrom_size2)
+        
         signal1 = bw1.values(chrom, 0, chrom_size, numpy=True)
         signal1 = np.nan_to_num(signal1)
         signal2 = bw2.values(chrom, 0, chrom_size, numpy=True)
