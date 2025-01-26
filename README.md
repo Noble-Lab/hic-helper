@@ -702,3 +702,15 @@ python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig] [mode]
 [input.peak]: the input peak file,specify the peak region. <br>
 [output_fig]: the output figure path to show the peak distribution. <br>
 [mode]: 0:raw_value, 1:log10_value. <br>
+
+#### 50.bigwig_2peak_distribution.py
+[bigwig_2peak_distribution.py](analysis/bigwig_2peak_distribution.py) <br>
+This script compares the positive and negative peak distribution of the bigwig file according to the peak region specified in .bed files.
+```
+python3 bigwig_2peak_distribution.py [input.bw] [positive.bed] [negative.bed] [output_fig] [mode]
+```
+[input.bw]: the input bigwig file. <br>
+[positive.bed]: the input positive peak file,specify the positive peak region. <br>
+[negative.bed]: the input negative peak file,specify the negative peak region. <br>
+[output_fig]: the output figure path to show the peak distribution. <br>
+[mode]: 0:raw_value, 1:log10_value. <br>
