@@ -463,11 +463,11 @@ python3 peak_f1.py [true.bed] [pred.bed] [max_dist]
 [max_dist]: the maximum distance to match the peaks <br>
 
 
-#### 32. bigwig_peak_distribution.py
-[bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py)<br>
+#### 32. bigwig_scan_distribution.py
+[bigwig_peak_distribution.py](analysis/bigwig_scan_distribution.py)<br>
 This script plots the peak distribution of the bigwig file.
 ```
-python3 bigwig_peak_distribution.py [input.bw] [window_size] [stride] [output_fig] [mode]
+python3 bigwig_scan_distribution.py [input.bw] [window_size] [stride] [output_fig] [mode]
 ```
 [input.bw]: the input bigwig file. <br>
 [window_size]: the window size for analyzing peak distribution. <br>
@@ -690,3 +690,14 @@ python3 cmp_bigwig_peak_correlation.py [input1.bigWig] [input2.bigWig] [referenc
 [reference.bed]: the bed file containing the locus to calculate the correlation. <br>
 [output_png]: the output png file to save the peak total reads comparison. <br>
 This script will output pearson correlation, spearman correlation, and cosine similarity between the two bigwig files. <br>
+
+
+#### 49.bigwig_peak_distribution.py
+[bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py) <br>
+This script plots the peak distribution of the bigwig file according to the peak region specified in .bed file.
+```
+python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig]
+```
+[input.bw]: the input bigwig file. <br>
+[input.peak]: the input peak file,specify the peak region. <br>
+[output_fig]: the output figure path to show the peak distribution. <br>
