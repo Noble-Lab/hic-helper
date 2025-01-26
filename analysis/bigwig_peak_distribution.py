@@ -20,7 +20,7 @@ def read_bed(input_bed):
     return locus_dict
 
 
-def plot_distribution(input_bw, input_peak, output_fig):
+def plot_distribution(input_bw, input_peak, output_fig,mode):
     #read peak file
     locus_dict=read_bed(input_peak)
     bw = pyBigWig.open(input_bw)
@@ -43,18 +43,22 @@ def plot_distribution(input_bw, input_peak, output_fig):
     bw.close()
     plt.hist(value_list, bins=100)
     plt.xlabel("Peak strength per base")
-    plt.ylabel("Frequency")
+    
     plt.title("Peak distribution")
-    #plt.yscale('log') #very necessary because many 0 values
+    if mode==1:
+        plt.yscale('log')
+        
+    plt.ylabel("Frequency")
     plt.savefig(output_fig,dpi=600)
 """
 This script plots the peak distribution of the bigwig file according to the peak region specified in .bed file.
 ```
-python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig]
+python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig] [mode]
 ```
 [input.bw]: the input bigwig file. <br>
 [input.peak]: the input peak file,specify the peak region. <br>
 [output_fig]: the output figure path to show the peak distribution. <br>
+[mode]: 0:raw_value, 1:log10_value. <br>
 
 
 """
@@ -62,14 +66,16 @@ python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig]
 
 if __name__ == '__main__':
     if len(sys.argv)!=4:
-        print("Usage: python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig]")
+        print("Usage: python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig] [mode]")
         print("input.bw: the input bigwig file")
         print("input.peak: the input peak file,specify the peak region")
         print("output_fig: the output figure path to show the peak distribution")
+        print("mode:  0:raw_value, 1:log10_value")
         sys.exit(1)
     input_bw = os.path.abspath(sys.argv[1])
     input_peak = os.path.abspath(sys.argv[2])
     output_fig = os.path.abspath(sys.argv[3])
+    mode = int(sys.argv[4])
     output_dir = os.path.dirname(output_fig)
     os.makedirs(output_dir, exist_ok=True)
-    plot_distribution(input_bw, input_peak, output_fig)
+    plot_distribution(input_bw, input_peak, output_fig,mode)

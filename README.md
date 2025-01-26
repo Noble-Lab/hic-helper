@@ -696,8 +696,9 @@ This script will output pearson correlation, spearman correlation, and cosine si
 [bigwig_peak_distribution.py](analysis/bigwig_peak_distribution.py) <br>
 This script plots the peak distribution of the bigwig file according to the peak region specified in .bed file.
 ```
-python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig]
+python3 bigwig_peak_distribution.py [input.bw] [input.peak] [output_fig] [mode]
 ```
 [input.bw]: the input bigwig file. <br>
 [input.peak]: the input peak file,specify the peak region. <br>
 [output_fig]: the output figure path to show the peak distribution. <br>
+[mode]: 0:raw_value, 1:log10_value. <br>
