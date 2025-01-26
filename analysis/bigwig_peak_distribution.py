@@ -4,7 +4,7 @@ import pyBigWig
 import pickle 
 import numpy as np
 import matplotlib.pyplot as plt
-
+from collections import defaultdict
 def read_bed(input_bed):
     locus_dict=defaultdict(list)
     with open(input_bed) as f:
