@@ -121,6 +121,7 @@ if __name__ == '__main__':
         print("[input1.bigWig]: the first bigwig file.")
         print("[input2.bigWig]: the second bigwig file.")
         print("[reference.bed]: the bed file containing the locus to calculate the correlation.")
+        print("[output_png]: the output png file to save the peak total reads comparison.")
         sys.exit(1)
 
     input_bigwig1 = os.path.abspath(sys.argv[1])
