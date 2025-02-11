@@ -617,7 +617,7 @@ python3 array2bigwig.py [input_file] [output_bigwig] [resolution]
 [annotate_array_loop.py](visualization/annotate_array_loop.py) <br>
 This script is to annotate and visualize the input array with loop information.
 ```
-python3 array2png.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
+python3 annotate_array_loop.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
 ```
 [input.pkl] is the path to the pickle file containing the Hi-C array. <br>
 [input.pkl] format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
