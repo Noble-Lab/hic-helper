@@ -617,7 +617,7 @@ python3 array2bigwig.py [input_file] [output_bigwig] [resolution]
 [annotate_array_loop.py](visualization/annotate_array_loop.py) <br>
 This script is to annotate and visualize the input array with loop information.
 ```
-python3 array2png.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
+python3 annotate_array_loop.py [input.pkl] [loop.bed] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [max_value] [mode]
 ```
 [input.pkl] is the path to the pickle file containing the Hi-C array. <br>
 [input.pkl] format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array. <br>
@@ -715,7 +715,6 @@ python3 bigwig_2peak_distribution.py [input.bw] [positive.bed] [negative.bed] [o
 [output_fig]: the output figure path to show the peak distribution. <br>
 [mode]: 0:raw_value, 1:log10_value. <br>
 
-
 #### 51.loop_ctcfpeak_ratio.py
 [loop_ctcfpeak_ratio.py](analysis/loop_ctcfpeak_ratio.py) <br>
 This script is used to calculate the ratio of chromatin loops that overlap with CTCF ChIP peaks.
@@ -725,3 +724,4 @@ python3 loop_ctcfpeak_ratio.py [loop.bed] [ctcf_peak.bed] [resolution]
 [loop.bed]: the chromatin loop coordinate, in bed format <br>
 [ctcf_peak.bed]: the CTCF peak coordinate, in bed format <br>
 [resolution]: the resolution of the Hi-C data <br>
+
