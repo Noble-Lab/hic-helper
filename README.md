@@ -714,3 +714,14 @@ python3 bigwig_2peak_distribution.py [input.bw] [positive.bed] [negative.bed] [o
 [negative.bed]: the input negative peak file,specify the negative peak region. <br>
 [output_fig]: the output figure path to show the peak distribution. <br>
 [mode]: 0:raw_value, 1:log10_value. <br>
+
+
+#### 51.loop_ctcfpeak_ratio.py
+[loop_ctcfpeak_ratio.py](analysis/loop_ctcfpeak_ratio.py) <br>
+This script is used to calculate the ratio of chromatin loops that overlap with CTCF ChIP peaks.
+```
+python3 loop_ctcfpeak_ratio.py [loop.bed] [ctcf_peak.bed] [resolution]
+```
+[loop.bed]: the chromatin loop coordinate, in bed format <br>
+[ctcf_peak.bed]: the CTCF peak coordinate, in bed format <br>
+[resolution]: the resolution of the Hi-C data <br>
