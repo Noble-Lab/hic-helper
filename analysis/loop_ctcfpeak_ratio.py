@@ -76,7 +76,7 @@ def calculate_loop_ctcf_ratio(loop_dict, peak_dict, resolution):
         if len(cur_peak_list)==0:
             continue
         count_match= 0
-        count_singlematch = 0
+        #count_singlematch = 0
         for loop_loc in cur_loop_list:
             start1 = loop_loc[0]
             start2 = loop_loc[1]
@@ -94,16 +94,17 @@ def calculate_loop_ctcf_ratio(loop_dict, peak_dict, resolution):
             match_flag2 = check_overlap(check_start2, check_end2, cur_peak_list)
             if match_flag1 and match_flag2:
                 count_match += 1
-            if match_flag1 or match_flag2:
-                count_singlematch += 1
+            # if match_flag1 or match_flag2:
+            #     count_singlematch += 1
         loop_ctcf_ratio[chrom] = count_match / len(cur_loop_list)
-        loop_singlectcf_ratio[chrom] = count_singlematch / len(cur_loop_list)
+        #loop_singlectcf_ratio[chrom] = count_singlematch / len(cur_loop_list)
         print(chrom, "loop_ctcf_ratio:", loop_ctcf_ratio[chrom])
-        print(chrom, "loop_singlectcf_ratio:", loop_singlectcf_ratio[chrom])
+        #print(chrom, "loop_singlectcf_ratio:", loop_singlectcf_ratio[chrom])
     avg_loop_ctcf_ratio = np.mean(list(loop_ctcf_ratio.values()))
-    avg_loop_singlectcf_ratio = np.mean(list(loop_singlectcf_ratio.values()))
+   # avg_loop_singlectcf_ratio = np.mean(list(loop_singlectcf_ratio.values()))
     print("Average loop_ctcf_ratio:", avg_loop_ctcf_ratio)
-    print("Average loop_singlectcf_ratio:", avg_loop_singlectcf_ratio)
+    #print("Average loop_singlectcf_ratio:", avg_loop_singlectcf_ratio)
+    return avg_loop_ctcf_ratio
 
 """
 This script is used to calculate the ratio of chromatin loops that overlap with CTCF ChIP peaks.
@@ -128,7 +129,8 @@ if __name__ == '__main__':
 
     loop_dict = extract_loop_loc(loop_bed)
     peak_dict = extract_peak_bed(ctcf_peak_bed)
-    calculate_loop_ctcf_ratio(loop_dict, peak_dict, resolution)
+    avg_loop_ratio=calculate_loop_ctcf_ratio(loop_dict, peak_dict, resolution)
+    print(avg_loop_ratio)
 
 
 

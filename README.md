@@ -725,3 +725,13 @@ python3 loop_ctcfpeak_ratio.py [loop.bed] [ctcf_peak.bed] [resolution]
 [ctcf_peak.bed]: the CTCF peak coordinate, in bed format <br>
 [resolution]: the resolution of the Hi-C data <br>
 
+#### 52. loop_ctcf_enrichment.py
+[loop_ctcf_enrichment.py](visualization/loop_ctcf_enrichment.py) <br>
+This script is used to calculate the CTCF enrichment in the loop regions. 
+```
+python3 loop_ctcf_enrichment.py [loop.bed] [ctcf_chip.bw] [resolution] [output.bed]
+```
+[loop.bed]: the chromatin loop coordinate, in bed format <br>
+[ctcf_chip.bw]: the CTCF ChIP-seq signal in bigwig format  <br>
+[resolution]: the resolution of the Hi-C data <br>
+[output.bed]: the output bed file. Format: chr1 start1 end1 start2 end2 enrichment1 enrichment2 <br>
