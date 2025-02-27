@@ -70,8 +70,8 @@ def extract_enrichment(loop_dict, ctcf_chip_bw, resolution):
                     continue
                 signal1 = bw.stats(chrom, signal_start1, signal_end1, type="max")
                 signal2 = bw.stats(chrom, signal_start2, signal_end2, type="max")
-                signal1 = float(signal1[0]) if signal1 is not None else 0
-                signal2 = float(signal2[0]) if signal2 is not None else 0
+                signal1 = float(signal1[0]) if signal1[0] is not None else 0
+                signal2 = float(signal2[0]) if signal2[0] is not None else 0
                 output_list.append([current_chrom, start1, end1, start2, end2, signal1, signal2])
     return output_list
                 
