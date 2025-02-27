@@ -59,11 +59,15 @@ def extract_enrichment(loop_dict, ctcf_chip_bw, resolution):
                 end1 = (loop[0]+resolution)//resolution*resolution
                 signal_start1 = max(0, start1-resolution)
                 signal_end1 = min(cur_size, end1+resolution) #check 3pixel peak regions
+                if signal_start1 > cur_size:
+                    continue
 
                 start2 = loop[1]//resolution*resolution
                 end2 = (loop[1]+resolution)//resolution*resolution
                 signal_start2 = max(0, start2-resolution)
                 signal_end2 = min(cur_size, end2+resolution)
+                if signal_start2 > cur_size:
+                    continue
                 signal1 = bw.stats(chrom, signal_start1, signal_end1, type="max")
                 signal2 = bw.stats(chrom, signal_start2, signal_end2, type="max")
                 signal1 = float(signal1[0]) if signal1 is not None else 0
