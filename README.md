@@ -735,3 +735,23 @@ python3 loop_ctcf_enrichment.py [loop.bed] [ctcf_chip.bw] [resolution] [output.b
 [ctcf_chip.bw]: the CTCF ChIP-seq signal in bigwig format  <br>
 [resolution]: the resolution of the Hi-C data <br>
 [output.bed]: the output bed file. Format: chr1 start1 end1 start2 end2 enrichment1 enrichment2 <br>
+
+
+#### 53.diff2png.py
+[diff2png.py](visualization/diff2png.py) <br>
+This script is to visualize the difference comparison array in png format.
+```
+python3 diff2png.py [input.pkl] [output.png] [chrom1] [start_index1] [end_index1] [chrom2] [start_index2] [end_index2] [resolution] [vmin] [vmax]
+```
+input.pkl: the path to the pickle file containing the difference comparison array [String]. <br>
+input.pkl format: [chrom1_chrom2]:[array] format for common mode. Here array should be scipy sparce array."For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files.<br>
+output.png: the name of the output png file [String].<br>
+chrom1: the name of the first chromosome [String].<br>
+start_index1: the start index of the first chromosome [Integer].<br>
+end_index1: the end index of the first chromosome [Integer].<br>
+chrom2: the name of the second chromosome [String].<br>
+start_index2: the start index of the second chromosome [Integer].<br>
+end_index2: the end index of the second chromosome [Integer].<br>
+resolution: resolution of the input array [Integer].<br>
+vmin: the minimum threshold of the input array for figures[Float].<br>
+vmax: the maximum threshold of the input array for figures[Float].<br>

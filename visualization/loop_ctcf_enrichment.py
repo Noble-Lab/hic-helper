@@ -72,7 +72,7 @@ def extract_enrichment(loop_dict, ctcf_chip_bw, resolution):
                 signal2 = bw.stats(chrom, signal_start2, signal_end2, type="max")
                 signal1 = float(signal1[0]) if signal1[0] is not None else 0
                 signal2 = float(signal2[0]) if signal2[0] is not None else 0
-                output_list.append([current_chrom, start1, end1, start2, end2, signal1, signal2])
+                output_list.append([current_chrom, start1, end1, current_chrom, start2, end2, signal1, signal2])
     return output_list
                 
 def write_bed(output_list,output_bed):
@@ -88,7 +88,7 @@ python3 loop_ctcf_enrichment.py [loop.bed] [ctcf_chip.bw] [resolution] [output.b
 [loop.bed]: the chromatin loop coordinate, in bed format <br>
 [ctcf_chip.bw]: the CTCF ChIP-seq signal in bigwig format  <br>
 [resolution]: the resolution of the Hi-C data <br>
-[output.bed]: the output bed file. Format: chr1 start1 end1 start2 end2 enrichment1 enrichment2 <br>
+[output.bed]: the output bed file. Format: chr1 start1 end1 chr2 start2 end2 enrichment1 enrichment2 <br>
 
 
 """
