@@ -56,6 +56,12 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed,output_png):
                 report_dict['spearman'].append(0)
                 report_dict['cosine'].append(0)
                 continue
+            #if std is 0, then the correlation is 0
+            if np.std(signal1_locus)==0 or np.std(signal2_locus)==0:
+                report_dict['pearson'].append(0)
+                report_dict['spearman'].append(0)
+                report_dict['cosine'].append(0)
+                continue
             #calculate pearson correlation
             res = stats.pearsonr(signal1_locus, signal2_locus)
             report_dict['pearson'].append(res[0])
