@@ -64,10 +64,16 @@ def caclulate_correlation(input_bigwig1, input_bigwig2, input_bed,output_png):
                 continue
             #calculate pearson correlation
             res = stats.pearsonr(signal1_locus, signal2_locus)
-            report_dict['pearson'].append(res[0])
+            if np.isnan(res[0]):
+                report_dict['pearson'].append(0)
+            else:
+                report_dict['pearson'].append(res[0])
             #add spearman correlation
             res = stats.spearmanr(signal1_locus, signal2_locus)
-            report_dict['spearman'].append(res[0])
+            if np.isnan(res[0]):
+                report_dict['spearman'].append(0)
+            else:
+                report_dict['spearman'].append(res[0])
             #add cosine similarity
             res = np.dot(signal1_locus, signal2_locus)/(np.linalg.norm(signal1_locus)*np.linalg.norm(signal2_locus))
             report_dict['cosine'].append(res)
