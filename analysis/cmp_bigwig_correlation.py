@@ -20,6 +20,9 @@ def calculate_correlation(input1, input2, resolution):
         chrom_size = min(chrom_size, chrom_size2)
         signal1 = bw1.values(chrom, 0, chrom_size, numpy=True)
         signal2 = bw2.values(chrom, 0, chrom_size, numpy=True)
+        signal_length = min(len(signal1), len(signal2))
+        signal1 = signal1[:signal_length]
+        signal2 = signal2[:signal_length]
         
         #average the signal according to the resolution, and remove nan values
         signal1 = signal1[~np.isnan(signal1)]
