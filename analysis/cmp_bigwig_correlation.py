@@ -25,8 +25,10 @@ def calculate_correlation(input1, input2, resolution):
         signal2 = signal2[:signal_length]
         
         #average the signal according to the resolution, and remove nan values
-        signal1 = signal1[~np.isnan(signal1)]
-        signal2 = signal2[~np.isnan(signal2)]
+        #signal1 = signal1[~np.isnan(signal1)]
+        #signal2 = signal2[~np.isnan(signal2)]
+        signal1 = np.nan_to_num(signal1)
+        signal2 = np.nan_to_num(signal2)
         if len(signal1)==0 or len(signal2)==0:
             continue
         #average the signal according to the resolution, every resolution window will be converted to one value
