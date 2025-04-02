@@ -13,7 +13,7 @@ def bigwig2coverage(input_bw):
         chrom_size = chroms[chrom]
         print("Chrom size:", chrom_size)
         #stats bigwig
-        avg_cov=bw.stats(chrom,0,chrom_size, type="mean")
+        avg_cov=bw.stats(chrom,0,chrom_size, type="mean")[0]
 
         coverage =  avg_cov*chrom_size
         count_dict[chrom] = coverage
