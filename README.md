@@ -755,3 +755,12 @@ end_index2: the end index of the second chromosome [Integer].<br>
 resolution: resolution of the input array [Integer].<br>
 vmin: the minimum threshold of the input array for figures[Float].<br>
 vmax: the maximum threshold of the input array for figures[Float].<br>
+
+
+#### 54. bigwig_coverage.py
+[bigwig_coverage.py](analysis/bigwig_coverage.py) <br>
+This script calculates the total coverage of a bigwig file.
+```
+python3 bigwig_coverage.py [input_bw]
+```
+[input_bw]: the input bigwig file. <br>
