@@ -764,3 +764,15 @@ This script calculates the total coverage of a bigwig file.
 python3 bigwig_coverage.py [input_bw]
 ```
 [input_bw]: the input bigwig file. <br>
+
+#### 55. plot_bigwig_signal.py
+[plot_bigwig_signal.py](visualization/plot_bigwig_signal.py) <br>
+This script is used to plot the region of signal of a bigwig file.
+```
+python3 plot_bigwig_signal.py [input.bw] [output.png] [chromosome] [start] [end]
+```
+input.bw: the path to the bigwig file [String]. <br>
+output.png: the name of the output png file [String]. <br>
+chromosome: the chromosome name [String]. <br>
+start: the start position of the region [Integer]. <br>
+end: the end position of the region [Integer]. <br>
