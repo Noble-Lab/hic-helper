@@ -28,6 +28,26 @@ Configure data dependency (optional)
 bash set_up.sh
 ```
 
+## Scope 
+This repo is developed to serve as a library for lab members to easily use it to process, analyze and visualize Hi-C and other associated data. We expect each script can be one simple function and can be easily used by others using command line.
+
+## Organization
+[pre_processing](pre_processing) <br>
+This directory aims to include pre-processing steps for Hi-C and associated data. 
+Specifically, it includes raw data processing (.fastq, .bam, .pairs), file format conversion (.hic, .cooler, .pkl, .bw), normalization and merging.
+
+
+[downstream](downstream) <br>
+This directory aims to include scripts for downstream analysis, including peak calling, loop detection, TAD detection, loop enrichment, and loop/peak overlap comparison.
+
+
+[analysis](analysis) <br>
+This directory aims to include scripts for different analysis for different aspectss of different data, including quality control, peak/loop distribution analysis, coverage analysis, correlation analysis, total reads, peak/loop overlap analysis, peak/loop strength analysis.
+
+[visualization](visualization) <br>
+This directory aims to include scripts to do visualization for different purposes, including Hi-C submatrix visualization, loop visualization, loop APA,  1D signal visualization, contact statistics visualization.
+
+
 ## HiC Data Format Conversion
 #### 1. cool2array.py
 [cool2array.py](pre_processing/cool2array.py) <br> 
@@ -109,7 +129,7 @@ For intra-chromsome only, the dict format can be [chrom]:[array] in pickle files
 All index input should be absolute index counted by base. <br>
 
 #### 5.hiccups_loop.py
-[hiccups_loop.py](post_processing/hiccups_loop.py) <br>
+[hiccups_loop.py](downstream/hiccups_loop.py) <br>
 Use HiCCUPs to detect loop from Hi-C input
 ```
 python3 hiccups_loop.py [hicFile] [output_dir] [resolution]
@@ -329,7 +349,7 @@ python3 extract_hicnorms.py [input.hic] [resolution] [normalization_type] [outpu
 The normalization vector is saved in dict format, where the key is the chromosome name and the value is the normalization vector.
 
 #### 20. loop_cleaner.py
-[loop_cleaner.py](post_processing/loop_cleaner.py) <br>
+[loop_cleaner.py](downstream/loop_cleaner.py) <br>
 This script is for filter out the loops on low mappability regions
 ```
 python3 loop_cleaner.py [input.bed] [mappablility.bw] [output.bed] [threshold]
@@ -425,7 +445,7 @@ python3 loop_apa.py [hic.pkl] [input.bed] [output.png] [resolution] [window_size
 
 
 #### 28. annotate_loop_gene.py
-[annotate_loop_gene.py](post_processing/annotate_loop_gene.py) <br>
+[annotate_loop_gene.py](downstream/annotate_loop_gene.py) <br>
 This script is for annotate the loop with gene information.
 ```
 python3 annotate_loop_gene.py [input.bed] [gene_annotation] [output.bed]
@@ -494,7 +514,7 @@ python3 peak_call_bigWig.py -t input.bw -c control.bw -o output_dir -q [qval] --
 The output file is a bed file with the peak information. <br>
 
 #### 34. peak_overlap.py
-[peak_overlap.py](post_processing/peak_overlap.py) <br>
+[peak_overlap.py](downstream/peak_overlap.py) <br>
 This script is to compare two bed files and find the overlapping peaks. <br>
 ```
 python3 peak_overlap.py [input1.bed] [input2.bed] [overlap_ratio] [output_dir]
@@ -517,7 +537,7 @@ python3 report_peak_strength.py [input.bw] [input.bed] [output.bed]
 [output.bed]: the output bed file, with last column represents the peak strength. <br>
 
 #### 36. downsample_pkl.py
-[downsample_pkl.py](post_processing/downsample_pkl.py) <br>
+[downsample_pkl.py](pre_processing/downsample_pkl.py) <br>
 This script is used to downsample the input pickle file.
 ```
 python3 downsample_pkl.py [input.pkl] [output.pkl] [downsample_rate]
@@ -528,7 +548,7 @@ python3 downsample_pkl.py [input.pkl] [output.pkl] [downsample_rate]
 
 
 #### 37. TAD_detection.py
-[TAD_detection.py](post_processing/TAD_detection.py) <br>
+[TAD_detection.py](downstream/TAD_detection.py) <br>
 This script is used to detect TADs from the input pickle file. <br>
 ```
 python3 TAD_detection.py --input [input.pkl] --output [output_dir] 
@@ -569,7 +589,7 @@ python3 cmp_loop_report.py [control.bed] [input.bed] [resolution] [output.pdf]
 [output.pdf]: the output pdf/png file. It is a pie chart showing the loop change. <br>
 
 #### 41. hiccups_enrichment.py
-[hiccups_enrichment.py](post_processing/hiccups_enrichment.py) <br>
+[hiccups_enrichment.py](downstream/hiccups_enrichment.py) <br>
 This script is to calculate loop enrichment and output to BEDPE file.
 ```
 python3 hiccups_enrichment.py --input_bedpe [input.bed] --input_pkl [hic.pkl] \
@@ -592,7 +612,7 @@ python3 hiccups_enrichment.py --input_bedpe [input.bed] --input_pkl [hic.pkl] \
 
 
 #### 42. loop_overlap.py
-[loop_overlap.py](post_processing/loop_overlap.py) <br>
+[loop_overlap.py](downstream/loop_overlap.py) <br>
 This script is used to compare the loop change between two bed files and outputs independent/overlap loops.
 ```
 python3 loop_overlap.py [control.bed] [input.bed] [resolution] [output_dir]
@@ -726,7 +746,7 @@ python3 loop_ctcfpeak_ratio.py [loop.bed] [ctcf_peak.bed] [resolution]
 [resolution]: the resolution of the Hi-C data <br>
 
 #### 52. loop_ctcf_enrichment.py
-[loop_ctcf_enrichment.py](visualization/loop_ctcf_enrichment.py) <br>
+[loop_ctcf_enrichment.py](downstream/loop_ctcf_enrichment.py) <br>
 This script is used to calculate the CTCF enrichment in the loop regions. 
 ```
 python3 loop_ctcf_enrichment.py [loop.bed] [ctcf_chip.bw] [resolution] [output.bed]
