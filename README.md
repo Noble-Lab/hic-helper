@@ -16,7 +16,7 @@ Contact: William Stafford Noble (wnoble@uw.edu) and Sheng Wang (swang@cs.washing
 
 For technical problems or questions, please reach out to Xiao Wang (wang3702@uw.edu) and Anupama Jha (anupamaj@uw.edu).
 
-# Add a pointer to readthedocs here, and then eliminate everything below this line. ---Bill
+# Add a pointer to readthedocs here, and then move the text in the subsequent section into readthedocs. ---Bill
 
 ## Installation
 Configure software dependency
@@ -48,7 +48,7 @@ This directory includes scripts for different analysis for different aspects of 
 This directory includes scripts to do visualization for different purposes, including Hi-C submatrix visualization, loop visualization, loop APA,  1D signal visualization, contact statistics visualization.
 
 
-# Delete everything below this line.  Use sphynx to automatically generate the descriptions below from the comments in the Python code.
+# Delete everything below this line.  Instead, use sphynx to automatically generate the descriptions below from the comments in the Python code. ---Bill
 
 
 --------------------------------------------
