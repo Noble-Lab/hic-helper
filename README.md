@@ -1,8 +1,8 @@
 # HiC Helper
 
-Welcome to the HiC Helper repository! This repository contains a collection of tools and scripts for processing HiC (High-throughput Chromosome Conformation Capture) data.
+Welcome to the HiC Helper repository. This repository contains a collection of tools and scripts for processing Hi-C (High-throughput chromosome conformation capture) data.
 
-HiC Helper provides a set of utilities to preprocess, analyze, and visualize HiC data. Whether you are working with raw HiC data or processed matrices, this toolkit aims to simplify the analysis pipeline and provide useful functions for exploring chromatin interactions.
+HiC Helper provides a set of utilities to preprocess, analyze, and visualize HiC data. Whether you are working with raw Hi-C data or processed matrices, this toolkit aims to simplify the analysis pipeline and provide useful functions for exploring chromatin interactions.
 
 Please refer to the documentation and code examples in this repository to learn more about the available tools and how to use them effectively.
 
@@ -14,7 +14,9 @@ License: GPL v3.
 
 Contact: William Stafford Noble (wnoble@uw.edu) and Sheng Wang (swang@cs.washington.edu).
 
-For technical problems or questions, please reach to Xiao Wang (wang3702@uw.edu) and Anupama Jha (anupamaj@uw.edu).
+For technical problems or questions, please reach out to Xiao Wang (wang3702@uw.edu) and Anupama Jha (anupamaj@uw.edu).
+
+# Add a pointer to readthedocs here, and then eliminate everything below this line. ---Bill
 
 ## Installation
 Configure software dependency
@@ -29,24 +31,27 @@ bash set_up.sh
 ```
 
 ## Scope 
-This repo is developed to serve as a library for lab members to easily use it to process, analyze and visualize Hi-C and other associated data. We expect each script can be one simple function and can be easily used by others using command line.
+This repo aims to serve as a library to allow lab members to easily process, analyze and visualize Hi-C and other associated data. Each script provides one simple function, accessible via the command line.
 
 ## Organization
 [pre_processing](pre_processing) <br>
-This directory aims to include pre-processing steps for Hi-C and associated data. 
-Specifically, it includes raw data processing (.fastq, .bam, .pairs), file format conversion (.hic, .cooler, .pkl, .bw), normalization and merging.
-
+This directory includes pre-processing steps for Hi-C and associated data. 
+Specifically, it includes processing for raw data (.fastq, .bam, .pairs), file format conversion (.hic, .cooler, .pkl, .bw), normalization, and merging.
 
 [downstream](downstream) <br>
-This directory aims to include scripts for downstream analysis, including peak calling, loop detection, TAD detection, loop enrichment, and loop/peak overlap comparison.
-
+This directory includes scripts for downstream analysis, including peak calling, loop detection, TAD detection, loop enrichment, and loop/peak overlap comparison.
 
 [analysis](analysis) <br>
-This directory aims to include scripts for different analysis for different aspectss of different data, including quality control, peak/loop distribution analysis, coverage analysis, correlation analysis, total reads, peak/loop overlap analysis, peak/loop strength analysis.
+This directory includes scripts for different analysis for different aspects of different data, including quality control, peak/loop distribution analysis, coverage analysis, correlation analysis, total reads, peak/loop overlap analysis, peak/loop strength analysis.
 
 [visualization](visualization) <br>
-This directory aims to include scripts to do visualization for different purposes, including Hi-C submatrix visualization, loop visualization, loop APA,  1D signal visualization, contact statistics visualization.
+This directory includes scripts to do visualization for different purposes, including Hi-C submatrix visualization, loop visualization, loop APA,  1D signal visualization, contact statistics visualization.
 
+
+# Delete everything below this line.  Use sphynx to automatically generate the descriptions below from the comments in the Python code.
+
+
+--------------------------------------------
 
 ## HiC Data Format Conversion
 #### 1. cool2array.py
