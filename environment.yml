@@ -23,6 +23,8 @@ dependencies:
   - fastqc
   - r-essentials
   - r-base
+  - sphinx               
+  - sphinx_rtd_theme 
   - pip:
       - numpy
       - cooler
