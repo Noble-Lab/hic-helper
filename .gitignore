@@ -12,10 +12,10 @@
 *.tsv
 *.gz
 *.bedpe
-*.txt
 *.png
 *.jpg
 *.egg-info
 **/result/*
 **/build/*
 **/dist/*
+**/.ipynb_checkpoints/*
