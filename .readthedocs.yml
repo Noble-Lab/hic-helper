@@ -21,8 +21,4 @@ sphinx:
 #    install:
 #    - requirements: docs/requirements.txt
 
-conda:
-  environment: environment.yml
 
-python:
-  version: "3.9"     
