@@ -12,7 +12,6 @@
 *.tsv
 *.gz
 *.bedpe
-*.txt
 *.png
 *.jpg
 *.egg-info
