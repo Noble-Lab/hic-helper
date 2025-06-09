@@ -174,8 +174,8 @@ def uniformMatrix(CM, subSampleCount=1000000, bias=False):
         for k in range(i, R):
             if marginal[i] != 0 and marginal[k] != 0:
                 indexMap.append([i, k])
-            if bias:
-                indexProb.append(marginal[i] * marginal[k])
+                if bias:
+                    indexProb.append(marginal[i] * marginal[k])
 
     if bias:
         totalProb = float(sum(indexProb))
