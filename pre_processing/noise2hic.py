@@ -313,6 +313,10 @@ def inject_noise(
     input_data = load_pkl(input_pkl)
     output_dict = {}
     for key in input_data:
+        #skip Un, Alt, and other non-standard chromosomes
+        if "Un" in key or "Alt" in key or "chrM" in key or "alt" in key or "random" in key:
+            print(f"Skipping {key} due to non-standard chromosome name.")
+            continue
         input_mat = input_data[key]
         if hasattr(input_mat, "toarray"):
             # if scipy sparse, convert to dense
@@ -320,6 +324,7 @@ def inject_noise(
         if not np.array_equal(input_mat, input_mat.T):
             # judge if the array is symmetric, if not, change it to symmetric
             input_mat = np.triu(input_mat) + np.triu(input_mat, 1).T
+        
         time_start = time.time()
         inputCoverage = int(np.sum(np.triu(input_mat)))
         GDnoiseMatrix = shuffleMatrix(input_mat, stratum_size)
