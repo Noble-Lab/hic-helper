@@ -107,7 +107,7 @@ def shuffleMatrix ( CM, stratumSize = 50 ):
 def uniformMatrix ( CM, subSampleCount = 1000000, bias = False ):
 	(R,C) = np.shape(CM)
 	marginal = np.sum(CM,1)#np.sum(np.array(CM),1)
-	uniSampleCM = np.matrix( np.zeros((R,C)) )
+	uniSampleCM = np.zeros((R,C)) 
 	#triuSum = sum(np.arange(R)+1)
 	
 	indexMap = []
@@ -167,7 +167,7 @@ def SubSampleMatrix(CM, subSampleN = 1000000, symmetric = True):
 		subCM[a,b] = subCM[a,b] + 1
 
 	subCM = subCM + np.triu(subCM,1).T		
-	return np.matrix(subCM)
+	return subCM
 
 
 def array2sparse(array):
