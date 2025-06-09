@@ -193,6 +193,54 @@ def uniformMatrix(CM, subSampleCount=1000000, bias=False):
 
     return uniSampleCM
 
+def uniformMatrix_fast(CM, subSampleCount=1_000_000, bias=False):
+    """
+    Generate a symmetric “uniformly sampled” contact matrix of the same shape as CM.
+
+    If bias=False, each upper‐triangle pair (i,k) with nonzero marginals is equally likely.
+    If bias=True, pairs are drawn with probability proportional to marginal[i] * marginal[k].
+
+    Parameters
+    ----------
+    CM : np.ndarray, shape (R,R)
+        Input contact matrix.
+    subSampleCount : int
+        Total number of (i,k) draws to make.
+    bias : bool
+        Whether to weight sampling by marginal products.
+
+    Returns
+    -------
+    uniSampleCM : np.ndarray, shape (R,R)
+        Symmetric matrix of sample counts.
+    """
+    R = CM.shape[0]
+    # 1) compute marginals
+    marginal = CM.sum(axis=1)
+    
+
+    # 2) get all upper‐triangular index pairs (i <= k) where both marginals nonzero
+    i_idx, k_idx = np.triu_indices(R)
+   
+    # 3) compute sampling probabilities
+    if bias:
+        probs = marginal[i_idx] * marginal[k_idx]
+        probs = probs / probs.sum()
+        choices = np.random.choice(i_idx.size, size=subSampleCount, replace=True, p=probs)
+    else:
+        choices = np.random.randint(0, i_idx.size, size=subSampleCount)
+
+    # 4) tally counts into upper triangle
+    uniSampleCM = np.zeros((R, R), dtype=np.int64)
+    selected_i = i_idx[choices]
+    selected_k = k_idx[choices]
+    # accumulate counts
+    np.add.at(uniSampleCM, (selected_i, selected_k), 1)
+
+    # 5) mirror to lower triangle (excluding diagonal)
+    uniSampleCM = uniSampleCM + np.triu(uniSampleCM, 1).T
+
+    return uniSampleCM
 
 @jit(nogil=True, nopython=True)
 def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
@@ -226,7 +274,7 @@ def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
     index1 = list_to_array(index1)
     index2 = list_to_array(index2)
     shufIndex = range(0, len(index1))
-    random.shuffle(shufIndex)
+
     subSampleIndex = np.random.choice(shufIndex, size=subSampleN, replace=False)
     index1 = index1[subSampleIndex]
     index2 = index2[subSampleIndex]
@@ -274,7 +322,7 @@ def inject_noise(
         time_start = time.time()
         inputCoverage = int(np.sum(np.triu(input_mat)))
         GDnoiseMatrix = shuffleMatrix(input_mat, stratum_size)
-        RLnoiseMatrix = uniformMatrix(input_mat, inputCoverage, bias=True)
+        RLnoiseMatrix = uniformMatrix_fast(input_mat, inputCoverage, bias=True)
         realSampleCount = int(inputCoverage * (1 - float(noise_percent)))
         sinputMatrix = SubSampleMatrix(input_mat, subSampleN=realSampleCount)
 
