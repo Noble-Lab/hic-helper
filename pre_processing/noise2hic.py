@@ -345,6 +345,8 @@ def inject_noise(
         # if input matrix is sparse, convert to sparse
         if hasattr(input_mat, "toarray"):
             noisedMatrix = array2sparse(noisedMatrix)
+            #remove zeros
+            noisedMatrix.eliminate_zeros()
         time_end = time.time()
         print(f"Processed {key}: Time taken = {time_end - time_start:.2f} seconds")
         # save the noisedMatrix to output_dict
