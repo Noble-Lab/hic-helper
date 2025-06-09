@@ -60,7 +60,7 @@ def stratifiedSample ( V, F, strataSize = 100 ):
 @jit(nogil=True,nopython=True)
 def shuffleMatrix ( CM, stratumSize = 50 ):
 	#Convert to integer
-	CM = CM.astype(int)
+	#CM = CM.astype(int)
 	#Get marginals and number of rows
 	contactSum = np.sum(np.array(CM),1)
 	N = len(CM)
