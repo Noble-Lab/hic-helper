@@ -273,7 +273,7 @@ def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
     # index2 = np.array(index2)
     index1 = list_to_array(index1)
     index2 = list_to_array(index2)
-    shufIndex = range(0, len(index1))
+    shufIndex = [x for x in range(len(index1))]#range(0, len(index1))
 
     subSampleIndex = np.random.choice(shufIndex, size=subSampleN, replace=False)
     index1 = index1[subSampleIndex]
