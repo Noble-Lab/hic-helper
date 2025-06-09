@@ -286,7 +286,7 @@ def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
         subCM[a, b] = subCM[a, b] + 1
 
     subCM = subCM + np.triu(subCM, 1).T
-    return subCM
+    return subCM.astype(CM.dtype)  # ensure same dtype as input matrix
 
 
 def array2sparse(array):
