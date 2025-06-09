@@ -20,11 +20,19 @@ def save_pkl(data, file_path):
         pickle.dump(data, f)
 
 @jit(nogil=True,nopython=True)
+def list_to_array(lst):
+    n = len(lst)
+    arr = np.empty(n, dtype=np.float64)
+    for i in range(n):
+        arr[i] = lst[i]
+    return arr
+@jit(nogil=True,nopython=True)
 def stratifiedSample ( V, F, strataSize = 100 ):
 	N = len(V)
 	# V = np.array(V)
 	# F = np.array(F)
-
+	V= list_to_array(V)
+	F= list_to_array(F)
 	strataCount = int(np.ceil(float(N) / strataSize))
 	sortInd = np.argsort(F)
 	strata = []
@@ -125,7 +133,7 @@ def uniformMatrix ( CM, subSampleCount = 1000000, bias = False ):
 
 	return uniSampleCM
 
-
+@jit(nogil=True,nopython=True)
 def SubSampleMatrix(CM, subSampleN = 1000000, symmetric = True):
 
 	if subSampleN >= np.sum(np.triu(CM)) : 
@@ -144,8 +152,10 @@ def SubSampleMatrix(CM, subSampleN = 1000000, symmetric = True):
 			v2=np.empty(count); v2.fill(k)				
 			index1.extend(v1); index2.extend(v2)
 	
-	index1 = np.array(index1)
-	index2 = np.array(index2)
+	# index1 = np.array(index1)
+	# index2 = np.array(index2)
+	index1 = list_to_array(index1)
+	index2 = list_to_array(index2)
 	shufIndex = range(0,len(index1))
 	random.shuffle(shufIndex)
 	subSampleIndex = np.random.choice(shufIndex,size=subSampleN,replace=False)
