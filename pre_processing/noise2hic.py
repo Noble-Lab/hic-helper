@@ -54,7 +54,7 @@ def choice_nb(a, size, replace, p):
     replace : True/False
     p       : 1D probability array same length as `a`, sum(p) > 0
     """
-    n = a.shape[0]
+
     out = np.empty(size, dtype=a.dtype)
     # if sampling without replacement, we will zero out used weights
     w = p.copy()
@@ -171,7 +171,7 @@ def uniformMatrix ( CM, subSampleCount = 1000000, bias = False ):
 	if bias :
 		totalProb = float(sum(indexProb))
 		indexProb = [ iP / totalProb for iP in indexProb ]
-		triuSample = choice_nb(np.arange(len(indexMap)),subSampleCount,True,indexProb)
+		triuSample = choice_nb(np.arange(len(indexMap)),subSampleCount,True,list_to_array(indexProb))
 	else :
 		triuSample = np.random.choice(len(indexMap),subSampleCount)
         	
