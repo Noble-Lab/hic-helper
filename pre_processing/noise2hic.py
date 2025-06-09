@@ -22,8 +22,8 @@ def save_pkl(data, file_path):
 @jit(nogil=True,nopython=True)
 def stratifiedSample ( V, F, strataSize = 100 ):
 	N = len(V)
-	V = np.array(V)
-	F = np.array(F)
+	# V = np.array(V)
+	# F = np.array(F)
 
 	strataCount = int(np.ceil(float(N) / strataSize))
 	sortInd = np.argsort(F)
@@ -62,7 +62,7 @@ def shuffleMatrix ( CM, stratumSize = 50 ):
 	#Convert to integer
 	#CM = CM.astype(int)
 	#Get marginals and number of rows
-	contactSum = np.sum(np.array(CM),1)
+	contactSum = np.sum(CM,1)#np.sum(np.array(CM),1)
 	N = len(CM)
 
 	# For matrix entry Mik, store Marginal i * Marginal k in CountByDist
@@ -98,7 +98,7 @@ def shuffleMatrix ( CM, stratumSize = 50 ):
 @jit(nogil=True,nopython=True)
 def uniformMatrix ( CM, subSampleCount = 1000000, bias = False ):
 	(R,C) = np.shape(CM)
-	marginal = np.sum(np.array(CM),1)
+	marginal = np.sum(CM,1)#np.sum(np.array(CM),1)
 	uniSampleCM = np.matrix( np.zeros((R,C)) )
 	#triuSum = sum(np.arange(R)+1)
 	
