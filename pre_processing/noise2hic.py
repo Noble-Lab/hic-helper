@@ -273,15 +273,16 @@ def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
     # index2 = np.array(index2)
     index1 = list_to_array(index1)
     index2 = list_to_array(index2)
-    shufIndex = [x for x in range(len(index1))]#range(0, len(index1))
+    # shufIndex = [x for x in range(len(index1))]#range(0, len(index1))
 
-    subSampleIndex = np.random.choice(shufIndex, size=subSampleN, replace=False)
-    index1 = index1[subSampleIndex]
-    index2 = index2[subSampleIndex]
+    subSampleIndex = np.random.choice(len(index1), size=subSampleN, replace=False)
+    # index1 = index1[subSampleIndex]
+    # index2 = index2[subSampleIndex]
 
-    for i in range(len(index1)):
-        a = int(index1[i])
-        b = int(index2[i])
+    for i in range(len(subSampleIndex)):
+        cur_index = int(subSampleIndex[i])
+        a = int(index1[cur_index])
+        b = int(index2[cur_index])
         subCM[a, b] = subCM[a, b] + 1
 
     subCM = subCM + np.triu(subCM, 1).T
