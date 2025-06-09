@@ -18,7 +18,54 @@ def save_pkl(data, file_path):
     import pickle
     with open(file_path, 'wb') as f:
         pickle.dump(data, f)
+@jit(nogil=True,nopython=True)
+def weighted_choice(weights):
+    """
+    Return a single index sampled from 0..len(weights)-1
+    according to the 1D array of probabilities `weights` (which should sum to >0).
+    """
+    # 1) build a cumulative distribution
+    cum = np.empty(weights.shape[0], dtype=weights.dtype)
+    total = 0.0
+    for i in range(weights.shape[0]):
+        total += weights[i]
+        cum[i] = total
 
+    # 2) draw a uniform in [0, total)
+    u = np.random.random() * total
+
+    # 3) find the first index where cum[i] > u
+    for i in range(cum.shape[0]):
+        if u < cum[i]:
+            return i
+    # due to rounding, fall back to last index
+    return weights.shape[0] - 1
+
+
+@jit(nogil=True,nopython=True)
+def choice_nb(a, size, replace, p):
+    """
+    A simple re-implementation of numpy.random.choice for 1D array `a`,
+    sampling `size` elements **with** or **without** replacement,
+    using probability vector `p`.
+
+    a       : 1D array of values to choose from
+    size    : number of draws
+    replace : True/False
+    p       : 1D probability array same length as `a`, sum(p) > 0
+    """
+    n = a.shape[0]
+    out = np.empty(size, dtype=a.dtype)
+    # if sampling without replacement, we will zero out used weights
+    w = p.copy()
+
+    for j in range(size):
+        idx = weighted_choice(w)
+        out[j] = a[idx]
+        if not replace:
+            # zero out and renormalize
+            w[idx] = 0.0
+    return out
 @jit(nogil=True,nopython=True)
 def list_to_array(lst):
     n = len(lst)
@@ -103,6 +150,8 @@ def shuffleMatrix ( CM, stratumSize = 50 ):
 	
 	
 	return noiseMatrix
+
+
 @jit(nogil=True,nopython=True)
 def uniformMatrix ( CM, subSampleCount = 1000000, bias = False ):
 	(R,C) = np.shape(CM)
@@ -122,7 +171,7 @@ def uniformMatrix ( CM, subSampleCount = 1000000, bias = False ):
 	if bias :
 		totalProb = float(sum(indexProb))
 		indexProb = [ iP / totalProb for iP in indexProb ]
-		triuSample = np.random.choice(len(indexMap),subSampleCount,p=indexProb)
+		triuSample = choice_nb(np.arange(len(indexMap)),subSampleCount,True,indexProb)
 	else :
 		triuSample = np.random.choice(len(indexMap),subSampleCount)
         	
