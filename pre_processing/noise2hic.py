@@ -2,14 +2,25 @@ import numpy as np
 import time
 import random
 from numba import jit
-
+import os
+import sys
+import pickle
+from scipy.sparse import coo_matrix
 
 def load_pkl(file_path):
     """
     Load a .pkl file containing Hi-C data.
-    """
-    import pickle
 
+    Parameters
+    ----------
+    file_path : str
+        Path to the pickle file.
+
+    Returns
+    -------
+    data : object
+        Data loaded from the pickle file.
+    """
     with open(file_path, "rb") as f:
         data = pickle.load(f)
     return data
@@ -18,9 +29,14 @@ def load_pkl(file_path):
 def save_pkl(data, file_path):
     """
     Save data to a .pkl file.
-    """
-    import pickle
 
+    Parameters
+    ----------
+    data : object
+        Data to be saved.
+    file_path : str
+        Path to the output pickle file.
+    """
     with open(file_path, "wb") as f:
         pickle.dump(data, f)
 
@@ -30,22 +46,28 @@ def weighted_choice(weights):
     """
     Return a single index sampled from 0..len(weights)-1
     according to the 1D array of probabilities `weights` (which should sum to >0).
+
+    Parameters
+    ----------
+    weights : np.ndarray
+        1D array of probabilities.
+
+    Returns
+    -------
+    int
+        Selected index.
     """
-    # 1) build a cumulative distribution
     cum = np.empty(weights.shape[0], dtype=weights.dtype)
     total = 0.0
     for i in range(weights.shape[0]):
         total += weights[i]
         cum[i] = total
 
-    # 2) draw a uniform in [0, total)
     u = np.random.random() * total
 
-    # 3) find the first index where cum[i] > u
     for i in range(cum.shape[0]):
         if u < cum[i]:
             return i
-    # due to rounding, fall back to last index
     return weights.shape[0] - 1
 
 
@@ -56,27 +78,48 @@ def choice_nb(a, size, replace, p):
     sampling `size` elements **with** or **without** replacement,
     using probability vector `p`.
 
-    a       : 1D array of values to choose from
-    size    : number of draws
-    replace : True/False
-    p       : 1D probability array same length as `a`, sum(p) > 0
-    """
+    Parameters
+    ----------
+    a : np.ndarray
+        1D array of values to choose from.
+    size : int
+        Number of draws.
+    replace : bool
+        Sample with replacement if True.
+    p : np.ndarray
+        1D probability array same length as `a`, sum(p) > 0.
 
+    Returns
+    -------
+    np.ndarray
+        Sampled values.
+    """
     out = np.empty(size, dtype=a.dtype)
-    # if sampling without replacement, we will zero out used weights
     w = p.copy()
 
     for j in range(size):
         idx = weighted_choice(w)
         out[j] = a[idx]
         if not replace:
-            # zero out and renormalize
             w[idx] = 0.0
     return out
 
 
 @jit(nogil=True, nopython=True)
 def list_to_array(lst):
+    """
+    Convert a list to a numpy array of type float64.
+
+    Parameters
+    ----------
+    lst : list
+        List of values.
+
+    Returns
+    -------
+    np.ndarray
+        Array of float64.
+    """
     n = len(lst)
     arr = np.empty(n, dtype=np.float64)
     for i in range(n):
@@ -86,9 +129,24 @@ def list_to_array(lst):
 
 @jit(nogil=True, nopython=True)
 def stratifiedSample(V, F, strataSize=100):
+    """
+    Perform stratified sampling on V using F as the stratification variable.
+
+    Parameters
+    ----------
+    V : list or np.ndarray
+        Values to sample from.
+    F : list or np.ndarray
+        Stratification variable.
+    strataSize : int
+        Number of bins per stratum.
+
+    Returns
+    -------
+    list
+        Stratified sample.
+    """
     N = len(V)
-    # V = np.array(V)
-    # F = np.array(F)
     V = list_to_array(V)
     F = list_to_array(F)
     strataCount = int(np.ceil(float(N) / strataSize))
@@ -96,14 +154,11 @@ def stratifiedSample(V, F, strataSize=100):
     strata = []
     strataMax = []
 
-    # print '%d to stratify, %d strata to be filled' % (N,strataCount)
-
     for i in range(strataCount):
         stratum = V[sortInd[(strataSize * (i)) : (strataSize * (i + 1))]]
         stratumF = F[sortInd[(strataSize * (i)) : (strataSize * (i + 1))]]
         strata.append(stratum)
         strataMax.append(max(stratumF))
-        # print str(strataSize*(i)) + ' ' + str(strataSize*(i+1)) + ' ' + str(len(stratum))
 
     sample = []
     for i in range(len(V)):
@@ -112,7 +167,6 @@ def stratifiedSample(V, F, strataSize=100):
         else:
             stratumInd = 0
             for k in range(strataCount):
-                # if ( F[i] >= strataMax[k] ):
                 if F[i] <= strataMax[k]:
                     stratumInd = k
                     break
@@ -125,14 +179,23 @@ def stratifiedSample(V, F, strataSize=100):
 
 @jit(nogil=True, nopython=True)
 def shuffleMatrix(CM, stratumSize=50):
-    # Convert to integer
-    # CM = CM.astype(int)
-    # Get marginals and number of rows
-    contactSum = np.sum(CM, 1)  # np.sum(np.array(CM),1)
-    N = len(CM)
+    """
+    Shuffle a contact matrix using stratified sampling.
 
-    # For matrix entry Mik, store Marginal i * Marginal k in CountByDist
-    # and the Mik itself in matrixByDist
+    Parameters
+    ----------
+    CM : np.ndarray
+        Contact matrix.
+    stratumSize : int
+        Number of bins per stratum.
+
+    Returns
+    -------
+    np.ndarray
+        Shuffled matrix.
+    """
+    contactSum = np.sum(CM, 1)
+    N = len(CM)
     countByDist = []
     matrixByDist = []
     for i in range(0, N):
@@ -148,8 +211,6 @@ def shuffleMatrix(CM, stratumSize=50):
     noiseMatrix = np.zeros((N, N))
 
     for i in range(len(matrixByDist)):
-        # for i in range(1):
-        # print "dist is %d" % (i)
         thisSample = stratifiedSample(matrixByDist[i], countByDist[i], stratumSize)
         for k in range(len(thisSample)):
             noiseMatrix[k, k + i] = thisSample[k]
@@ -163,10 +224,26 @@ def shuffleMatrix(CM, stratumSize=50):
 
 @jit(nogil=True, nopython=True)
 def uniformMatrix(CM, subSampleCount=1000000, bias=False):
+    """
+    Generate a symmetric uniformly sampled contact matrix.
+
+    Parameters
+    ----------
+    CM : np.ndarray
+        Input contact matrix.
+    subSampleCount : int
+        Number of samples.
+    bias : bool
+        Whether to weight sampling by marginal products.
+
+    Returns
+    -------
+    np.ndarray
+        Symmetric matrix of sample counts.
+    """
     (R, C) = np.shape(CM)
-    marginal = np.sum(CM, 1)  # np.sum(np.array(CM),1)
+    marginal = np.sum(CM, 1)
     uniSampleCM = np.zeros((R, C))
-    # triuSum = sum(np.arange(R)+1)
 
     indexMap = []
     indexProb = []
@@ -215,14 +292,8 @@ def uniformMatrix_fast(CM, subSampleCount=1_000_000, bias=False):
         Symmetric matrix of sample counts.
     """
     R = CM.shape[0]
-    # 1) compute marginals
     marginal = CM.sum(axis=1)
-    
-
-    # 2) get all upper‐triangular index pairs (i <= k) where both marginals nonzero
     i_idx, k_idx = np.triu_indices(R)
-   
-    # 3) compute sampling probabilities
     if bias:
         probs = marginal[i_idx] * marginal[k_idx]
         probs = probs / probs.sum()
@@ -230,21 +301,33 @@ def uniformMatrix_fast(CM, subSampleCount=1_000_000, bias=False):
     else:
         choices = np.random.randint(0, i_idx.size, size=subSampleCount)
 
-    # 4) tally counts into upper triangle
     uniSampleCM = np.zeros((R, R), dtype=np.int64)
     selected_i = i_idx[choices]
     selected_k = k_idx[choices]
-    # accumulate counts
     np.add.at(uniSampleCM, (selected_i, selected_k), 1)
-
-    # 5) mirror to lower triangle (excluding diagonal)
     uniSampleCM = uniSampleCM + np.triu(uniSampleCM, 1).T
 
     return uniSampleCM
 
 @jit(nogil=True, nopython=True)
 def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
+    """
+    Subsample entries from a contact matrix.
 
+    Parameters
+    ----------
+    CM : np.ndarray
+        Input contact matrix.
+    subSampleN : int
+        Number of samples to draw.
+    symmetric : bool
+        Whether to symmetrize the output.
+
+    Returns
+    -------
+    np.ndarray
+        Subsampled matrix.
+    """
     if subSampleN >= np.sum(np.triu(CM)):
         print(
             "Asked for "
@@ -269,15 +352,10 @@ def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
             index1.extend(v1)
             index2.extend(v2)
 
-    # index1 = np.array(index1)
-    # index2 = np.array(index2)
     index1 = list_to_array(index1)
     index2 = list_to_array(index2)
-    # shufIndex = [x for x in range(len(index1))]#range(0, len(index1))
 
     subSampleIndex = np.random.choice(len(index1), size=subSampleN, replace=False)
-    # index1 = index1[subSampleIndex]
-    # index2 = index2[subSampleIndex]
 
     for i in range(len(subSampleIndex)):
         cur_index = int(subSampleIndex[i])
@@ -286,19 +364,23 @@ def SubSampleMatrix(CM, subSampleN=1000000, symmetric=True):
         subCM[a, b] = subCM[a, b] + 1
 
     subCM = subCM + np.triu(subCM, 1).T
-    return subCM.astype(CM.dtype)  # ensure same dtype as input matrix
+    return subCM.astype(CM.dtype)
 
 
 def array2sparse(array):
     """
-    The array2sparse function converts a numpy array to a scipy sparce array.
+    Convert a numpy array to a scipy sparse COO matrix.
 
-    :param array: Specify the numpy array
-    :return: A scipy sparce array
-    :doc-author: Trelent
+    Parameters
+    ----------
+    array : np.ndarray
+        Numpy array to convert.
+
+    Returns
+    -------
+    coo_matrix
+        Scipy sparse COO matrix.
     """
-    from scipy.sparse import coo_matrix
-
     row, col = np.where(array)
     data = array[row, col]
     return coo_matrix((data, (row, col)), shape=array.shape)
@@ -309,6 +391,19 @@ def inject_noise(
 ):
     """
     Inject noise into Hi-C data.
+
+    Parameters
+    ----------
+    input_pkl : str
+        Path to input pickle file.
+    output_pkl : str
+        Path to output pickle file.
+    noise_percent : float
+        Fraction of noise to inject.
+    ligation_noise_percent : float
+        Fraction of noise that is random ligation noise.
+    stratum_size : int
+        Stratum size for stratified sampling.
     """
     input_data = load_pkl(input_pkl)
     output_dict = {}
@@ -319,10 +414,8 @@ def inject_noise(
             continue
         input_mat = input_data[key]
         if hasattr(input_mat, "toarray"):
-            # if scipy sparse, convert to dense
             input_mat = input_mat.toarray()
         if not np.array_equal(input_mat, input_mat.T):
-            # judge if the array is symmetric, if not, change it to symmetric
             input_mat = np.triu(input_mat) + np.triu(input_mat, 1).T
         
         time_start = time.time()
@@ -342,35 +435,28 @@ def inject_noise(
         )
         sRLnoiseMatrix = SubSampleMatrix(RLnoiseMatrix, subSampleN=RLSampleCount)
         noisedMatrix = sinputMatrix + sGDnoiseMatrix + sRLnoiseMatrix
-        # if input matrix is sparse, convert to sparse
         if hasattr(input_mat, "toarray"):
             noisedMatrix = array2sparse(noisedMatrix)
-            #remove zeros
             noisedMatrix.eliminate_zeros()
         time_end = time.time()
         print(f"Processed {key}: Time taken = {time_end - time_start:.2f} seconds")
-        # save the noisedMatrix to output_dict
         output_dict[key] = noisedMatrix
     save_pkl(output_dict, output_pkl)
 
 
 if __name__ == "__main__":
-    import os
-    import sys
-
     """
-    from paper: Yardımcı, Galip Gürkan, et al. "Measuring the reproducibility and quality of Hi-C data." Genome biology 20 (2019): 1-19.
+    Script for injecting noise into Hi-C data.
 
-    noisePercentage, percent noise to be injected
-    This argument (a float between 0 and 1) specifies what percent of noise will be injected to the real Hi-C contact matrix. For example, if this argument is 0.5, 50% noise is injected.
+    Usage:
+        python3 noise2hic.py [input.pkl] [output.pkl] [noise_percent] [ligation_noise_percent] [stratum_size]
 
-    Random ligation noise percentage
-    Simualted noise is a mixture of genomic distance noise and random ligation noise.
-    This argument (a float between 0 and 1) specifies what percent of simulated noise should consist of random ligation noise.
-
-    Stratum Size, number of bins to make up each strata
-    The number of bins that make up each strata for stratified sampling. For 25/40kb, 100 bin is a reasonable choice.
-
+    Arguments:
+        [input.pkl]: input .pkl that saved Hi-C data
+        [output.pkl]: output .pkl that saved Hi-C data with noise injected
+        [noise_percent]: percent of noise to inject (float between 0 and 1)
+        [ligation_noise_percent]: percent of simulated noise that is random ligation noise (float between 0 and 1)
+        [stratum_size]: number of bins per stratum for stratified sampling (e.g., 100 for 25/40kb)
     """
     if len(sys.argv) != 6:
         print(
