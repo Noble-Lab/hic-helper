@@ -414,7 +414,10 @@ def inject_noise(
             continue
         input_mat = input_data[key]
         if hasattr(input_mat, "toarray"):
+            sparse_flag = True
             input_mat = input_mat.toarray()
+        else:
+            sparse_flag = False
         if not np.array_equal(input_mat, input_mat.T):
             input_mat = np.triu(input_mat) + np.triu(input_mat, 1).T
         
@@ -435,7 +438,7 @@ def inject_noise(
         )
         sRLnoiseMatrix = SubSampleMatrix(RLnoiseMatrix, subSampleN=RLSampleCount)
         noisedMatrix = sinputMatrix + sGDnoiseMatrix + sRLnoiseMatrix
-        if hasattr(input_mat, "toarray"):
+        if sparse_flag:
             noisedMatrix = array2sparse(noisedMatrix)
             noisedMatrix.eliminate_zeros()
         time_end = time.time()
